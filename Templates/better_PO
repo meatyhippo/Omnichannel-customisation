@@ -284,7 +284,7 @@ Expected: {{Order.arrivalDate|correcttimezone|date ("m/d/y")}}<br />
 <em>None</em>
 {% endif %} 
 </td>
-  {% if OrderLine.Item.customSku %}
+  {% if OrderLine.Item.customSku|strlen > 0 %}
   <td>{{OrderLine.Item.customSku}}</td>
   {% else %}
   <td>{{OrderLine.Item.manufacturerSku}}</td>
