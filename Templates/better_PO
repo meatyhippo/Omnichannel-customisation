@@ -267,6 +267,12 @@ Expected: {{Order.arrivalDate|correcttimezone|date ("m/d/y")}}<br />
 <th>SKU Code</th>
 <th>Description</th>
 <th>Qty</th>
+<th>Unit Cost</th>
+{% if Order.discount > 0 %}
+<th>Amount w/Discount</th>
+{% else %}
+<th>Amount</th>
+{% endif %}
 </tr>
 </thead>
 {% for OrderLine in Order.OrderLines.OrderLine %}
@@ -278,17 +284,19 @@ Expected: {{Order.arrivalDate|correcttimezone|date ("m/d/y")}}<br />
 <em>None</em>
 {% endif %} 
 </td>
-  {% if rderLine.Item.customSku %}
+  {% if OrderLine.Item.customSku %}
   <td>{{OrderLine.Item.customSku}}</td>
   {% else %}
   <td>{{OrderLine.Item.manufacturerSku}}</td>
   {% endif %}
 <td>{{OrderLine.Item.description}}</td>
 <td>{{OrderLine.quantity}}</td>
+<td class="money">{{OrderLine.originalPrice|money}}</td>
+<td class="money">{{OrderLine.total|money}}</td>
 </tr>
 {% endfor %}
 <tfoot>
-{#  <tr class="minor">
+<tr class="minor">
 <th>Subtotal</th>
 {% if Order.MetaData.subtotal > 0 %}
 <th></th>
@@ -314,7 +322,7 @@ Expected: {{Order.arrivalDate|correcttimezone|date ("m/d/y")}}<br />
 <td></td>
 <td></td>
 <td class="money">{{Order.MetaData.total|money}}</td>
-</tr>#}
+</tr>
 </tfoot>
 </table>
 <br>
@@ -326,4 +334,3 @@ Expected: {{Order.arrivalDate|correcttimezone|date ("m/d/y")}}<br />
 {% endif %}
 {% endfor %}
 {% endblock content %}
-{# ®Ruben Van Hee #}
