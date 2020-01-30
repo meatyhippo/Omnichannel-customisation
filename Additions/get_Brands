@@ -1,0 +1,56 @@
+<!-- Add to html near the line_description div -->
+<p class="BrandID" style="display:none;">{{ Label.Item.manufacturerID }}{{ Line.Item.manufacturerID }}</p><p class="BrandName" style="margin:0; /*display:inline;*/"></p>
+
+change: 
+{% extends parameters.print ? "printbase" : "base" %}
+to:
+{% extends "base" %}
+
+
+Add to html right under 
+{% endblock extrastyles %}
+{% block content %}
+
+<head>
+<script>
+  // url for api call
+  const domain = window.location.host,
+  RAD = window.location.pathname.match(/\d+/);
+
+function allBrands () {
+  var IDs = document.querySelectorAll('p.BrandID');   // creates an array of dom
+
+ // loops through array and gets api data
+  for (let i = 0, len = IDs.length; i < len; i++) {
+    id = IDs[i].innerHTML; //gets the actual ManfID
+    console.log(id + domain + RAD);  
+
+  //fetch request for data
+  var brandRequest = new Request(`https://${domain}/API/Account/${RAD}/Manufacturer/${id}.json`, {
+            method:'GET',
+            credentials: 'same-origin'
+      });
+  fetch(brandRequest)
+    .then((response) => {
+      return response.json();
+    })
+    .then(data => {
+    let listItem = data.Manufacturer.name;
+    document.getElementsByClassName('BrandName')[i]
+    .innerHTML = 'brand: ' + listItem;
+  //console.log(listItem);
+    });
+    } //end of for loop
+setTimeout(
+    () => {
+      console.log('this is a timer message');
+  window.print();
+    },
+    1 * 1000
+  );
+} //function end
+
+document.addEventListener("DOMContentLoaded", allBrands);  //calls function when loaded
+
+</script>
+</head>
