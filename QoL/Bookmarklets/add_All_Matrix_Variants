@@ -1,0 +1,1 @@
+javascript: function Loop %28%29 %7B%0Afor %28i %3D 0%3B i < divs.length%3B %2B%2Bi%29 %7B%0A  divs%5Bi%5D.click%28%29%3B%0A  %7D%3B%0A%7D%0Aif %28typeof divs %3D%3D%3D %27undefined%27%29%7B%0A divs %3D document.querySelectorAll%28%27.custom_function.gui-def-button%27%29%3B %0ALoop%28%29%3B%0A  %7D else %7B%0ALoop%28%29%3B%0A  %7D
