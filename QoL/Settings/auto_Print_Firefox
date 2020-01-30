@@ -1,0 +1,4 @@
+- in firefox, enter about:config in the address bar
+- in this page, right click and select "new > boolean"
+- enter "print.always_print_silent"
+- select true
