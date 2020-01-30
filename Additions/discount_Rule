@@ -1,0 +1,6 @@
+{# discount rule jira CLD-14286/20675 #}
+{# replace #}
+{{ multiply(Line.displayableUnitPrice, Line.unitQuantity)|money }}
+
+{# with #}
+{{ (multiply(Line.unitPrice, Line.unitQuantity))|money }}
