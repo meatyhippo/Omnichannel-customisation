@@ -330,8 +330,15 @@ img.barcode {
 				<h3 class="show-on-print">Customer:</h3>
 				<p id="customerName">{{ Workorder.Customer.firstName}} {{ Workorder.Customer.lastName}}</p>
 				<p id="customerAddress1" class="show-on-print">{{ Workorder.Customer.Contact.Addresses.ContactAddress.address1 }}</p>
-				<p id="customerAddress2"class="show-on-print">{{ Workorder.Customer.Contact.Addresses.ContactAddress.address2 }}</p>
-				<p id="customerAddressCity"class="show-on-print">{{ Workorder.Customer.Contact.Addresses.ContactAddress.city }} {{ Workorder.Customer.Contact.Addresses.ContactAddress.state }} {{ Workorder.Customer.Contact.Addresses.ContactAddress.zip }}</p>
+				<p id="customerAddress2" class="show-on-print">{{ Workorder.Customer.Contact.Addresses.ContactAddress.address2 }}</p>
+				<p id="customerAddressCity" class="show-on-print">{{ Workorder.Customer.Contact.Addresses.ContactAddress.city }} {{ Workorder.Customer.Contact.Addresses.ContactAddress.state }} {{ Workorder.Customer.Contact.Addresses.ContactAddress.zip }}</p>
+				        
+        {% if Workorder.Customer.Contact.Addresses.ContactAddress.city == true %}
+				<p id="customerAddressCity" class="show-on-print">{{ Workorder.Customer.Contact.Addresses.ContactAddress.zip }}, {{ Workorder.Customer.Contact.Addresses.ContactAddress.city }} {{ Workorder.Customer.Contact.Addresses.ContactAddress.state }}</p>
+        {% else %}
+        				<p id="customerAddressCity" class="show-on-print">{{ Workorder.Customer.Contact.Addresses.ContactAddress.zip }}</p>
+
+        {% endif %}
 				<p id="customerCompany"class="show-on-print">{{ Workorder.Customer.company }}</p>
 				{% for ContactPhone in Workorder.Customer.Contact.Phones.ContactPhone %}
 					<p data-automation="customerPhoneNumber">{{ ContactPhone.number }}</p>
@@ -373,8 +380,8 @@ img.barcode {
 					{% else %}
 					{% endif %}
 				{% if hide_start_and_date == false %}
-					Started: {{Workorder.timeIn|correcttimezone|date ("m/d/y h:i a")}}<br />
-					Due on: {{Workorder.etaOut|correcttimezone|date ("m/d/y h:i a")}}<br />
+					Started: {{Workorder.timeIn|correcttimezone|date ("d/m/y H:i")}}<br />
+					Due on: {{Workorder.etaOut|correcttimezone|date ("d/m/y H:i")}}<br />
 					{% else %}
 				{% endif %}
 				{% if hide_employee == false %}
@@ -503,7 +510,7 @@ img.barcode {
 
 {% macro date(Workorder) %}
     <p>
-        {{"now"|correcttimezone|date('m/d/Y h:i:s A')}}
+        {{"now"|correcttimezone|date('d/m/Y H:i:s')}}
     </p>
 {% endmacro %}
 
@@ -530,6 +537,9 @@ img.barcode {
 				{% elseif Line.unitPrice > 0 %}
 					<td class="show-on-print" data-automation="lineItemQuantity" class="quantity">{{Line.unitQuantity}} x {{ Line.unitPrice|money }}</td>
 				{% endif %}
+				{% if Line.hours > 0 or Line.minutes > 0 %}
+					<td data-automation="lineItemQuantity" class="quantity">{{Line.unitQuantity}} x {{ Line.unitPrice|money }}</td>
+				{% endif %}
 			{% endif %}
 		{% elseif options.itemized_hours_labor == true and Line.unitPriceOverride == '0'%}
 			{% if Line.hours > 0 or Line.minutes > 0 %}
@@ -542,9 +552,9 @@ img.barcode {
 		{% endif %}
 		<td class="show-on-print" data-automation="lineItemRowCharge" class="amount">
 			{% if Line.warranty == 'false' %}
-				{{Line.SaleLine.calcSubtotal|money}}
+				{{Line.SaleLine.calcTotal|money}}
 			{% elseif Line.warranty == 'true' %}
-				$0.00
+				€0.00
 			{% endif %}
 		</td>
 	</tr>
