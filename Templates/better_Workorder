@@ -298,7 +298,7 @@ img.barcode {
 				<p id="customerAddress2">{{ Workorder.Customer.Contact.Addresses.ContactAddress.address2 }}</p>
         
         {% if Workorder.Customer.Contact.Addresses.ContactAddress.city == true %}
-				<p id="customerAddressCity">{{ Workorder.Customer.Contact.Addresses.ContactAddress.city }}, {{ Workorder.Customer.Contact.Addresses.ContactAddress.state }} {{ Workorder.Customer.Contact.Addresses.ContactAddress.zip }}</p>
+				<p id="customerAddressCity">{{ Workorder.Customer.Contact.Addresses.ContactAddress.zip }}, {{ Workorder.Customer.Contact.Addresses.ContactAddress.city }} {{ Workorder.Customer.Contact.Addresses.ContactAddress.state }}</p>
         {% else %}
         				<p id="customerAddressCity">{{ Workorder.Customer.Contact.Addresses.ContactAddress.zip }}</p>
 
@@ -504,6 +504,9 @@ img.barcode {
 				{% elseif Line.unitPrice > 0 %}
 					<td data-automation="lineItemQuantity" class="quantity">{{Line.unitQuantity}} x {{ Line.unitPrice|money }}</td>
 				{% endif %}
+				{% if Line.hours > 0 or Line.minutes > 0 %}
+					<td data-automation="lineItemQuantity" class="quantity">{{Line.unitQuantity}} x {{ Line.unitPrice|money }}</td>
+				{% endif %}
 			{% endif %}
 		{% elseif options.itemized_hours_labor == true and Line.unitPriceOverride == '0'%}
 			{% if Line.hours > 0 or Line.minutes > 0 %}
@@ -516,7 +519,7 @@ img.barcode {
 		{% endif %}
 		<td data-automation="lineItemRowCharge" class="amount hidetotals">
 			{% if Line.warranty == 'false' %}
-				{{Line.SaleLine.calcSubtotal|money}}
+				{{Line.SaleLine.calcTotal|money}}
 			{% elseif Line.warranty == 'true' %}
 				€0.00
 			{% endif %}
