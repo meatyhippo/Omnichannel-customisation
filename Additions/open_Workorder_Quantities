@@ -1,0 +1,51 @@
+{% macro workorders(Customer,parameters,options) %}
+	{% if Customer.Workorders|length > 0 %}
+		<h2 class="footerSectionTitle">Open werkorders</h2>
+		<table class="lines workorders">
+			{% for Line in Customer.Workorders.SaleLine %}
+				<tr>
+					{% if Line.MetaData.workorderTotal %}
+						<td class="workorder" colspan="2">
+							{{ _self.lineDescription(Line,options) }}
+							{% if options.show_workorders_barcode %}
+								<p class="barcodeContainer">
+									<img id="barcodeImage"
+											 height="50"
+											 width="250"
+											 class="barcode"
+											 src="/barcode.php?type=receipt&number={{ Line.MetaData.workorderSystemSku }}&&hide_text={{ not options.show_workorders_barcode_sku }}">
+								</p>
+							{% endif %}
+						</td>
+					{% else %}
+						<th class="description">{{ _self.lineDescription(Line,options) }}</th>
+						<td class="amount">{{ Line.unitQuantity }}</td>
+						<td class="amount">{{ Line.unitPrice|money }}</td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</table>
+		{% if Customer.MetaData.workordersTotal > 0 %}
+			<table class="workorders totals" style="margin-top:10px;">
+				<tr>
+					<td class="label" width="100%">Subtotaal (excl. BTW)</td>
+					<td class="amount">{{Customer.MetaData.workordersSubtotalNoDiscount|money}}</td>
+				</tr>
+				{% if Customer.MetaData.specialOrdersAllDiscounts > 0 %}
+					<tr>
+						<td class="label" width="100%">Kortingen</td>
+						<td class="amount">{{Customer.MetaData.workordersAllDiscounts|getinverse|money}}</td>
+					</tr>
+				{% endif %}
+				<tr>
+					<td class="label" width="100%">Totaal belasting</td>
+					<td class="amount">{{Customer.MetaData.workordersTaxTotal|money}}</td>
+				</tr>
+				<tr class="total">
+					<td class="label" width="100%">Totaal</td>
+					<td class="amount">{{Customer.MetaData.workordersTotal|money}}</td>
+				</tr>
+			</table>
+		{% endif %}
+	{% endif %}
+{% endmacro %}
