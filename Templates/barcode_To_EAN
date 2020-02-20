@@ -1,10 +1,7 @@
--------------------
+{#-------------------
 Instructions:
 There is a switch on the top of the template for "EAN_as_barcode"
 -------------------
-
-
-{#
                             ***Begin Custom Options***
 Set any of the options in this section from 'false' to 'true' in order to enable them in the template
 #}
