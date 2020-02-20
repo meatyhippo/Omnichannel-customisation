@@ -1,4 +1,4 @@
--------------------
+{#-------------------
 Instructions:
 Adds an array(currencies) to the receipt under the logo array where customers can manually enter a notation and exchange rate.
 Fill in a notation, like USD or £. Fill in a rate manually, with a "." as decimal separator. The exchange rate should be added as a multiplication of the base currency
@@ -9,9 +9,6 @@ e.g.:
 displays as:
 €50 | 75 USD
 -------------------
-
-
-{#
 	***Begin Custom Options***
 	Toggle any of the options in this section between 'false' and 'true' in order to enable/disable them in the template
 #}
