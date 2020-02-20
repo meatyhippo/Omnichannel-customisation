@@ -1,10 +1,8 @@
--------------------
+{#-------------------
 better_Workorder: 
 a workflow with the service module where the customer first receives a "confirmation of service" printed with the receipt printer.
 When they return, they could print an actual quote.
 -------------------
-
-{#
                             ***Begin Custom Options***
 Set any of the options in this section from 'false' to 'true' in order to enable them in the template
 #}
