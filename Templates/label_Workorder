@@ -1,4 +1,8 @@
-{#
+{#-------------------
+label_Workorder: print the work order on a label as well as A4
+When the print size changes to a certain smaller size, the layout of the workorder changes to apend to a label. Barcode also turns on its side.
+Not very useful for label sizes that are too small.
+-------------------
                             ***Begin Custom Options***
 Set any of the options in this section from 'false' to 'true' in order to enable them in the template
 #}
