@@ -18,7 +18,7 @@ Add to html right under
   RAD = window.location.pathname.match(/\d+/);
 
 function allBrands () {
-  var IDs = document.querySelectorAll('p.BrandID');   // creates an array of dom
+  var IDs = document.querySelectorAll('span.BrandID');   // creates an array of dom
 
  // loops through array and gets api data
   for (let i = 0, len = IDs.length; i < len; i++) {
@@ -37,7 +37,7 @@ function allBrands () {
     .then(data => {
     let listItem = data.Manufacturer.name;
     document.getElementsByClassName('BrandName')[i]
-    .innerHTML = 'brand: ' + listItem;
+    .innerHTML = listItem;
   //console.log(listItem);
     });
     } //end of for loop
