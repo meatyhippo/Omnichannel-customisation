@@ -14,7 +14,7 @@ A collection of: templates, customisation and tweaks for Lightspeed omnichannel
 	These are one-off additions you can make in the customer's current template without having to replace it. These take some more effort from the support agents.
 	</li>
 	<li>
-	Quality of Life changes(QoL)</br>
+	General improvements</br>
 	These are general tweaks/enhancements that are mostly meant for the support agents, like chrome bookmarklets, TextExpanders... (not unlike the <a href="https://confluence.atlightspeed.net/display/eCom/Action+Bookmarks">eCom action bookmarks)</a>
 	</li>
 </ul>
@@ -31,7 +31,7 @@ Below these instructions are tables that contain the info and links per topic. (
 <p>Instructions to add the different lines are different depending on the functions.
 They are provided in the comments of the github page.</p>
 
-<h4>Quality of Life:</h4>
+<h4>General improvements:</h4>
 <ul>
 	<li>For a chrome bookmarklet:
 		<ul>
