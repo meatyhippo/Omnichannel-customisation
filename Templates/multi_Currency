@@ -1196,7 +1196,7 @@ table.payments td.label {
 				<td class="label" width="100%">
 					{{ Payment.PaymentType.name }}
 				</td>{# multi here #}
-				<td class="amount">{{Payment.amount|money}}{{Sale.taxTotal|money}}{% for curr in currencies %}
+				<td class="amount">{{Payment.amount|money}}{% for curr in currencies %}
     {% if curr.rate %} | {{ (curr.rate * Payment.amount)|round(2)}} {{curr.notation}}{% endif %}{% endfor %}</td>
 			{% endif %}
 		{% endif %}
