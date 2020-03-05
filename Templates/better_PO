@@ -7,6 +7,10 @@ Set any of the options in this section from 'false' to 'true' in order to enable
 {% set hide_shipping_table = false %} {# Removes shipping table from PO template #}
 {% set hide_shipping_notes = false %} {# Removes shipping notes from PO template #}
 {% set hide_general_notes = false %} {# Removes general notes from PO template #}
+{% set show_EAN = false %} {# shows EAN #}
+{% set show_custom_SKU = false %} {# shows SKU #}
+{% set show_manufacturer_SKU = false %} {# shows SKU #}
+{% set show_item_barcode = false %} {# shows the sys id of the item on the line for easy adding to inventory #}
 {#
 ***End Custom Options***
 #}
@@ -162,8 +166,8 @@ html { height: 100% }
 Purchase Order<small> #{{ Order.orderID }}</small>
 </h2>
 <div class="startStop">
-Ordered: {{Order.orderedDate|correcttimezone|date ("m/d/y")}}<br />
-Expected: {{Order.arrivalDate|correcttimezone|date ("m/d/y")}}<br /> 
+Ordered: {{Order.orderedDate|correcttimezone|date ("d/m/y")}}<br />
+Expected: {{Order.arrivalDate|correcttimezone|date ("d/m/y")}}<br /> 
 </div>
 </header>
 <div class="row">
@@ -264,7 +268,15 @@ Expected: {{Order.arrivalDate|correcttimezone|date ("m/d/y")}}<br />
 <thead>
 <tr>
 <th>Vendor ID</th>
-<th>SKU Code</th>
+{% if show_EAN == true %}
+<th>EAN</th>
+{% endif %}
+{% if show_manufacturer_SKU == true %}
+<th>manufacturer SKU</th>
+{% endif %}
+{% if show_custom_SKU == true %}
+<th>custom SKU</th>
+{% endif %}
 <th>Description</th>
 <th>Qty</th>
 <th>Unit Cost</th>
@@ -284,12 +296,16 @@ Expected: {{Order.arrivalDate|correcttimezone|date ("m/d/y")}}<br />
 <em>None</em>
 {% endif %} 
 </td>
-  {% if OrderLine.Item.customSku|strlen > 0 %}
-  <td>{{OrderLine.Item.customSku}}</td>
-  {% else %}
-  <td>{{OrderLine.Item.manufacturerSku}}</td>
-  {% endif %}
-<td>{{OrderLine.Item.description}}</td>
+{% if show_EAN == true %}
+<td>{{OrderLine.Item.ean}}</td>
+{% endif %}
+{% if show_manufacturer_SKU == true %}
+<td>{{OrderLine.Item.manufacturerku}}</td>
+{% endif %}
+{% if show_custom_SKU == true %}
+<td>{{OrderLine.Item.customSku}}</td>
+{% endif %}
+<td><p style="float: left;">{{OrderLine.Item.description}}</p>{% if show_item_barcode == true %}<img  height="40" width="200" src="/barcode.php?type=label&number={{ OrderLine.Item.systemSku }}&noframe=1" style="margin: auto 0;display: block;float: right;">{% endif %}</td>
 <td>{{OrderLine.quantity}}</td>
 <td class="money">{{OrderLine.originalPrice|money}}</td>
 <td class="money">{{OrderLine.total|money}}</td>
@@ -302,6 +318,7 @@ Expected: {{Order.arrivalDate|correcttimezone|date ("m/d/y")}}<br />
 <th></th>
 {% endif %}
 <td></td>
+
 <td></td>
 <td class="money">{{Order.MetaData.subtotal|money}}</td>
 </tr>
