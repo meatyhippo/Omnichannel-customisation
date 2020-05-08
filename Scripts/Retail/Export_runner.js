@@ -120,7 +120,7 @@
                                 t.Item.forEach((element,index) => {
                                     if (t.Item[index].Tags) {
                                         let l = JSON.stringify(t.Item[index].Tags.tag);
-                                        t.Item[index].Tags = l;
+                                        t.Item[index].Tags = l.replace(/(\[)|(\])|(\")/gi,'');
                                     }
                                 });
                                 unparse_();
