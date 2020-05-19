@@ -1,9 +1,9 @@
 !function(){
     //define base url
         let domain = window.location.host;
-        let rad_id = document.getElementById('help_account_id').innerHTML;
-        rad_id = rad_id.replace(/[^0-9\.]+/g,"");
-        let csv, APIendpoint, relation, query, pagenr, report; //variables for different functions
+        let rad_id = document.querySelector('#help_account_id > var').innerHTML;
+        //rad_id = rad_id.replace(/[^0-9\.]+/g,"");
+        let csv, APIendpoint, relation, query, pagenr, report, Params, maxPage; //variables for different functions
         csv = APIendpoint = relation = query = "";
     //add papaparse to page
         if (document.getElementById('Parser')){}else{
@@ -22,10 +22,14 @@
         // -------------------
         div_wrap.appendChild(div),
         document.body.appendChild(div_wrap);
-    //function to select export
+    //function to select export add new here
     function n(x){
         switch (x) {
             case 'ItemTags':
+                Params = {
+                    header: true,
+                    delimiter: ";",
+                };
                 a = document.createElement("button"),
                 a.innerHTML = 'ItemTags',
                 a.onclick = function(){
@@ -36,7 +40,41 @@
                 },
                 div.appendChild(a);
                 break;
+            case 'VendorIDs':
+                Params = {
+                    header: true,
+                    delimiter: ";",
+                };
+                a = document.createElement("button"),
+                a.innerHTML = 'VendorIDs',
+                a.onclick = function(){
+                    report = 'VendorIDs';
+                    APIendpoint = 'Item';
+                    relation = 'ItemVendorNums';
+                    data_();
+                };
+                div.appendChild(a);
+                break;
+            case 'ItemImages':
+                Params = {
+                    header: true,
+                    delimiter: ";",
+                };
+                a = document.createElement("button"),
+                a.innerHTML = 'ItemImages',
+                a.onclick = function(){
+                    report = 'ItemImages';
+                    APIendpoint = 'Item';
+                    relation = 'Images';
+                    data_();
+                };
+                div.appendChild(a);
+                break;
             case 'OrderNumbers':
+                Params = {
+                    header: true,
+                    delimiter: ";",
+                };
                 a = document.createElement("button"),
                 a.innerHTML = 'OrderNumbers',
                 a.onclick = function(){
@@ -61,8 +99,12 @@
                 break;
         }
     }
+    //add new here
     n('ItemTags');
+    n('VendorIDs');
+    //n('ItemImages');
     n('OrderNumbers');
+
     //main function + callbacks to xml & dl
     function data_(){
         var attr = "@attributes";
@@ -75,23 +117,17 @@
         }
         var uri = encodeURI(url);
         var e = new XMLHttpRequest();
-        e.open("GET", uri, true),
+        e.open("GET", uri, false),
         e.onload = function(){
             if ( e.status >= 200 && e.status < 400 ){
                 var o = JSON.parse(e.responseText);
-                var maxPage = o[attr].count;
+                maxPage = o[attr].count;
                 ++maxPage;
                 for (pagenr = 0; pagenr < maxPage; pagenr += 100) {
                     setInterval(
-                        XML_(),
-                        2 * 1000
-                      );
+                        XML_(), 1 * 1000
+                    );
                 };
-                //var promise = new Promise(function(resolve, reject){
-                //    if(pagenr = maxPage){
-                //            resolve(DL_());
-                //    }
-                //})
             }
         },
         e.send();
@@ -106,52 +142,95 @@
             url += query;
         }
         console.log(url);
-        console.log(report);
         let uri = encodeURI(url);
         let e = new XMLHttpRequest();
-        e.open("GET", uri, true),
+        e.open("GET", uri, false),
         e.onload = function(){
             if ( e.status >= 200 && e.status < 400 ){
                 t = JSON.parse(e.responseText);
-                console.log(t);
-                    switch (report) {
-                        case 'ItemTags':
-                            !function(){
-                                t.Item.forEach((element,index) => {
-                                    if (t.Item[index].Tags) {
-                                        let l = JSON.stringify(t.Item[index].Tags.tag);
-                                        t.Item[index].Tags = l.replace(/(\[)|(\])|(\")/gi,'');
-                                    }
-                                });
-                                unparse_();
-                            }();
-                            break;
-                        case 'OrderNumbers':
-                            unparse_();
-                            break;                        
-                        default:
-                            console.log(report);
-                            break;
-                    }
+                if (report === 'OrderNumbers') {
+                    unparse_();
+                } else {
+                    data_Parse_Item();
+                }
             }
         },
         e.send();
     }
+    //edit json data items add new here
+    function data_Parse_Item(){
+        t.Item.forEach((item,index) => {
+            switch (report) {
+                case 'ItemTags':
+                    if (item.Tags) {
+                        let l = JSON.stringify(item.Tags.tag);
+                        item.Tags = l.replace(/(\[)|(\])|(\")/gi,'');
+                    } else {
+                        item.Tags = "";
+                    }
+                    break;
+                case 'VendorIDs':
+                    if(item.ItemVendorNums && item.ItemVendorNums.ItemVendorNum.length > 0){
+                        let l = "";
+                        item.ItemVendorNums.ItemVendorNum.forEach((vendornum) => {
+                            l += vendornum.value;
+                            l += ','; l.slice(0,l.length - 1);
+                        });
+                        item.ItemVendorNums = l.slice(0,l.length - 1);
+                    } else if (item.ItemVendorNums){
+                        item.ItemVendorNums = item.ItemVendorNums.ItemVendorNum.value
+                    } else {
+                        item.ItemVendorNums = "";
+                    }
+                    break;
+                case 'ItemImages':
+                    if (item.Images && item.Images.Image.length > 0) {
+                        item.Images.Image.forEach((img,i) => {
+                            let newImage = 'Image'+i;
+                            item[newImage] = img.baseImageURL+img.publicID+'.png';
+                        });
+                        item.Images = "";
+                    } else if (item.Images) {
+                        item.Image0 = item.Images.Image.baseImageURL + item.Images.Image.baseImageURL.publicID + '.png';
+                    } else {
+                        item.Image0 = "";
+                    }
+                    //t.Item[0].Images.Image.forEach((element,index)=>{
+                    //    console.log('image_'+[index]+':'+element.publicID);
+                    //    let newImage = 'Image'+index;
+                    //    t.Item[0][newImage] = element.baseImageURL+element.publicID+'.png';
+                    //})
+                    break;
+                default:
+                    break;
+            }
+            item.Prices.ItemPrice.forEach( (price) => {
+                item[price.useType] = price.amount;
+            });
+            delete item.Prices;
+            item.placeholdernewline = "";
+        });
+        unparse_();
+    }
     //parse data
     function unparse_(){
-        csv += Papa.unparse(t[APIendpoint], {
-            header: true,
-            delimiter: ";",
-        });
-        console.log(csv.length);
+        csv += Papa.unparse(t[APIendpoint],Params);
+        console.log(report);
+        console.log(t);
         console.log(csv);
+        console.log(csv.length+` characters in csv | page: ${pagenr}/${maxPage}`);
+        if(pagenr + 100 >= maxPage){
+            setTimeout(
+                //DL_, 2 * 1000
+            );
+        }
     }
     //download button
-    async function DL_(){
+    function DL_(){
         var hiddenElement = document.createElement('a');
         var today = new Date();
         hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv),
         hiddenElement.download = today.toString().replace(/ /g,"_")+'_export.csv',
         hiddenElement.click();
     }
-    }();
+}();
