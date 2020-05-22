@@ -78,7 +78,7 @@
 
                 };
                 a = document.createElement("button"),
-                a.innerHTML = 'Attributes (WIP)',
+                a.innerHTML = 'Attributes',
                 a.onclick = function(){
                     report = 'Attributes';
                     APIendpoint = 'Item';
@@ -222,6 +222,7 @@
                     item.Attribute3 = "";
                     item.ItemAttributeSet = "";
                     if (item.ItemAttributes) {
+                        item.description =  item.description.replace(item.ItemAttributes.attribute1,"").replace(item.ItemAttributes.attribute2,"").replace(item.ItemAttributes.attribute3,"").trim();
                         item.ItemAttributeSet = item.ItemAttributes.ItemAttributeSet.name;
                         if (item.ItemAttributes.attribute1 == "") {
                             item.Attribute1 = item.ItemAttributes.attribute2;
@@ -238,13 +239,27 @@
                 default:
                     break;
             }
+            delete item.discountable;
+            delete item.tax;
+            delete item.archived;
+            delete item.itemType;
+            delete item.serialized;
+            delete item.modelYear;
+            delete item.timeStamp;
+            delete item.categoryID;
+            delete item.taxClassID;
+            delete item.departmentID;
+            delete item.itemMatrixID;
+            delete item.manufacturerID;
+            delete item.seasonID;
+            delete item.defaultVendorID;
             if (item.Prices) {
                 item.Prices.ItemPrice.forEach( (price) => {
                     item[price.useType] = price.amount;
                 });
                 delete item.Prices;
             }
-            item.placeholdernewline_delete = "";
+            item.delete_columns_to_right = "";
         });
         unparse_();
     }
