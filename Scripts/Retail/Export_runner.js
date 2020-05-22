@@ -70,6 +70,20 @@
                 };
                 div.appendChild(a);
                 break;
+            case 'Attributes':
+                Params = {
+
+                };
+                a = document.createElement("button"),
+                a.innerHTML = 'Attributes (WIP)',
+                a.onclick = function(){
+                    report = 'Attributes';
+                    APIendpoint = 'Item';
+                    relation = 'ItemAttributes.ItemAttributeSet';
+                    data_();
+                };
+                div.appendChild(a);
+                break;
             case 'OrderNumbers':
                 Params = {
                     header: true,
@@ -103,6 +117,7 @@
     n('ItemTags');
     n('VendorIDs');
     //n('ItemImages');
+    n('Attributes')
     n('OrderNumbers');
 
     //main function + callbacks to xml & dl
@@ -184,6 +199,7 @@
                     }
                     break;
                 case 'ItemImages':
+                    delete item.Prices;
                     if (item.Images && item.Images.Image.length > 0) {
                         item.Images.Image.forEach((img,i) => {
                             let newImage = 'Image'+i;
@@ -195,20 +211,37 @@
                     } else {
                         item.Image0 = "";
                     }
-                    //t.Item[0].Images.Image.forEach((element,index)=>{
-                    //    console.log('image_'+[index]+':'+element.publicID);
-                    //    let newImage = 'Image'+index;
-                    //    t.Item[0][newImage] = element.baseImageURL+element.publicID+'.png';
-                    //})
+                    break;
+                case 'Attributes':
+                    delete item.Prices;
+                    item.Attribute1 = "";
+                    item.Attribute2 = "";
+                    item.Attribute3 = "";
+                    item.ItemAttributeSet = "";
+                    if (item.ItemAttributes) {
+                        item.ItemAttributeSet = item.ItemAttributes.ItemAttributeSet.name;
+                        if (item.ItemAttributes.attribute1 == "") {
+                            item.Attribute1 = item.ItemAttributes.attribute2;
+                            item.Attribute2 = "";
+                            item.Attribute3 = "";
+                        } else {
+                            item.Attribute1 = item.ItemAttributes.attribute1;
+                            item.Attribute2 = item.ItemAttributes.attribute2 == "" ? "" : item.ItemAttributes.attribute2;
+                            item.Attribute3 = item.ItemAttributes.attribute3 == "" ? "" : item.ItemAttributes.attribute3;
+                        };
+                    }
+                    delete item.ItemAttributes;
                     break;
                 default:
                     break;
             }
-            item.Prices.ItemPrice.forEach( (price) => {
-                item[price.useType] = price.amount;
-            });
-            delete item.Prices;
-            item.placeholdernewline = "";
+            if (item.Prices) {
+                item.Prices.ItemPrice.forEach( (price) => {
+                    item[price.useType] = price.amount;
+                });
+                delete item.Prices;
+            }
+            item.placeholdernewline_delete = "";
         });
         unparse_();
     }
@@ -217,20 +250,21 @@
         csv += Papa.unparse(t[APIendpoint],Params);
         console.log(report);
         console.log(t);
-        console.log(csv);
         console.log(csv.length+` characters in csv | page: ${pagenr}/${maxPage}`);
         if(pagenr + 100 >= maxPage){
+            console.log(csv);
             setTimeout(
-                //DL_, 2 * 1000
+                DL_, 2 * 1000
             );
         }
     }
     //download button
     function DL_(){
-        var hiddenElement = document.createElement('a');
         var today = new Date();
-        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv),
-        hiddenElement.download = today.toString().replace(/ /g,"_")+'_export.csv',
-        hiddenElement.click();
+        var blob = new Blob([csv]);
+        var file = document.createElement('a');
+        file.href = window.URL.createObjectURL(blob, {type: "text/plain"}),
+        file.download = today.toString().replace(/ /g,"_")+'_export.csv',
+        file.click();
     }
 }();
