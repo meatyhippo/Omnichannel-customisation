@@ -18,6 +18,9 @@
         div_wrap.onclick = function(){document.body.removeChild(div_wrap)},
         div = document.createElement('div'),
         div.id = 'types',
+        p = document.createElement('p'), p.setAttribute('style','margin:0;color:white;'),
+        p.innerHTML = 'New features: automatic download, matrix attributes',
+        div.appendChild(p),
         div.setAttribute('style','position:fixed;top: 50%!important;left: 50%!important;transform:translate(-50%,-50%)!important;background-color:#999999;display:block;'),
         // -------------------
         div_wrap.appendChild(div),
