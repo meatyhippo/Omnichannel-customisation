@@ -1,12 +1,25 @@
 !function(){
-    //define base url
+    //define variables
+        document.addEventListener
         let domain = window.location.host;
         let rad_id = document.querySelector('#help_account_id > var').innerHTML;
-        //rad_id = rad_id.replace(/[^0-9\.]+/g,"");
-        let csv, APIendpoint, relation, query, pagenr, report, Params, maxPage; //variables for different functions
+        let csv, APIendpoint, relation, query, pagenr, report, manufacturer_sku, maxPage; //variables for different functions
         csv = APIendpoint = relation = query = "";
+        function query_(){
+            if (report == 'OrderNumbers'){} else {
+                let custom_sku = window.prompt('Enter a specific custom SKU? Or leave empty (manufacturer is next)','');
+                if (custom_sku.length == 0){
+                    manufacturer_sku = window.prompt('Enter a specific manufacturer SKU? Or leave empty','');
+                }
+                if (custom_sku.length > 0){
+                    query += `&customSku=${custom_sku}`;
+                } else if (manufacturer_sku.length > 0){
+                    query += `&manufacturerSku=${manufacturer_sku}`;
+                }
+            }
+        };
     //add papaparse to page
-        if (document.getElementById('Parser')){}else{
+        if (document.getElementById('Parser')){console.log('Ready');}else{
             let PapaParse = document.createElement('script');
             PapaParse.id = 'Parser',
             PapaParse.setAttribute('src','https://cdn.jsdelivr.net/gh/mholt/PapaParse/papaparse.min.js'),
@@ -15,83 +28,82 @@
     // create box
         div_wrap = document.createElement('div'),
         div_wrap.setAttribute('style','position: fixed!important;z-index: 9999999!important;background-color: rgba(0,0,0,0.6)!important;top: 0!important;bottom: 0!important;left: 0!important;right: 0!important;height: 100vh!important;'),
-        div_wrap.onclick = function(){document.body.removeChild(div_wrap)},
+        div_wrap.onclick = function(){document.body.removeChild(div_wrap);},
         div = document.createElement('div'),
-        div.id = 'types',
-        p = document.createElement('p'), p.setAttribute('style','margin:0;color:white;'),
-        p.innerHTML = 'New features: automatic download, matrix attributes',
+        div.id = 'types';
+        document.onkeyup = function(ev){ev=ev||window.event; if(ev.keyCode == 27){document.body.removeChild(div_wrap);}};
+        // -------------------
+        p = document.createElement('p'), p.setAttribute('style','margin:0;color:lightpink;'),
+        p.innerHTML = 'New features: <ul style="margin:0;"><li>automatic download,</li><li>matrix attributes,</li><li>notes export,</li><li>filter on either SKU (will navigate to item if unique sku)</li></ul>',
         div.appendChild(p),
         div.setAttribute('style','position:fixed;top: 50%!important;left: 50%!important;transform:translate(-50%,-50%)!important;background-color:#999999;display:block;'),
         // -------------------
         div_wrap.appendChild(div),
         document.body.appendChild(div_wrap);
-    //function to select export add new here
+    //function to select export | add new here
     function n(x){
         switch (x) {
             case 'ItemTags':
-                Params = {
-                    header: true,
-                    delimiter: ";",
-                };
                 a = document.createElement("button"),
                 a.innerHTML = 'ItemTags',
                 a.onclick = function(){
                     report = 'ItemTags';
                     APIendpoint = 'Item';
                     relation = 'TagRelations.Tag';
+                    query_();
                     data_();
                 },
                 div.appendChild(a);
                 break;
             case 'VendorIDs':
-                Params = {
-                    header: true,
-                    delimiter: ";",
-                };
                 a = document.createElement("button"),
                 a.innerHTML = 'VendorIDs',
                 a.onclick = function(){
                     report = 'VendorIDs';
                     APIendpoint = 'Item';
                     relation = 'ItemVendorNums';
+                    query_();
                     data_();
                 };
                 div.appendChild(a);
                 break;
             case 'ItemImages':
-                Params = {
-                    header: true,
-                    delimiter: ";",
-                };
                 a = document.createElement("button"),
                 a.innerHTML = 'ItemImages',
                 a.onclick = function(){
                     report = 'ItemImages';
                     APIendpoint = 'Item';
                     relation = 'Images';
+                    query_();
                     data_();
                 };
                 div.appendChild(a);
                 break;
             case 'Attributes':
-                Params = {
-
-                };
                 a = document.createElement("button"),
                 a.innerHTML = 'Attributes',
                 a.onclick = function(){
                     report = 'Attributes';
                     APIendpoint = 'Item';
                     relation = 'ItemAttributes.ItemAttributeSet';
+                    query_();
+                    data_();
+                };
+                div.appendChild(a);
+                break;
+            case 'Notes':
+                a = document.createElement("button"),
+                a.innerHTML = 'Notes',
+                a.onclick = function(){
+                    report = 'Notes';
+                    APIendpoint = 'Item';
+                    relation = 'Note';
+                    query_();
                     data_();
                 };
                 div.appendChild(a);
                 break;
             case 'OrderNumbers':
-                Params = {
-                    header: true,
-                    delimiter: ";",
-                };
                 a = document.createElement("button"),
                 a.innerHTML = 'OrderNumbers',
                 a.onclick = function(){
@@ -120,9 +132,9 @@
     n('ItemTags');
     n('VendorIDs');
     //n('ItemImages');
-    n('Attributes')
+    n('Attributes');
+    n('Notes');
     n('OrderNumbers');
-
     //main function + callbacks to xml & dl
     function data_(){
         var attr = "@attributes";
@@ -152,7 +164,7 @@
     }
     //xml request + callback to unparse
     function XML_(){
-        let url = `https://${domain}/API/Account/${rad_id}/${APIendpoint}.json?offset=${pagenr}&limit=100`;
+        let url = `https://${domain}/API/Account/${rad_id}/${APIendpoint}.json?offset=${pagenr}`;
         if (relation.length > 0) {
             url += `&load_relations=["${relation}"]`;
         }
@@ -177,6 +189,7 @@
     }
     //edit json data items add new here
     function data_Parse_Item(){
+        if (t.Item.length > 1){
         t.Item.forEach((item,index) => {
             switch (report) {
                 case 'ItemTags':
@@ -236,6 +249,14 @@
                     }
                     delete item.ItemAttributes;
                     break;
+                case 'Notes':
+                    if (item.Note) {
+                        let l = JSON.stringify(item.Note.note);
+                        item.Note = l.replace('\\n',' ').replace('"','');
+                    } else {
+                        item.Note = "";
+                    }
+                    break;
                 default:
                     break;
             }
@@ -262,10 +283,19 @@
             item.delete_columns_to_right = "";
         });
         unparse_();
+        } else if (t.Item.length == 1){
+            window.alert('SKU only has one item, opening in new page (check browser popup blocker)');
+            let url = `https://${domain}/?name=item.views.item&form_name=view&tab=details&id=`+t.Item.itemID;
+            console.log(t);
+            window.open(url,'_blank');
+        } else {window.alert('SKU not found');}
     }
     //parse data
     function unparse_(){
-        csv += Papa.unparse(t[APIendpoint],Params);
+        csv += Papa.unparse(t[APIendpoint],{
+            header: true,
+            delimiter: ";",
+        });
         console.log(report);
         console.log(t);
         console.log(csv.length+` characters in csv | page: ${pagenr}/${maxPage}`);
