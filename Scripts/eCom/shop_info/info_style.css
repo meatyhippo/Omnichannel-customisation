@@ -1,6 +1,6 @@
 #shop_id_wrapper{
     position: fixed!important;
-    z-index: 9999!important;
+    z-index: 99999999!important;
     background-color: rgba(0,0,0,0.6)!important;
     top: 0!important;
     bottom: 0!important;
@@ -48,6 +48,7 @@
     text-align: left!important;
     border-collapse: separate!important;
     border-spacing: 0px 0.3em!important;
+    margin: 0 0 0 0!important;
 }
 #shop_id_table a{
     color:deepskyblue;
@@ -62,6 +63,8 @@
 #shop_id_table tr td{
     width: 50%!important;
     vertical-align: top!important;
+    padding: 0 0 0 0!important;
+    border: 0px!important;
 }
 #shop_id_table p{
     margin: O!important;
