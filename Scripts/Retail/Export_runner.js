@@ -29,19 +29,25 @@
         div_wrap.setAttribute('style','position: fixed!important;z-index: 9999999!important;background-color: rgba(0,0,0,0.6)!important;top: 0!important;bottom: 0!important;left: 0!important;right: 0!important;height: 100vh!important;'),
         div_wrap.onclick = function(){document.body.removeChild(div_wrap);};
         div = document.createElement('div'),
+        div.onclick = function(evt){evt.stopPropagation();},
         div.id = 'types';
         document.onkeyup = function(ev){ev=ev||window.event; if(ev.keyCode == 27){document.body.removeChild(div_wrap);}};
-        // ------------------- actual info
-        p = document.createElement('p'), p.setAttribute('style','margin:0;color:lightpink;'),
-        p.innerHTML = 'New features: <ul style="margin:0;"><li>Vendor contact data,</li><li>matrix attributes,</li><li>notes export,</li><li>filter on either SKU (will navigate to item if unique sku)</li></ul>',
-        div.appendChild(p),
+        // ------------------- info
+        check = document.createElement('input'),
+        check.id = 'fasthands',
+        check.type = 'checkbox',
+        div.appendChild(check);
+        check.insertAdjacentHTML('afterend',
+        '<p style="margin:0;color:lightpink">-------------------</br>What\'s new: </p><ul style="margin:0;color:lightpink;"><li>Vendor contact data,</li><li>matrix attributes,</li><li>notes export,</li><li>filter on either SKU (will navigate to item if unique sku)</li></ul>'),
+        check.insertAdjacentHTML('afterend',
+        '<p style="margin:0;color:lightpink;">Check box for fast mode into browser console (does not have an automatic download)</p>'),
         div.setAttribute('style','position:fixed;top: 50%!important;left: 50%!important;transform:translate(-50%,-50%)!important;background-color:#999999;display:block;');
-        /* ------------------- 
+        // ------------------- progress bar
         bar = document.createElement('div'),
         bar.setAttribute('style','margin:0;height:20px;background-color:lightpink;color:white;'),
         bar.style.width = '1%',
         bar.id = 'progressbar';
-        div.appendChild(bar);*/
+        div.appendChild(bar);
         // ------------------- append all to body
         div_wrap.appendChild(div),
         document.body.appendChild(div_wrap);
@@ -108,6 +114,18 @@
                 };
                 div.appendChild(a);
                 break;
+            case 'Items on order':
+                a = document.createElement("button"),
+                a.innerHTML = 'Items on order',
+                a.onclick = function(){
+                    report = 'Items on order';
+                    APIendpoint = 'Item';
+                    relation = 'ItemShops';
+                    query_();
+                    data_();
+                };
+                div.appendChild(a);
+                break;
             case 'Vendors':
                 a = document.createElement("button"),
                 a.innerHTML = 'Vendor Contact',
@@ -150,6 +168,7 @@
     //n('ItemImages');
     n('Attributes');
     n('Notes');
+    n('Items on order');
     n('Vendors');
     n('OrderNumbers');
     //main loop + callbacks to xml & dl
@@ -191,7 +210,7 @@
         console.log(url);
         let uri = encodeURI(url);
         let e = new XMLHttpRequest();
-        e.open("GET", uri, false),
+        e.open("GET", uri, document.getElementById('fasthands').checked),
         e.onload = function(){
             if ( e.status >= 200 && e.status < 400 ){
                 t = JSON.parse(e.responseText);
@@ -273,6 +292,16 @@
                             item.Note = l.replace('\\n',' ').replace('"','');
                         }
                         break;
+                    case 'Items on order':
+                        item.ItemShops.ItemShop.forEach((shop)=>{
+                            if(shop.shopID == 0){
+                                item['total items on order'] = shop.backorder;
+                            } else {
+                                item['items on order in shop '+shop.shopID] = shop.backorder;
+                            }
+                        })
+                        delete item.ItemShops;
+                        break;
                     case 'Vendors':
                         item.primary_vendor_email = "";
                         item.secondary_vendor_email = "";
@@ -336,11 +365,13 @@
         console.log(t);
         console.log(csv.length+` characters in csv | page: ${pagenr}/${maxPage} | ` + ((pagenr/maxPage)*100) + '%');
         //progressbar_();
+        document.getElementById('progressbar').innerHTML = 'Progress: '+ ((pagenr/maxPage)*100) + '%';
+        document.getElementById('progressbar').style.width = ((pagenr/maxPage)*100) + '%';
         if(pagenr + 100 >= maxPage){
             console.log(csv);
-            setTimeout(
-                DL_, 2 * 1000
-            );
+            document.getElementById('fasthands').checked ? "" : setTimeout(DL_, 2 * 1000);
+            document.getElementById('progressbar').innerHTML = 'Progress: '+ 100 + '%';
+            document.getElementById('progressbar').style.width = 100 + '%';
         }
     }
     function progressbar_(){
