@@ -40,7 +40,7 @@
         check.insertAdjacentHTML('afterend',
         '<p style="margin:0;color:lightpink">-------------------</br>What\'s new: </p><ul style="margin:0;color:lightpink;"><li>Vendor contact data,</li><li>matrix attributes,</li><li>notes export,</li><li>filter on either SKU (will navigate to item if unique sku)</li></ul>'),
         check.insertAdjacentHTML('afterend',
-        '<p style="margin:0;color:lightpink;">Check box for fast mode into browser console (does not have an automatic download)</p>'),
+        '<p style="margin:0;color:lightpink;">Check box for fast mode (does not have an automatic download, copy data from the dev console)</p>'),
         div.setAttribute('style','position:fixed;top: 50%!important;left: 50%!important;transform:translate(-50%,-50%)!important;background-color:#999999;display:block;');
         // ------------------- progress bar
         bar = document.createElement('div'),
