@@ -60,7 +60,7 @@
                 a.onclick = function(){
                     report = 'ItemTags';
                     APIendpoint = 'Item';
-                    relation = 'TagRelations.Tag';
+                    relation = '"TagRelations.Tag"';
                     query_();
                     data_();
                 },
@@ -72,7 +72,7 @@
                 a.onclick = function(){
                     report = 'VendorIDs';
                     APIendpoint = 'Item';
-                    relation = 'ItemVendorNums';
+                    relation = '"ItemVendorNums"';
                     query_();
                     data_();
                 };
@@ -84,7 +84,7 @@
                 a.onclick = function(){
                     report = 'ItemImages';
                     APIendpoint = 'Item';
-                    relation = 'Images';
+                    relation = '"Images"';
                     query_();
                     data_();
                 };
@@ -96,7 +96,7 @@
                 a.onclick = function(){
                     report = 'Attributes';
                     APIendpoint = 'Item';
-                    relation = 'ItemAttributes.ItemAttributeSet';
+                    relation = '"ItemAttributes.ItemAttributeSet"';
                     query_();
                     data_();
                 };
@@ -108,7 +108,7 @@
                 a.onclick = function(){
                     report = 'Notes';
                     APIendpoint = 'Item';
-                    relation = 'Note';
+                    relation = '"Note"';
                     query_();
                     data_();
                 };
@@ -120,8 +120,32 @@
                 a.onclick = function(){
                     report = 'Items on order';
                     APIendpoint = 'Item';
-                    relation = 'ItemShops';
+                    relation = '"ItemShops"';
                     query_();
+                    data_();
+                };
+                div.appendChild(a);
+                break;
+            case 'UniekMode':
+                a = document.createElement("button"),
+                a.innerHTML = 'UniekMode',
+                a.id = 'UniekMode',
+                a.style.display = 'none',
+                a.onclick = function(){
+                    report = 'UniekMode';
+                    APIendpoint = 'Item';
+                    relation = '"TagRelations.Tag","ItemVendorNums"';
+                    data_();
+                },
+                div.appendChild(a);
+                break;
+            case 'Customers':
+                a = document.createElement("button"),
+                a.innerHTML = 'Customers Tags',
+                a.onclick = function(){
+                    report = 'Customers';
+                    APIendpoint = 'Customer';
+                    relation = '"Tags"';
                     data_();
                 };
                 div.appendChild(a);
@@ -132,7 +156,7 @@
                 a.onclick = function(){
                     report = 'Vendors';
                     APIendpoint = 'Vendor';
-                    relation = 'Contact';
+                    relation = '"Contact"';
                     data_();
                 };
                 div.appendChild(a);
@@ -169,6 +193,8 @@
     n('Attributes');
     n('Notes');
     n('Items on order');
+    n('Customers');
+    n('UniekMode');
     n('Vendors');
     n('OrderNumbers');
     //main loop + callbacks to xml & dl
@@ -176,7 +202,7 @@
         var attr = "@attributes";
         var url = `https://${domain}/API/Account/${rad_id}/${APIendpoint}.json?offset=0&limit=5`;
         if (relation.length > 0) {
-            url += `&load_relations=["${relation}"]`;
+            url += `&load_relations=[${relation}]`;
         }
         if (query.length > 0) {
             url += query;
@@ -202,7 +228,7 @@
     function XML_(){
         let url = `https://${domain}/API/Account/${rad_id}/${APIendpoint}.json?offset=${pagenr}`;
         if (relation.length > 0) {
-            url += `&load_relations=["${relation}"]`;
+            url += `&load_relations=[${relation}]`;
         }
         if (query.length > 0) {
             url += query;
@@ -226,126 +252,160 @@
     //edit json data items add new here
     function parse_Data_(){
         if (t[APIendpoint] && t[APIendpoint].length > 1){
-            t[APIendpoint].forEach((item,index) => {
+            t[APIendpoint].forEach((line,index) => {
                 switch (report) {
                     case 'ItemTags':
-                        if (item.Tags) {
-                            let l = JSON.stringify(item.Tags.tag);
-                            item.Tags = l.replace(/(\[)|(\])|(\")/gi,'');
+                        if (line.Tags) {
+                            let l = JSON.stringify(line.Tags.tag);
+                            line.Tags = l.replace(/(\[)|(\])|(\")/gi,'');
                         } else {
-                            item.Tags = "";
+                            line.Tags = "";
                         }
                         break;
                     case 'VendorIDs':
-                        if(item.ItemVendorNums && item.ItemVendorNums.ItemVendorNum.length > 0){
+                        if(line.ItemVendorNums && line.ItemVendorNums.ItemVendorNum.length > 0){
                             let l = "";
-                            item.ItemVendorNums.ItemVendorNum.forEach((vendornum) => {
+                            line.ItemVendorNums.ItemVendorNum.forEach((vendornum) => {
                                 l += vendornum.value;
                                 l += ','; l.slice(0,l.length - 1);
                             });
-                            item.ItemVendorNums = l.slice(0,l.length - 1);
-                        } else if (item.ItemVendorNums){
-                            item.ItemVendorNums = item.ItemVendorNums.ItemVendorNum.value
+                            line.ItemVendorNums = l.slice(0,l.length - 1);
+                        } else if (line.ItemVendorNums){
+                            line.ItemVendorNums = line.ItemVendorNums.ItemVendorNum.value
                         } else {
-                            item.ItemVendorNums = "";
+                            line.ItemVendorNums = "";
                         }
                         break;
                     case 'ItemImages':
-                        delete item.Prices;
-                        if (item.Images && item.Images.Image.length > 0) {
-                            item.Images.Image.forEach((img,i) => {
+                        delete line.Prices;
+                        if (line.Images && line.Images.Image.length > 0) {
+                            line.Images.Image.forEach((img,i) => {
                                 let newImage = 'Image'+i;
-                                item[newImage] = img.baseImageURL+img.publicID+'.png';
+                                line[newImage] = img.baseImageURL+img.publicID+'.png';
                             });
-                            item.Images = "";
-                        } else if (item.Images) {
-                            item.Image0 = item.Images.Image.baseImageURL + item.Images.Image.baseImageURL.publicID + '.png';
+                            line.Images = "";
+                        } else if (line.Images) {
+                            line.Image0 = line.Images.Image.baseImageURL + line.Images.Image.baseImageURL.publicID + '.png';
                         } else {
-                            item.Image0 = "";
+                            line.Image0 = "";
                         }
                         break;
                     case 'Attributes':
-                        delete item.Prices;
-                        item.Attribute1 = "";
-                        item.Attribute2 = "";
-                        item.Attribute3 = "";
-                        item.ItemAttributeSet = "";
-                        if (item.ItemAttributes) {
-                            item.description =  item.description.replace(item.ItemAttributes.attribute1,"").replace(item.ItemAttributes.attribute2,"").replace(item.ItemAttributes.attribute3,"").trim();
-                            item.ItemAttributeSet = item.ItemAttributes.ItemAttributeSet.name;
-                            if (item.ItemAttributes.attribute1 == "") {
-                                item.Attribute1 = item.ItemAttributes.attribute2;
-                                item.Attribute2 = "";
-                                item.Attribute3 = "";
+                        delete line.Prices;
+                        line.Attribute1 = "";
+                        line.Attribute2 = "";
+                        line.Attribute3 = "";
+                        line.ItemAttributeSet = "";
+                        if (line.ItemAttributes) {
+                            line.description =  line.description.replace(line.ItemAttributes.attribute1,"").replace(line.ItemAttributes.attribute2,"").replace(line.ItemAttributes.attribute3,"").trim();
+                            line.ItemAttributeSet = line.ItemAttributes.ItemAttributeSet.name;
+                            if (line.ItemAttributes.attribute1 == "") {
+                                line.Attribute1 = line.ItemAttributes.attribute2;
+                                line.Attribute2 = "";
+                                line.Attribute3 = "";
                             } else {
-                                item.Attribute1 = item.ItemAttributes.attribute1;
-                                item.Attribute2 = item.ItemAttributes.attribute2 == "" ? "" : item.ItemAttributes.attribute2;
-                                item.Attribute3 = item.ItemAttributes.attribute3 == "" ? "" : item.ItemAttributes.attribute3;
+                                line.Attribute1 = line.ItemAttributes.attribute1;
+                                line.Attribute2 = line.ItemAttributes.attribute2 == "" ? "" : line.ItemAttributes.attribute2;
+                                line.Attribute3 = line.ItemAttributes.attribute3 == "" ? "" : line.ItemAttributes.attribute3;
                             };
                         }
-                        delete item.ItemAttributes;
+                        delete line.ItemAttributes;
                         break;
                     case 'Notes':
-                        item.Note = "";
-                        if (item.Note) {
-                            let l = JSON.stringify(item.Note.note);
-                            item.Note = l.replace('\\n',' ').replace('"','');
+                        line.Note = "";
+                        if (line.Note) {
+                            let l = JSON.stringify(line.Note.note);
+                            line.Note = l.replace('\\n',' ').replace('"','');
                         }
                         break;
                     case 'Items on order':
-                        item.ItemShops.ItemShop.forEach((shop)=>{
+                        line.ItemShops.ItemShop.forEach((shop)=>{
                             if(shop.shopID == 0){
-                                item['total items on order'] = shop.backorder;
+                                line['total items on order'] = shop.backorder;
                             } else {
-                                item['items on order in shop '+shop.shopID] = shop.backorder;
+                                line['items on order in shop '+shop.shopID] = shop.backorder;
                             }
                         })
-                        delete item.ItemShops;
+                        delete line.ItemShops;
+                        break;
+                    case 'Customers':
+                        line.customertags = "";
+                        if(line.Tags && line.Tags.Tag.length > 0){
+                            let l = "";
+                            line.Tags.Tag.forEach((ctag) => {
+                                l += ctag.name;
+                                l += ','; l.slice(0,l.length - 1);
+                            });
+                            line.customertags = l.slice(0,l.length - 1);
+                        } else if (line.Tags){
+                            line.customertags = line.Tags.Tag.name;
+                        }
+                        delete line.Tags;
+                        break;
+                    case 'UniekMode':
+                        line.itemTags = "";
+                        if (line.Tags) {
+                            let l = JSON.stringify(line.Tags.tag);
+                            line.itemTags = l.replace(/(\[)|(\])|(\")/gi,'');
+                        }
+                        delete line.Tags;
+                        line.VendorNums = "";
+                        if(line.ItemVendorNums && line.ItemVendorNums.ItemVendorNum.length > 0){
+                            let l = "";
+                            line.ItemVendorNums.ItemVendorNum.forEach((vendornum) => {
+                                l += vendornum.value;
+                                l += ','; l.slice(0,l.length - 1);
+                            });
+                            line.VendorNums = l.slice(0,l.length - 1);
+                        } else if (line.ItemVendorNums){
+                            line.VendorNums = line.ItemVendorNums.ItemVendorNum.value;
+                        }
+                        delete line.ItemVendorNums;
                         break;
                     case 'Vendors':
-                        item.primary_vendor_email = "";
-                        item.secondary_vendor_email = "";
-                        item.contactfirstname = "";
-                        item.contactlastname = "";
-                        if (item.Contact){
-                            if (item.Contact.Emails.ContactEmail && item.Contact.Emails.ContactEmail.length > 1){
-                                item.primary_vendor_email = item.Contact.Emails.ContactEmail[0].address;
-                                item.secondary_vendor_email = item.Contact.Emails.ContactEmail[1].address;
-                            } else if (item.Contact.Emails.ContactEmail){
-                                item.primary_vendor_email = item.Contact.Emails.ContactEmail.address;
+                        line.primary_vendor_email = "";
+                        line.secondary_vendor_email = "";
+                        line.contactfirstname = "";
+                        line.contactlastname = "";
+                        if (line.Contact){
+                            if (line.Contact.Emails.ContactEmail && line.Contact.Emails.ContactEmail.length > 1){
+                                line.primary_vendor_email = line.Contact.Emails.ContactEmail[0].address;
+                                line.secondary_vendor_email = line.Contact.Emails.ContactEmail[1].address;
+                            } else if (line.Contact.Emails.ContactEmail){
+                                line.primary_vendor_email = line.Contact.Emails.ContactEmail.address;
                             }
-                            delete item.Contact;
+                            delete line.Contact;
                         }
-                        if (item.Reps){
-                            item.contactfirstname = item.Reps.VendorRep.firstName;
-                            item.contactlastname = item.Reps.VendorRep.lastName;
-                            delete item.Reps
+                        if (line.Reps){
+                            line.contactfirstname = line.Reps.VendorRep.firstName;
+                            line.contactlastname = line.Reps.VendorRep.lastName;
+                            delete line.Reps
                         }
                         break;
                     default:
                         break;
                 }
-                if (item.discountable){delete item.discountable;}
-                if (item.tax){delete item.tax;}
-                if (item.archived){delete item.archived;}
-                if (item.itemType){delete item.itemType;}
-                if (item.serialized){delete item.serialized;}
-                if (item.modelYear){delete item.modelYear;}
-                if (item.timeStamp){delete item.timeStamp;}
-                if (item.categoryID){delete item.categoryID;}
-                if (item.taxClassID){delete item.taxClassID;}
-                if (item.departmentID){delete item.departmentID;}
-                if (item.itemMatrixID){delete item.itemMatrixID;}
-                if (item.manufacturerID){delete item.manufacturerID;}
-                if (item.seasonID){delete item.seasonID;}
-                if (item.defaultVendorID){delete item.defaultVendorID;}
-                if (item.Prices) {
-                    item.Prices.ItemPrice.forEach( (price) => {
-                        item[price.useType] = price.amount;
+                if (line.discountable){delete line.discountable;}
+                if (line.tax){delete line.tax;}
+                if (line.archived){delete line.archived;}
+                if (line.itemType){delete line.itemType;}
+                if (line.serialized){delete line.serialized;}
+                if (line.modelYear){delete line.modelYear;}
+                if (line.timeStamp){delete line.timeStamp;}
+                if (line.categoryID){delete line.categoryID;}
+                if (line.taxClassID){delete line.taxClassID;}
+                if (line.departmentID){delete line.departmentID;}
+                if (line.itemMatrixID){delete line.itemMatrixID;}
+                if (line.manufacturerID){delete line.manufacturerID;}
+                if (line.seasonID){delete line.seasonID;}
+                if (line.defaultVendorID){delete line.defaultVendorID;}
+                if (line.Prices) {
+                    line.Prices.ItemPrice.forEach( (price) => {
+                        line[price.useType] = price.amount;
                     });
-                    delete item.Prices;
+                    delete line.Prices;
                 }
-                item.delete_columns_to_right = "";
+                line.delete_columns_to_right = "";
             });
             unparse_();
         } else if (t.Item && t.Item.length == 1){
@@ -364,9 +424,6 @@
         console.log(report);
         console.log(t);
         console.log(csv.length+` characters in csv | page: ${pagenr}/${maxPage} | ` + ((pagenr/maxPage)*100) + '%');
-        //progressbar_();
-        document.getElementById('progressbar').innerHTML = 'Progress: '+ ((pagenr/maxPage)*100) + '%';
-        document.getElementById('progressbar').style.width = ((pagenr/maxPage)*100) + '%';
         if(pagenr + 100 >= maxPage){
             console.log(csv);
             document.getElementById('fasthands').checked ? "" : setTimeout(DL_, 2 * 1000);
@@ -377,7 +434,11 @@
     function progressbar_(){
         document.getElementById('progressbar').innerHTML = 'Progress: '+ ((pagenr/maxPage)*100) + '%';
         document.getElementById('progressbar').style.width = ((pagenr/maxPage)*100) + '%';
+        if(pagenr + 100 <= maxPage){
+            window.requestAnimationFrame(progressbar_);
+        }
     }
+    window.requestAnimationFrame(progressbar_);
     //download button
     function DL_(){
         var today = new Date();
