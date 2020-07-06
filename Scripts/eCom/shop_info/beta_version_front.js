@@ -1,6 +1,7 @@
-//beta_backoffice
+//beta_frontoffice
 !function(){
-	function shop_json(clust) {
+	var dom;
+	function shop_json(clust,DNS_) {
 	var e = new XMLHttpRequest;
 	e.open("GET",location.origin+location.pathname+"?format=json",true),
 	e.onload = function(){
@@ -47,7 +48,7 @@
 						col.appendChild(a);
 						break;
 						
-					case"domain":
+					case "domain":
 						col = document.createElement("td"),
 						col.appendChild(document.createTextNode(`${o}: `)),
 						a = document.createElement("a"),
@@ -95,7 +96,38 @@
 						}
 						col.appendChild(a);
 						break;
-
+						case "DNS":
+							col = document.createElement("td"),
+							a = document.createElement("a"),
+							a.appendChild(document.createTextNode(`${o} `)),
+							a.href="#",
+							a.id="hide_show",
+							a.onclick = function(){
+								$('#ips').toggleClass('hide');
+								$('#hide_show').innerHTML="hide";
+							},
+							col.appendChild(a),
+							div = document.createElement("div"),
+							div.id = "ips";
+							div.classList.add("hide")
+							dom.forEach((element,index) => {
+									switch (dom[index].type) {
+										case 1:
+											p = document.createElement("p");
+											p.appendChild(document.createTextNode(`a: ${dom[index].data}`));
+											div.appendChild(p);
+											break;
+										case 5:
+											p = document.createElement("p");
+											p.appendChild(document.createTextNode(`CNAME: ${dom[index].data}`));
+											div.appendChild(p);
+										default:
+											break;
+									}
+								
+							});
+							col.appendChild(div);
+							break;
 					default:
 						col = document.createElement("td"),
 						a = document.createElement("a"),
@@ -127,7 +159,7 @@
 
 				close = document.createElement("div"),
 				close.id = "shop_id_close",
-				close.onclick=function(){
+				close.onclick = function(){
 					document.body.removeChild(div_wrap)
 				},
 				table = document.createElement("table"),
@@ -144,6 +176,7 @@
 				o("Theme page",t.template,t.shop.settings.template_editor?`themes/${t.shop.theme_id}/templates?key=${t.template}`:""),
 				o("BO page",Object.keys(t)[0],"Page"),
 				o("SSL mode",t.shop.ssl_mode,"domain"),
+				o("DNS data","show","DNS"),
 				o("Shop status",t.shop.status),
 				o("B2B",t.shop.b2b),
 				o("Languages",`${Object.keys(t.shop.languages).length}: ${Object.keys(t.shop.languages).join(", ")}`,"settings/internationalization"),
@@ -169,13 +202,26 @@
 		},
 		e.send();
 	}
+	// DNS function
+	!function(){
+		var domain = new XMLHttpRequest();
+		domain.open("GET","https://dns.google.com/resolve?name="+location.hostname+"&type=A&format=json",true),
+		domain.onload = function(){
+			if (domain.status >= 200 && domain.status < 400){
+				dom = JSON.parse(domain.responseText);
+				dom = dom.Answer;
+			}
+		}
+		domain.send();
+	}();
+	// cluster function
 	!function(){
 		let clust;
 			var cluster = new XMLHttpRequest();
 			cluster.open("GET", location.origin + "/whois.json", true),
 			cluster.onload = function(){
-				if ( cluster.status >= 200 && cluster.status < 400 ){
-					var reseller = JSON.parse( cluster.responseText );
+				if (cluster.status >= 200 && cluster.status < 400){
+					var reseller = JSON.parse(cluster.responseText);
 					console.log(reseller);
 					if ( reseller.clusterId === "eu1"){
 						switch (reseller.resellerId) {
