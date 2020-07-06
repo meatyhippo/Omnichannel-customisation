@@ -100,7 +100,6 @@
 							col = document.createElement("td"),
 							a = document.createElement("a"),
 							a.appendChild(document.createTextNode(`${o} `)),
-							a.href="#",
 							a.id="hide_show",
 							a.onclick = function(){
 								$('#ips').toggleClass('hide');
