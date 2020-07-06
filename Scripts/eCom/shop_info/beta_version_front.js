@@ -117,7 +117,7 @@
 							p.innerHTML = `a: <a target="_blank" href="https://dns.google.com/resolve?name=${location.hostname.replace(/(\w+)\./,"$`")}&type=A">${record.data}</a>${ip}`;
 							div.appendChild(p);
 						});
-						div.insertAdjacentHTML('beforeend',"<p style='font-weight:700;'>Don't take this at face value, learn more about DNS on <a href='https://confluence.atlightspeed.net/pages/viewpage.action?spaceKey=~youcke.laven&title=Domain+Troubleshooting' target='_blank'>confluence</p>!</b>");
+						div.insertAdjacentHTML('beforeend',"<p style='font-weight:700;'>Don't take this at face value, learn more about DNS on <a href='https://confluence.atlightspeed.net/pages/viewpage.action?spaceKey=~youcke.laven&title=Domain+Troubleshooting' target='_blank'>confluence</a>!</p>");
 						col.appendChild(div);
 						break;
 					case "JSON":
