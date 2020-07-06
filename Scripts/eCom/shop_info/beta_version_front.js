@@ -155,7 +155,7 @@
 				},
 				v_box = document.createElement("div"),
 				v_box.id = "shop_id_version",
-				v_box.innerText="v5.0",
+				v_box.innerHTML="<p>v5.0</br>what's new: DNS info</p>",
 
 				close = document.createElement("div"),
 				close.id = "shop_id_close",
