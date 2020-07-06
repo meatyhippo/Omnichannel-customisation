@@ -108,16 +108,16 @@
 						div.classList.add("hide");
 						dom.cname.forEach((record,index) => {
 							p = document.createElement("p");
-							p.appendChild(document.createTextNode(`CNAME: ${record.data}`));
+							p.innerHTML = `CNAME: <a target="_blank" href="https://dns.google.com/resolve?name=${location.hostname}&type=CNAME">${record.data}</a>`;
 							div.appendChild(p);
 						});
 						dom.a.forEach((record,index) => {
+							let ip = record.data.match(/(\d+)/)[0] == 104 ? `` : ` (Not a LS ip)`;
 							p = document.createElement("p");
-							record.data.match(/(\d+)/)[0] == 104 ? p.appendChild(document.createTextNode(`a: ${record.data}`)) : p.appendChild(document.createTextNode(`a: ${record.data} (Not a LS ip)`));
-							//p.appendChild(document.createTextNode(record.data.match(/(\d+)/)[0] == 104 ? `a: ${record.data} (Not a LS ip)` : `a: ${record.data}`));
+							p.innerHTML = `a: <a target="_blank" href="https://dns.google.com/resolve?name=${location.hostname.replace(/(\w+)\./,"$`")}&type=A">${record.data}</a>${ip}`;
 							div.appendChild(p);
 						});
-						div.insertAdjacentHTML('beforeend',"<b style='font-weight:700;'>Don't take this at face value, learn more about DNS on <a href='https://confluence.atlightspeed.net/pages/viewpage.action?spaceKey=~youcke.laven&title=Domain+Troubleshooting' target='_blank'>confluence</a>!</b>")
+						div.insertAdjacentHTML('beforeend',"<p style='font-weight:700;'>Don't take this at face value, learn more about DNS on <a href='https://confluence.atlightspeed.net/pages/viewpage.action?spaceKey=~youcke.laven&title=Domain+Troubleshooting' target='_blank'>confluence</p>!</b>");
 						col.appendChild(div);
 						break;
 					case "JSON":
@@ -211,9 +211,8 @@
 	}
 	// DNS function
 	!function(){
-		let url = location.hostname;
 		let domain_CNAME = new XMLHttpRequest();
-		domain_CNAME.open("GET","https://dns.google.com/resolve?name="+url+"&type=CNAME&format=json",true),
+		domain_CNAME.open("GET","https://dns.google.com/resolve?name="+location.hostname+"&type=CNAME&format=json",true),
 		domain_CNAME.onload = function(){
 			if (domain_CNAME.status >= 200 && domain_CNAME.status < 400){
 				gdom = JSON.parse(domain_CNAME.responseText);
@@ -222,7 +221,7 @@
 		}
 		domain_CNAME.send();
 		let domain_A = new XMLHttpRequest();
-		domain_A.open("GET","https://dns.google.com/resolve?name="+url.replace(/(\w+)\./,"$`")+"&type=A&format=json",true),
+		domain_A.open("GET","https://dns.google.com/resolve?name="+location.hostname.replace(/(\w+)\./,"$`")+"&type=A&format=json",true),
 		domain_A.onload = function(){
 			if (domain_A.status >= 200 && domain_A.status < 400){
 				gdom = JSON.parse(domain_A.responseText);
