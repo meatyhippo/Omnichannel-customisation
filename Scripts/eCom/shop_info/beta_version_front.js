@@ -25,7 +25,6 @@
 						a.href="https://seoshop.webshopapp.com/backoffice/core/setshop.do?id="+o,
 						col.appendChild(a);
 						break;
-					
 					case "themes":
 						col = document.createElement("td"),
 						col.appendChild(document.createTextNode(`${o}: `)),
@@ -47,7 +46,6 @@
 						a.href=`${location.origin}/admin/themes/${t.shop.theme_id}/editor/css`,
 						col.appendChild(a);
 						break;
-						
 					case "domain":
 						col = document.createElement("td"),
 						col.appendChild(document.createTextNode(`${o}: `)),
@@ -63,7 +61,6 @@
 						a.href=`${location.origin}/admin/ssl_certificates`,
 						col.appendChild(a);
 						break;
-					
 					case "Page":
 						col = document.createElement("td"),
 						col.appendChild(document.createTextNode(`${o}: `)),
@@ -96,37 +93,52 @@
 						}
 						col.appendChild(a);
 						break;
-						case "DNS":
-							col = document.createElement("td"),
-							a = document.createElement("a"),
-							a.appendChild(document.createTextNode(`${o} `)),
-							a.id="hide_show",
-							a.onclick = function(){
-								$('#ips').toggleClass('hide');
-								$('#hide_show').innerHTML="hide";
-							},
-							col.appendChild(a),
-							div = document.createElement("div"),
-							div.id = "ips";
-							div.classList.add("hide")
-							dom.forEach((element,index) => {
-									switch (dom[index].type) {
-										case 1:
-											p = document.createElement("p");
-											p.appendChild(document.createTextNode(`a: ${dom[index].data}`));
-											div.appendChild(p);
-											break;
-										case 5:
-											p = document.createElement("p");
-											p.appendChild(document.createTextNode(`CNAME: ${dom[index].data}`));
-											div.appendChild(p);
-										default:
-											break;
-									}
-								
-							});
-							col.appendChild(div);
-							break;
+					case "DNS":
+						col = document.createElement("td"),
+						a = document.createElement("a"),
+						a.appendChild(document.createTextNode(`${o} `)),
+						a.id="hide_show",
+						a.onclick = function(){
+							$('#ips').toggleClass('hide');
+							$('#hide_show').innerHTML="hide";
+						},
+						col.appendChild(a),
+						div = document.createElement("div"),
+						div.id = "ips";
+						div.classList.add("hide")
+						dom.forEach((element,index) => {
+								switch (dom[index].type) {
+									case 1:
+										p = document.createElement("p");
+										p.appendChild(document.createTextNode(`a: ${dom[index].data}`));
+										div.appendChild(p);
+										break;
+									case 5:
+										p = document.createElement("p");
+										p.appendChild(document.createTextNode(`CNAME: ${dom[index].data}`));
+										div.appendChild(p);
+									default:
+										break;
+								}
+							
+						});
+						col.appendChild(div);
+						break;
+					case "JSON":
+						col = document.createElement("td"),
+						col.appendChild(document.createTextNode(o)),
+						a = document.createElement("a"),
+						a.appendChild(document.createTextNode('JSON page')),
+						a.target="_blank",
+						a.href = location.origin+location.pathname+"?format=json"+location.search.replace(/^\?{1}/g,"&"),
+						col.appendChild(a),
+						col.appendChild(document.createTextNode(", ")),
+						a = document.createElement("a"),
+						a.appendChild(document.createTextNode('dev toolbar')),
+						a.target = "_self",
+						a.href = location.origin+"/developer/toolbar/?status=show",
+						col.appendChild(a);
+						break;	
 					default:
 						col = document.createElement("td"),
 						a = document.createElement("a"),
@@ -154,7 +166,7 @@
 				},
 				v_box = document.createElement("div"),
 				v_box.id = "shop_id_version",
-				v_box.innerHTML="<p>v6.2</br>what's new: DNS info</p>",
+				v_box.innerHTML="<p>v6.1</br>what's new: DNS info, dev tb link</p>",
 
 				close = document.createElement("div"),
 				close.id = "shop_id_close",
@@ -181,7 +193,7 @@
 				o("Languages",`${Object.keys(t.shop.languages).length}: ${Object.keys(t.shop.languages).join(", ")}`,"settings/internationalization"),
 				o("Currencies",`${Object.keys(t.shop.currencies).length}: ${Object.keys(t.shop.currencies).join(", ")}`,"settings/internationalization"),
 				o("Api/app (js)scripts",Object.keys(t.shop.scripts).length||"None",Object.keys(t.shop.scripts).length&&"store/purchases/apps"),
-				o("JSON","Open page JSON",location.origin+location.pathname+"?format=json"+location.search.replace(/^\?{1}/g,"&"),!0);
+				o("JSON","Open: ","JSON");
 				if (t.gtag) {
 					o("Google Analytics",t.gtag.gtag_id);
 				};
