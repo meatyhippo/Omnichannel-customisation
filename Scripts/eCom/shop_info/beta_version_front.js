@@ -1,4 +1,4 @@
-//beta_frontoffice
+//frontoffice
 !function(){
 	var dom;
 	function shop_json(clust,DNS_) {
