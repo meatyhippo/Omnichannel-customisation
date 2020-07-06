@@ -1,6 +1,6 @@
-//frontoffice
+//beta_frontoffice
 !function(){
-	var dom;
+	let dom = [];
 	function shop_json(clust,DNS_) {
 	var e = new XMLHttpRequest;
 	e.open("GET",location.origin+location.pathname+"?format=json",true),
@@ -104,24 +104,20 @@
 						},
 						col.appendChild(a),
 						div = document.createElement("div"),
-						div.id = "ips";
-						div.classList.add("hide")
-						dom.forEach((element,index) => {
-								switch (dom[index].type) {
-									case 1:
-										p = document.createElement("p");
-										p.appendChild(document.createTextNode(`a: ${dom[index].data}`));
-										div.appendChild(p);
-										break;
-									case 5:
-										p = document.createElement("p");
-										p.appendChild(document.createTextNode(`CNAME: ${dom[index].data}`));
-										div.appendChild(p);
-									default:
-										break;
-								}
-							
+						div.id = "ips",
+						div.classList.add("hide");
+						dom.cname.forEach((record,index) => {
+							p = document.createElement("p");
+							p.appendChild(document.createTextNode(`CNAME: ${record.data}`));
+							div.appendChild(p);
 						});
+						dom.a.forEach((record,index) => {
+							p = document.createElement("p");
+							record.data.match(/(\d+)/)[0] == 104 ? p.appendChild(document.createTextNode(`a: ${record.data}`)) : p.appendChild(document.createTextNode(`a: ${record.data} (Not a LS ip)`));
+							//p.appendChild(document.createTextNode(record.data.match(/(\d+)/)[0] == 104 ? `a: ${record.data} (Not a LS ip)` : `a: ${record.data}`));
+							div.appendChild(p);
+						});
+						div.insertAdjacentHTML('beforeend',"<b style='font-weight:700;'>Don't take this at face value, learn more about DNS on <a href='https://confluence.atlightspeed.net/pages/viewpage.action?spaceKey=~youcke.laven&title=Domain+Troubleshooting' target='_blank'>confluence</a>!</b>")
 						col.appendChild(div);
 						break;
 					case "JSON":
@@ -215,15 +211,26 @@
 	}
 	// DNS function
 	!function(){
-		var domain = new XMLHttpRequest();
-		domain.open("GET","https://dns.google.com/resolve?name="+location.hostname+"&type=A&format=json",true),
-		domain.onload = function(){
-			if (domain.status >= 200 && domain.status < 400){
-				dom = JSON.parse(domain.responseText);
-				dom = dom.Answer;
+		let url = location.hostname;
+		let domain_CNAME = new XMLHttpRequest();
+		domain_CNAME.open("GET","https://dns.google.com/resolve?name="+url+"&type=CNAME&format=json",true),
+		domain_CNAME.onload = function(){
+			if (domain_CNAME.status >= 200 && domain_CNAME.status < 400){
+				gdom = JSON.parse(domain_CNAME.responseText);
+				dom.cname = (gdom.Answer);
 			}
 		}
-		domain.send();
+		domain_CNAME.send();
+		let domain_A = new XMLHttpRequest();
+		domain_A.open("GET","https://dns.google.com/resolve?name="+url.replace(/(\w+)\./,"$`")+"&type=A&format=json",true),
+		domain_A.onload = function(){
+			if (domain_A.status >= 200 && domain_A.status < 400){
+				gdom = JSON.parse(domain_A.responseText);
+				dom.a = (gdom.Answer);
+				console.log(dom);
+			}
+		}
+		domain_A.send();
 	}();
 	// cluster function
 	!function(){
