@@ -149,7 +149,7 @@
 					tbody.appendChild(row)
 				};
 				console.log(t),
-				console.log(Object.keys(t)[0]);
+				console.log('^Shop json info\n-------------------');
 				div_wrap=document.createElement("div"),
 				div_wrap.id = "shop_id_wrapper",
 				div_wrap.onclick = function(){
@@ -182,8 +182,10 @@
 				o("Theme editor",t.shop.settings.template_editor,"themes"),
 				o("Theme page",t.template,t.shop.settings.template_editor?`themes/${t.shop.theme_id}/templates?key=${t.template}`:""),
 				o("BO page",Object.keys(t)[0],"Page"),
-				o("SSL mode",t.shop.ssl_mode,"domain"),
-				o("DNS data","show","DNS"),
+				o("SSL mode",t.shop.ssl_mode,"domain");
+				if (!t.shop.domain.includes('webshopapp'||'shoplightspeed')){
+					o("DNS data","show","DNS");
+				};
 				o("Shop status",t.shop.status),
 				o("B2B",t.shop.b2b),
 				o("Languages",`${Object.keys(t.shop.languages).length}: ${Object.keys(t.shop.languages).join(", ")}`,"settings/internationalization"),
@@ -227,6 +229,7 @@
 				gdom = JSON.parse(domain_A.responseText);
 				dom.a = (gdom.Answer);
 				console.log(dom);
+				console.log('^DNS info\n-------------------');
 			}
 		}
 		domain_A.send();
@@ -240,6 +243,7 @@
 				if (cluster.status >= 200 && cluster.status < 400){
 					var reseller = JSON.parse(cluster.responseText);
 					console.log(reseller);
+					console.log('^Cluster info\n-------------------');
 					if ( reseller.clusterId === "eu1"){
 						switch (reseller.resellerId) {
 							case 1:
