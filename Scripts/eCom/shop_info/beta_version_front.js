@@ -106,17 +106,21 @@
 						div = document.createElement("div"),
 						div.id = "ips",
 						div.classList.add("hide");
-						dom.cname.forEach((record,index) => {
-							p = document.createElement("p");
-							p.innerHTML = `CNAME: <a target="_blank" href="https://dns.google.com/resolve?name=${location.hostname}&type=CNAME">${record.data}</a>`;
-							div.appendChild(p);
-						});
-						dom.a.forEach((record,index) => {
-							let ip = record.data.match(/(\d+)/)[0] == 104 ? `` : ` (Not a LS ip)`;
-							p = document.createElement("p");
-							p.innerHTML = `a: <a target="_blank" href="https://dns.google.com/resolve?name=${location.hostname.replace(/(\w+)\./,"$`")}&type=A">${record.data}</a>${ip}`;
-							div.appendChild(p);
-						});
+						if (dom.cname && dom.cname.length > 0){
+							dom.cname.forEach((record,index) => {
+								p = document.createElement("p");
+								p.innerHTML = `CNAME: <a target="_blank" href="https://dns.google.com/resolve?name=${location.hostname}&type=CNAME">${record.data}</a>`;
+								div.appendChild(p);
+							});
+						};
+						if (dom.a && dom.a.length > 0){
+							dom.a.forEach((record,index) => {
+								let ip = record.data.match(/(\d+)/)[0] == 104 ? `` : ` (Not a LS ip)`;
+								p = document.createElement("p");
+								p.innerHTML = `a: <a target="_blank" href="https://dns.google.com/resolve?name=${location.hostname.replace(/(\w+)\./,"$`")}&type=A">${record.data}</a>${ip}`;
+								div.appendChild(p);
+							});	
+						};
 						div.insertAdjacentHTML('beforeend',"<p style='font-weight:700;'>Don't take this at face value, learn more about DNS on <a href='https://confluence.atlightspeed.net/pages/viewpage.action?spaceKey=~youcke.laven&title=Domain+Troubleshooting' target='_blank'>confluence</a>!</p>");
 						col.appendChild(div);
 						break;
@@ -218,20 +222,20 @@
 		domain_CNAME.onload = function(){
 			if (domain_CNAME.status >= 200 && domain_CNAME.status < 400){
 				gdom = JSON.parse(domain_CNAME.responseText);
-				dom.cname = (gdom.Answer);
+				dom.cname = gdom.Answer;
 			}
-		}
+		},
 		domain_CNAME.send();
 		let domain_A = new XMLHttpRequest();
 		domain_A.open("GET","https://dns.google.com/resolve?name="+location.hostname.replace(/(\w+)\./,"$`")+"&type=A&format=json",true),
 		domain_A.onload = function(){
 			if (domain_A.status >= 200 && domain_A.status < 400){
 				gdom = JSON.parse(domain_A.responseText);
-				dom.a = (gdom.Answer);
+				dom.a = gdom.Answer;
 				console.log(dom);
 				console.log('^DNS info\n-------------------');
 			}
-		}
+		},
 		domain_A.send();
 	}();
 	// cluster function
