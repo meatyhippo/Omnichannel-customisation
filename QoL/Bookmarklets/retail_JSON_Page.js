@@ -1,4 +1,4 @@
-!function(){
+javascript:!function(){
     let domain = window.location.host;
     let RAD = document.querySelector('#help_account_id > var').innerHTML;
     let settings = {
