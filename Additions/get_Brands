@@ -1,15 +1,16 @@
 <!-- Add to html near the line_description div -->
 <span class="BrandID" style="display:none;">{{ Label.Item.manufacturerID }}{{ Line.Item.manufacturerID }}</span><span class="BrandName" style="margin:0; /*display:inline;*/"></span>
 
+-------------------
+
 change: 
 {% extends parameters.print ? "printbase" : "base" %}
 to:
 {% extends "base" %}
 
+-------------------
 
-Add to html right under 
-{% endblock extrastyles %}
-{% block content %}
+All the way at the bottom of the template:
 
 <head>
 <script>
