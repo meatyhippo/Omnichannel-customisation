@@ -215,8 +215,11 @@ Set any of the options in this section from 'false' to 'true' in order to enable
         display: inline-block;
     }
     body {
-    margin: 0.5cm 0.5cm;
     }
+}
+@page {
+    size: A4 portrait;
+    margin: 0.5cm 0.1cm;
 }
 {% endif %}
 </style>
