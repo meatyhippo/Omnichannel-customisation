@@ -169,6 +169,7 @@ let x = new XMLHttpRequest();
 				console.log(t),
 				div_wrap=document.createElement("div"),
 				div_wrap.id = "shop_id_wrapper",
+				div_wrap.setAttribute('style','display: none;'),
 				div_wrap.onclick = function(){
 					document.body.removeChild(div_wrap)
 				},
