@@ -114,7 +114,7 @@
 							});
 						};
 						if (dom.a && dom.a.length > 0){
-							dom.a.forEach((record,index) => {
+							dom.a.forEach((record) => {
 								let ip = record.data.match(/(\d+)/)[0] == 104 ? `` : ` (Not a LS ip)`;
 								p = document.createElement("p");
 								p.innerHTML = `a: <a target="_blank" href="https://dns.google.com/resolve?name=${location.hostname.replace(/(\w+)\./,"$`")}&type=A">${record.data}</a>${ip}`;
@@ -166,7 +166,7 @@
 				},
 				v_box = document.createElement("div"),
 				v_box.id = "shop_id_version",
-				v_box.innerHTML="<p>v6.1</br>what's new: DNS info, dev tb link</p>",
+				v_box.innerHTML="<p>v6.1</br>what's new: super secret BO mode, finder gets cookies</p>",
 
 				close = document.createElement("div"),
 				close.id = "shop_id_close",
