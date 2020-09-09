@@ -198,7 +198,7 @@ let x = new XMLHttpRequest();
 				o("Shop Cluster",shop_info.cluster),
 				o("Shop id + primary user",shop_info.shop_id,"admin")
 				o("Theme",t.shop.settings.template_editor,"themes"),
-				o("Theme cont.",Object.values(shop_info.theme).join(", ")),
+				o("Theme cont.",Object.values(shop_info.theme).join(", "),'store/themes?query='+shop_info.theme.title),
 				o("Shop status",t.shop.status),
 				o("Subscription info",),
 				o("B2B",t.shop.b2b),
