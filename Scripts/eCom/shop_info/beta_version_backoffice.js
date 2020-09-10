@@ -1,4 +1,5 @@
 //beta_backoffice
+!function(){
 //declaring global variables
 switch (window.SEOshop.react.shop.reseller_id) {
 	case 1:
@@ -71,7 +72,6 @@ let x = new XMLHttpRequest();
     },
     x.send();
 
-!function(){
 	var e = new XMLHttpRequest;
 	e.open("GET",shop_info.domain+"?format=json",true),
 	e.onload = function(){
@@ -171,7 +171,8 @@ let x = new XMLHttpRequest();
 				div_wrap.id = "shop_id_wrapper",
 				div_wrap.setAttribute('style','display: none;'),
 				div_wrap.onclick = function(){
-					document.body.removeChild(div_wrap)
+					document.body.removeChild(div_wrap),
+					document.body.removeChild(document.querySelectorAll('script[src^="https://cdn.jsdelivr.net/gh/meatyhippo/"]'))
 				},
 				div_box = document.createElement("div"),
 				div_box.id = "shop_id_box",
@@ -185,7 +186,8 @@ let x = new XMLHttpRequest();
 				close = document.createElement("div"),
 				close.id = "shop_id_close",
 				close.onclick=function(){
-					document.body.removeChild(div_wrap)
+					document.body.removeChild(div_wrap),
+					document.body.removeChild(document.querySelectorAll('script[src^="https://cdn.jsdelivr.net/gh/meatyhippo/"]'))
 				},
 				table = document.createElement("table"),
 				table.id = "shop_id_table",
