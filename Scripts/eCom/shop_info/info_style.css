@@ -76,3 +76,7 @@
 .hide {
     display: none;
 }
+#ips table tr td {
+	margin-right:1em;
+	min-width: 75px;
+}
