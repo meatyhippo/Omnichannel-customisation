@@ -157,7 +157,8 @@
 				div_wrap=document.createElement("div"),
 				div_wrap.id = "shop_id_wrapper",
 				div_wrap.onclick = function(){
-					document.body.removeChild(div_wrap)
+					document.body.removeChild(div_wrap),
+					document.body.removeChild(document.querySelectorAll('script[src^="https://cdn.jsdelivr.net/gh/meatyhippo/"]')[0])
 				},
 				div_box = document.createElement("div"),
 				div_box.id = "shop_id_box",
@@ -171,7 +172,8 @@
 				close = document.createElement("div"),
 				close.id = "shop_id_close",
 				close.onclick = function(){
-					document.body.removeChild(div_wrap)
+					document.body.removeChild(div_wrap),
+					document.body.removeChild(document.querySelectorAll('script[src^="https://cdn.jsdelivr.net/gh/meatyhippo/"]')[0])
 				},
 				table = document.createElement("table"),
 				table.id = "shop_id_table",
