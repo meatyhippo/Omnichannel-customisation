@@ -7,6 +7,7 @@
     left: 0!important;
     right: 0!important;
     height: 100vh!important;
+    display: block;
 }
 #shop_id_wrapper a{
     cursor: pointer;
