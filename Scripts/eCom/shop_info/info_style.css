@@ -60,7 +60,9 @@
     text-decoration: underline;
 }
 #shop_id_table tbody {
-    line-height: 20px!important;   
+	line-height: 20px!important;
+	background:rgba(0,0,0,0.3)!important;
+	background-color:rgba(0,0,0,0.3)!important;
 }
 #shop_id_table tr{
     width: 100%!important;
@@ -71,6 +73,9 @@
     padding: 0 0 0 0!important;
     border: 0px!important;
     text-align:left;
+}
+#shop_id_table tr td:before{
+    background: rgba(0,0,0,0.3)!important;
 }
 #shop_id_box p{
     margin: 0!important;
