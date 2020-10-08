@@ -485,7 +485,7 @@
 		console.log(csv.length+` characters in csv | items: ${pagenr}/${maxPage} | ` + ((pagenr/maxPage)*100) + '%');
         if(pagenr + 100 >= maxPage){
             console.log(csv);
-            //document.getElementById('fasthands').checked ? "" : setTimeout(DL_, 2 * 1000);
+            document.getElementById('fasthands').checked ? "" : setTimeout(DL_, 2 * 1000);
             document.getElementById('progressbar').innerHTML = 'Progress: 100%';
             document.getElementById('progressbar').style.width = '100%';
         }
