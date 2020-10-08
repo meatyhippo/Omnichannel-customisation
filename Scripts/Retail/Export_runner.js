@@ -2,8 +2,8 @@
     //define variables
         let domain = window.location.host;
         let rad_id = document.querySelector('#help_account_id > var').innerHTML;
-        let csv, APIendpoint, relation, query, pagenr, report, manufacturer_sku, maxPage; //variables for different functions
-        csv = APIendpoint = relation = query = "";
+        let csv, APIendpoint, relation, query, report, manufacturer_sku, info_message, pagenr, maxPage; //variables for different functions
+        csv = APIendpoint = relation = query = info_message = "";
         function query_(){
             if (report == 'OrderNumbers'){} else {
                 let custom_sku = window.prompt('Enter a specific custom SKU? Or leave empty (manufacturer is next)','');
@@ -32,7 +32,7 @@
         div.onclick = function(evt){evt.stopPropagation();},
         div.id = 'types';
         document.onkeyup = function(ev){ev=ev||window.event; if(ev.keyCode == 27){document.body.removeChild(div_wrap);}};
-        // ------------------- info
+    // ------------------- info
         check = document.createElement('input'),
         check.id = 'fasthands',
         check.type = 'checkbox',
@@ -40,23 +40,46 @@
         check.insertAdjacentHTML('afterend',
         '<p style="margin:0;color:lightpink">-------------------</br>What\'s new: </p><ul style="margin:0;color:lightpink;"><li>Vendor contact data,</li><li>matrix attributes,</li><li>notes export,</li><li>filter on either SKU (will navigate to item if unique sku)</li></ul>'),
         check.insertAdjacentHTML('afterend',
-        '<p style="margin:0;color:lightpink;">Check box for fast mode (does not have an automatic download, copy data from the dev console)</p>'),
-        div.setAttribute('style','position:fixed;top: 50%!important;left: 50%!important;transform:translate(-50%,-50%)!important;background-color:#999999;display:block;');
-        // ------------------- progress bar
+        '<p style="margin:0;color:lightpink;">Faster mode? (does not have an automatic download, copy data from the dev console)</p>'),
+        div.setAttribute('style','position:fixed;top: 50%!important;left: 50%!important;transform:translate(-50%,-50%)!important;background-color:#999999;display:block;width:fit-content;padding:0.4em;border-radius:5px;');
+    // ------------------- progress bar
         bar = document.createElement('div'),
         bar.setAttribute('style','margin:0;height:20px;background-color:lightpink;color:white;'),
         bar.style.width = '1%',
         bar.id = 'progressbar';
         div.appendChild(bar);
-        // ------------------- append all to body
-        div_wrap.appendChild(div),
+    // ------------------- table with buttons
+        table = document.createElement('table'),
+		tr_items = document.createElement('tr'),
+		tr_items.id = "tr_items",
+		table.appendChild(tr_items),
+		tr_customers = document.createElement('tr'),
+		tr_customers.id = "tr_customers",
+		table.appendChild(tr_customers),
+		tr_reports = document.createElement('tr'),
+		tr_reports.id = "tr_reports",
+		table.appendChild(tr_reports);
+    // ------------------- append all to body
+		div.appendChild(table),
+		div_wrap.appendChild(div),
         document.body.appendChild(div_wrap);
     //function to select export | add new here
-    function n(x){
+    function n_(x){
+		function add_link_(info_message){
+			a = document.createElement("button"),
+			a.setAttribute('style','border-radius:5px;border:0px;margin:0.2em;'),
+			a.innerHTML = x;
+			a.onmouseover = function(event){
+				document.body.insertAdjacentHTML('beforeEnd',`<p style="margin: 0; padding: 0.3em; width: 20em; border-radius: 5px; position:absolute; top: ${event.clientY - 5}px; left: ${event.clientX + 5}px; background: white; z-index:99999999;" id="info">${info_message}</p>`);
+			};
+			a.onmouseout = function(){
+				document.getElementById('info').remove();
+			};
+		};
         switch (x) {
             case 'ItemTags':
-                a = document.createElement("button"),
-                a.innerHTML = 'ItemTags',
+				info_message = "This exports: all tags of an item separated by commas";
+				add_link_(info_message);
                 a.onclick = function(){
                     report = 'ItemTags';
                     APIendpoint = 'Item';
@@ -64,11 +87,11 @@
                     query_();
                     data_();
                 },
-                div.appendChild(a);
+                tr_items.appendChild(a);
                 break;
             case 'VendorIDs':
-                a = document.createElement("button"),
-                a.innerHTML = 'VendorIDs',
+				info_message = "This exports: all vendorID's of an item separated by commas";
+				add_link_(info_message);
                 a.onclick = function(){
                     report = 'VendorIDs';
                     APIendpoint = 'Item';
@@ -76,11 +99,11 @@
                     query_();
                     data_();
                 };
-                div.appendChild(a);
+                tr_items.appendChild(a);
                 break;
             case 'ItemImages':
-                a = document.createElement("button"),
-                a.innerHTML = 'ItemImages',
+				info_message = "This exports: all items with their images";
+				add_link_(info_message);
                 a.onclick = function(){
                     report = 'ItemImages';
                     APIendpoint = 'Item';
@@ -88,11 +111,11 @@
                     query_();
                     data_();
                 };
-                div.appendChild(a);
+                tr_items.appendChild(a);
                 break;
             case 'Attributes':
-                a = document.createElement("button"),
-                a.innerHTML = 'Attributes',
+				info_message = "This exports: all items with their attribute sets & attributes separated";
+				add_link_(info_message);
                 a.onclick = function(){
                     report = 'Attributes';
                     APIendpoint = 'Item';
@@ -100,11 +123,11 @@
                     query_();
                     data_();
                 };
-                div.appendChild(a);
+                tr_items.appendChild(a);
                 break;
             case 'Notes':
-                a = document.createElement("button"),
-                a.innerHTML = 'Notes',
+				info_message = "This exports: all items with their note";
+				add_link_(info_message);
                 a.onclick = function(){
                     report = 'Notes';
                     APIendpoint = 'Item';
@@ -112,11 +135,11 @@
                     query_();
                     data_();
                 };
-                div.appendChild(a);
+                tr_items.appendChild(a);
                 break;
             case 'Items on order':
-                a = document.createElement("button"),
-                a.innerHTML = 'Items on order',
+				info_message = "This exports: all the items and how much inventory is in a PO per location";
+				add_link_(info_message);
                 a.onclick = function(){
                     report = 'Items on order';
                     APIendpoint = 'Item';
@@ -124,46 +147,59 @@
                     query_();
                     data_();
                 };
-                div.appendChild(a);
+                tr_items.appendChild(a);
                 break;
-            case 'UniekMode':
-                a = document.createElement("button"),
-                a.innerHTML = 'UniekMode',
+            case 'archived&published':
+				info_message = "This exports: all the items that are both archived and still published to eCom";
+				add_link_(info_message);
+                a.onclick = function(){
+                    report = 'archived&published';
+                    APIendpoint = 'Item';
+                    query = '&archived=only&publishToEcom=true';
+                    data_();
+                },
+                tr_items.appendChild(a);
+                break;
+            case 'tags_vendorids':
+				info_message = "This exports: ";
+				add_link_(info_message);
                 a.id = 'UniekMode',
                 a.style.display = 'none',
                 a.onclick = function(){
-                    report = 'UniekMode';
+                    report = 'tags_vendorids';
                     APIendpoint = 'Item';
                     relation = '"TagRelations.Tag","ItemVendorNums"';
+                    query_();
                     data_();
                 },
-                div.appendChild(a);
+                tr_items.appendChild(a);
                 break;
             case 'Customers':
-                a = document.createElement("button"),
-                a.innerHTML = 'Customers Tags',
+				info_message = "This exports: customers and their tags";
+				add_link_(info_message);
                 a.onclick = function(){
                     report = 'Customers';
                     APIendpoint = 'Customer';
                     relation = '"Tags"';
+                    query += '&archive=1'
                     data_();
                 };
-                div.appendChild(a);
+                tr_customers.appendChild(a);
                 break;
             case 'Vendors':
-                a = document.createElement("button"),
-                a.innerHTML = 'Vendor Contact',
+				info_message = "This exports: vendors and their contact info";
+				add_link_(info_message);
                 a.onclick = function(){
                     report = 'Vendors';
                     APIendpoint = 'Vendor';
                     relation = '"Contact"';
                     data_();
                 };
-                div.appendChild(a);
+                tr_reports.appendChild(a);
                 break;
             case 'OrderNumbers':
-                a = document.createElement("button"),
-                a.innerHTML = 'OrderNumbers',
+				info_message = "This exports: all of the orders that have been synced from eCom to retail";
+				add_link_(info_message);
                 a.onclick = function(){
                     let startdate = window.prompt('Enter a start date? (YYYY-MM-DD format) Leave empty for all sales (heavy function)','');
                     if (startdate.length > 0){
@@ -179,7 +215,7 @@
                     }
                     data_();
                 },
-                div.appendChild(a);
+                tr_reports.appendChild(a);
                 break;
             default:
                 alert('didn\'t work');
@@ -187,16 +223,17 @@
         }
     }
     //add new here
-    n('ItemTags');
-    n('VendorIDs');
-    //n('ItemImages');
-    n('Attributes');
-    n('Notes');
-    n('Items on order');
-    n('Customers');
-    n('UniekMode');
-    n('Vendors');
-    n('OrderNumbers');
+    n_('ItemTags');
+    n_('VendorIDs');
+    n_('ItemImages');
+    n_('Attributes');
+    n_('Notes');
+    n_('Items on order');
+    n_('Customers');
+    n_('archived&published');
+    n_('tags_vendorids');
+    n_('Vendors');
+    n_('OrderNumbers');
     //main loop + callbacks to xml & dl
     function data_(){
         var attr = "@attributes";
@@ -215,14 +252,12 @@
                 var o = JSON.parse(e.responseText);
                 maxPage = o[attr].count;
                 ++maxPage;
-                for (pagenr = 0; pagenr < maxPage; pagenr += 100) {
-                    setInterval(
-                        XML_(), 1 * 1000
-                    );
+                for (pagenr = 0; pagenr <= maxPage; pagenr += 100) {
+						XML_();
                 };
             }
         },
-        e.send();
+		e.send();
     }
     //xml request per page + run to unparse
     function XML_(){
@@ -254,15 +289,20 @@
         if (t[APIendpoint] && t[APIendpoint].length > 1){
             t[APIendpoint].forEach((line,index) => {
                 switch (report) {
-                    case 'ItemTags':
-                        if (line.Tags) {
-                            let l = JSON.stringify(line.Tags.tag);
-                            line.Tags = l.replace(/(\[)|(\])|(\")/gi,'');
-                        } else {
-                            line.Tags = "";
-                        }
+                    case 'ItemTags'://checked - OK
+						line.Tag = "";
+						if(!line.Tags){
+							line.Tag="";
+						} else if (typeof line.Tags.tag=="string"){
+							line.Tag=line.Tags.tag;
+						} else {
+							line.Tags.tag.forEach((tag,i)=>{
+								line.Tag+=(tag)+(i<this.length-1?',':'');
+							})
+						}
+						delete line.Tags
                         break;
-                    case 'VendorIDs':
+                    case 'VendorIDs'://checked - OK
                         if(line.ItemVendorNums && line.ItemVendorNums.ItemVendorNum.length > 0){
                             let l = "";
                             line.ItemVendorNums.ItemVendorNum.forEach((vendornum) => {
@@ -276,21 +316,29 @@
                             line.ItemVendorNums = "";
                         }
                         break;
-                    case 'ItemImages':
-                        delete line.Prices;
-                        if (line.Images && line.Images.Image.length > 0) {
-                            line.Images.Image.forEach((img,i) => {
-                                let newImage = 'Image'+i;
-                                line[newImage] = img.baseImageURL+img.publicID+'.png';
-                            });
-                            line.Images = "";
-                        } else if (line.Images) {
-                            line.Image0 = line.Images.Image.baseImageURL + line.Images.Image.baseImageURL.publicID + '.png';
-                        } else {
-                            line.Image0 = "";
-                        }
-                        break;
-                    case 'Attributes':
+                    case 'ItemImages':// needs work
+						delete line.Prices;
+						for (index = 0; index < 12; ++index) {
+							let placeImage='Image'+index;
+							let placeName='Image_name'+index;
+							line[placeImage]="";
+							line[placeName]="";
+						  };
+						if (line.Images){
+							if (line.Images.Image.length > 1){
+								line.Images.Image.forEach((img,i) => {
+									let newImage = 'Image'+i;
+									let newName = 'Image_name'+i;
+									line[newImage] = img.baseImageURL+img.publicID+'.png';
+									line[newName] = img.filename;
+								});
+							} else {
+								line.Image0 = line.Images.Image.baseImageURL + line.Images.Image.publicID + '.png';	
+							}
+						}
+						delete line.Images;
+						break;
+                    case 'Attributes'://checked - OK - needs work on the replace
                         delete line.Prices;
                         line.Attribute1 = "";
                         line.Attribute2 = "";
@@ -311,14 +359,16 @@
                         }
                         delete line.ItemAttributes;
                         break;
-                    case 'Notes':
-                        line.Note = "";
+                    case 'Notes': //Checked - OK
+						line.Notes = "";
+						line.note_public="";
                         if (line.Note) {
-                            let l = JSON.stringify(line.Note.note);
-                            line.Note = l.replace('\\n',' ').replace('"','');
-                        }
+							line.Notes = line.Note.note;
+							line.note_public = line.Note.isPublic;
+						}
+						delete line.Note;
                         break;
-                    case 'Items on order':
+                    case 'Items on order'://checked - OK
                         line.ItemShops.ItemShop.forEach((shop)=>{
                             if(shop.shopID == 0){
                                 line['total items on order'] = shop.backorder;
@@ -328,7 +378,11 @@
                         })
                         delete line.ItemShops;
                         break;
-                    case 'Customers':
+                    case 'Customers': // needs work in bigger accounts
+                        line.birth_date = "";
+                        if (line.dob && line.dob > 0) {
+                            line.birth_date += line.dob;
+                        }
                         line.customertags = "";
                         if(line.Tags && line.Tags.Tag.length > 0){
                             let l = "";
@@ -340,15 +394,21 @@
                         } else if (line.Tags){
                             line.customertags = line.Tags.Tag.name;
                         }
+                        delete line.dob;
                         delete line.Tags;
                         break;
-                    case 'UniekMode':
-                        line.itemTags = "";
-                        if (line.Tags) {
-                            let l = JSON.stringify(line.Tags.tag);
-                            line.itemTags = l.replace(/(\[)|(\])|(\")/gi,'');
-                        }
-                        delete line.Tags;
+                    case 'tags_vendorids': //checked - OK
+						line.Tag = "";
+						if(!line.Tags){
+							line.Tag="";
+						} else if (typeof line.Tags.tag=="string"){
+							line.Tag=line.Tags.tag;
+						} else {
+							line.Tags.tag.forEach((tag,i)=>{
+								line.Tag+=(tag)+(i<this.length-1?',':'');
+							})
+						}
+						delete line.Tags
                         line.VendorNums = "";
                         if(line.ItemVendorNums && line.ItemVendorNums.ItemVendorNum.length > 0){
                             let l = "";
@@ -362,7 +422,7 @@
                         }
                         delete line.ItemVendorNums;
                         break;
-                    case 'Vendors':
+                    case 'Vendors': // checken - OK
                         line.primary_vendor_email = "";
                         line.secondary_vendor_email = "";
                         line.contactfirstname = "";
@@ -387,7 +447,6 @@
                 }
                 if (line.discountable){delete line.discountable;}
                 if (line.tax){delete line.tax;}
-                if (line.archived){delete line.archived;}
                 if (line.itemType){delete line.itemType;}
                 if (line.serialized){delete line.serialized;}
                 if (line.modelYear){delete line.modelYear;}
@@ -408,7 +467,7 @@
                 line.delete_columns_to_right = "";
             });
             unparse_();
-        } else if (t.Item && t.Item.length == 1){
+        } else if (t[APIendpoint] && t[APIendpoint].length == 1){
             window.alert('SKU only has one item, opening in new page (check browser popup blocker)');
             let url = `https://${domain}/?name=item.views.item&form_name=view&tab=details&id=`+t.Item.itemID;
             console.log(t);
@@ -423,29 +482,28 @@
         });
         console.log(report);
         console.log(t);
-        console.log(csv.length+` characters in csv | page: ${pagenr}/${maxPage} | ` + ((pagenr/maxPage)*100) + '%');
+		console.log(csv.length+` characters in csv | items: ${pagenr}/${maxPage} | ` + ((pagenr/maxPage)*100) + '%');
         if(pagenr + 100 >= maxPage){
             console.log(csv);
-            document.getElementById('fasthands').checked ? "" : setTimeout(DL_, 2 * 1000);
-            document.getElementById('progressbar').innerHTML = 'Progress: '+ 100 + '%';
-            document.getElementById('progressbar').style.width = 100 + '%';
+            //document.getElementById('fasthands').checked ? "" : setTimeout(DL_, 2 * 1000);
+            document.getElementById('progressbar').innerHTML = 'Progress: 100%';
+            document.getElementById('progressbar').style.width = '100%';
         }
-    }
-    function progressbar_(){
-        document.getElementById('progressbar').innerHTML = 'Progress: '+ ((pagenr/maxPage)*100) + '%';
-        document.getElementById('progressbar').style.width = ((pagenr/maxPage)*100) + '%';
-        if(pagenr + 100 <= maxPage){
-            window.requestAnimationFrame(progressbar_);
-        }
-    }
-    window.requestAnimationFrame(progressbar_);
+	}
+	function progressbar_(){
+		console.log('endProgress: '+ ((pagenr/maxPage)*100) + '%');
+		document.getElementById('progressbar').innerHTML = 'Progress: '+ ((pagenr/maxPage)*100) + '%';
+		document.getElementById('progressbar').style.width = ((pagenr/maxPage)*100) + '%';
+	};
+	//window.setInterval(progressbar_(), 500);
+	//progressbar_();
     //download button
     function DL_(){
         var today = new Date();
         var blob = new Blob([csv]);
         var file = document.createElement('a');
         file.href = window.URL.createObjectURL(blob, {type: "text/plain"}),
-        file.download = today.toString().replace(/ /g,"_")+'_export.csv',
+        file.download = today.toString().replace(/ /g,"_")+' '+APIendpoint+'_export.csv',
         file.click();
     }
 }();
