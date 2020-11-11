@@ -88,6 +88,9 @@ tr table tr td{
 	margin-right:1em;
 	min-width: 165px;
 }
+#APPS ol {
+	margin-left: 1em;
+}
 .arrow_right::after{
     content: '';
     border: 4px solid transparent;
