@@ -1,4 +1,4 @@
-!function(){
+Javascript:!function(){
 	//get github version
 	let e = new XMLHttpRequest();
 	e.open("GET", "https://api.github.com/repos/meatyhippo/Omnichannel-customisation/releases", true),
