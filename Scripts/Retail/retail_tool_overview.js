@@ -1,30 +1,12 @@
 //gets called from a from github bookmark, shows all the tools
 !function(){
-	//get github version
-	!function(){
-		let e = new XMLHttpRequest();
-		e.open("GET", "https://api.github.com/repos/meatyhippo/Omnichannel-customisation/releases", true),
-		e.responseType = 'json',
-		e.onload = function(){
-			if ( e.status >= 200 && e.status < 400 ){
-				window.version = e.response[0].tag_name;
-				console.log("git version "+version);
-			}},
-		e.send();
-		//append stylesheet to page
-		let styling = document.createElement('link');
-		styling.rel = "stylesheet",
-		styling.href = `https://cdn.jsdelivr.net/gh/meatyhippo/Omnichannel-customisation@${version}/Scripts/Retail/styles.css`,
-		document.head.appendChild(styling);
-	}();
-	
-	function append(link, version){
-			console.log("backoffice");
-			//append script to page
-			let script_ = document.createElement('script');
-			script_.setAttribute('async',''),
-			script_.src = `https://cdn.jsdelivr.net/gh/meatyhippo/Omnichannel-customisation@${version}/Scripts/Retail/${link}`;
-			document.body.appendChild(script_);
+	function append(link){
+		console.log("starting...");
+		//append script to page
+		let script_ = document.createElement('script');
+		script_.setAttribute('async',''),
+		script_.src = `https://cdn.jsdelivr.net/gh/meatyhippo/Omnichannel-customisation@${version}/Scripts/Retail/${link}`;
+		document.body.appendChild(script_);
 	};
 	let tools = [
 		{
