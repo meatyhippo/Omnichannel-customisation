@@ -1,4 +1,6 @@
-{# Begin Custom Options:#}
+{# 
+Begin Custom Options:
+#}
 {# Set any of the options in this section from 'false' to 'true' in order to enable them in the template #}
 {% set hide_rep_info = false %} {# Removes acct rep from PO template #}
 {% set hide_account_number = false %} {# Removes acct number from PO template #}
