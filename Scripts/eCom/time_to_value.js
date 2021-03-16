@@ -1,1 +1,173 @@
-!function(){function e(e,t,n){let s="",o=0;tr=document.createElement("tr"),tr.id=n,td=document.createElement("td"),td.appendChild(document.createTextNode(e)),td.appendChild(document.createTextNode(": ")),tr.appendChild(td),table.appendChild(tr),"object"==typeof t?t.forEach((d,i)=>{let a=new XMLHttpRequest;a.open("GET",SEOshop.react.shop.admin_url+d,!0),a.onload=function(){if(a.status>=200&&a.status<400)switch(o++,y=JSON.parse(a.response),e){case"Shipment providers":d.includes("postnl")&&y.postnl_settings.is_active&&(s+="PostNL + "),d.includes("bpost")&&y.bpost_settings.is_active&&(s+="Bpost + "),d.includes("shipping_methods")&&y.shipping_methods.length>0&&(s+=`Manual shipping: ${y.shipping_methods.length} + `),o==t.length&&document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`);break;case"Payments providers":y.payment_provider_shops.length>=1?y.payment_provider_shops.forEach(e=>{e.is_active&&(s+=`${e.payment_provider.title} + `)}):s+="no",document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`);break;case"Added products":s=y.products.length>0?"yes":"no",document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`);break;case"Added categories":s=y.categories.length>0?"yes":"no",document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`);break;case"Product images":if(y.products.length>0){let e=0;y.products.forEach(t=>{t.image&&e++});let t=e/y.products.length*100;s=`${t}% (${e}/${y.products.length})`}else s="no";document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`);break;case"SEO fields":break;case"Headlines":s=y.headlines.length>0?"yes":"no",document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`);break;case"Reviews":s=y.reviews.length>0?"yes":"no",document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`);break;case"Theme":y.themes[0].en.title&&y.themes[0].en.title.length>0?s=y.themes[0].en.title:y.themes[0].nl.title&&(s=y.themes[0].nl.title),document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`);break;case"Total revenue":s="€ "+y.statistics.financials.stats.total_revenue_incl+" (average order: €"+y.statistics.financials.stats.avg_order_value_incl+")",document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`);break;case"Orders":s=y.links.count,document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`);break;case"Last login":y.shop_users.forEach(e=>{s=e.is_shop_owner&&e.user.last_login_at>0?e.user.last_login_at.match(/((.+)T)/gi):"none"}),document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`);break;case"SEO_fields":if(y.products.length>0){let e=0,t=0;y.products.forEach(n=>{for(const s in n.metafields)if(Object.hasOwnProperty.call(n.metafields,s)){const o=n.metafields[s];e++,o.length>0&&t++}}),s=`${t/e*100}% (${t}/${e})`}else s="no";document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`);break;case"Google Analytics/GSC":d.includes("web_statistics")?(console.log(y),y.web_statistics.stats_google_analytics.tracking_id&&y.web_statistics.stats_google_analytics.tracking_id.length>1?s+=`${y.web_statistics.stats_google_analytics.tracking_id} // `:s+="nope // "):d.includes("web_extras")&&(console.log(y),y.settings.google_search_console.meta_tags.length>0?s+=`${y.settings.google_search_console.meta_tags.length} tags`:s+="nope"),o==t.length&&document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`);break;default:document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${s}</td>`)}},a.send()}):"string"==typeof t&&document.getElementById(n).insertAdjacentHTML("beforeend",`<td>${t}</td>`)}let t="\n\t\t#types{padding: 30px!important;position: absolute!important;top: 50%!important;left: 50%!important;transform: translate(-50%,-50%)!important;background-color: rgba(0,0,0,0.3)!important;color:#ffffff;}\n\t\t#wrapper{position: fixed!important;z-index: 99999999!important;background-color: rgba(0,0,0,0.6)!important;top: 0!important;bottom: 0!important;left: 0!important;right: 0!important;height: 100vh!important;display: block;}\n\t\t#table{font-size: 16px!important;border-collapse: separate!important;border-spacing: 0px 0.3em!important;}\n\t\t#table tbody {line-height: 20px!important;}\n\t\t#table tr td {min-width: 160px;}",n=document.createElement("style");n.innerHTML=t,document.body.appendChild(n),div_wrap=document.createElement("div"),div_wrap.id="wrapper",div_wrap.onclick=function(){document.body.removeChild(div_wrap)},div=document.createElement("div"),div.onclick=function(e){e.stopPropagation()},div.id="types",table=document.createElement("table"),table.id="table",div.appendChild(table),div_wrap.appendChild(div),document.body.appendChild(div_wrap),e("Connected domain",SEOshop.react.shop.shop_url.includes("webshopapp")?"no":"yes",1),e("Shipment providers",["shipping_methods.json","shipment_providers/settings/postnl.json","shipment_providers/settings/bpost.json"],2),e("Payments providers",["payment_providers.json"],3),e("Added products",["products.json"],4),e("Added categories",["categories.json"],5),e("Product images",["products.json"],6),e("Headlines",["headlines.json"],7),e("Reviews",["reviews.json"],8),e("Theme",["themes.json"],9),e("Total revenue",["statistics.json"],10),e("Orders",["orders.json?limit=1"],11),e("Last login",["shop_users.json"],12),e("SEO_fields",["products.json"],13),e("Google Analytics/GSC",["web_statistics.json","settings/web_extras.json"],14)}();
+!function(){
+	let css = `
+		#types{padding: 30px!important;position: absolute!important;top: 50%!important;left: 50%!important;transform: translate(-50%,-50%)!important;background-color: rgba(0,0,0,0.3)!important;color:#ffffff;}
+		#wrapper{position: fixed!important;z-index: 99999999!important;background-color: rgba(0,0,0,0.6)!important;top: 0!important;bottom: 0!important;left: 0!important;right: 0!important;height: 100vh!important;display: block;}
+		#table{font-size: 16px!important;border-collapse: separate!important;border-spacing: 0px 0.3em!important;}
+		#table tbody {line-height: 20px!important;}
+		#table tr td {min-width: 180px;}`;
+	let style = document.createElement('style');
+	style.innerHTML = css;
+	document.body.appendChild(style);
+//paint function 
+	function value(name,array,tr_number){
+		window.ttv = {};
+		let status = '';
+		let counter = 0;
+		//start panting rows
+		tr=document.createElement('tr');
+		tr.id=tr_number;
+		td=document.createElement('td');
+		td.appendChild(document.createTextNode(name));
+		tr.appendChild(td);
+		table.appendChild(tr);
+		if (typeof array == 'object'){
+			array.forEach((url,index) => {
+				let x = new XMLHttpRequest();
+				x.open('GET', SEOshop.react.shop.admin_url+url, true),
+				x.onload = function(){
+					if (x.status >= 200 && x.status < 400){
+						counter++;
+						y=JSON.parse(x.response);
+						ttv[Object.keys(y)[0]] = y;
+						switch (name) {
+							case 'Shipment providers:':
+								if (url.includes('postnl') && y.postnl_settings.is_active) status+='PostNL + ';
+								if (url.includes('bpost') && y.bpost_settings.is_active) status+='Bpost + ';
+								if (url.includes('shipping_methods') && y.shipping_methods.length > 0 ) status+=`Manual shipping: ${y.shipping_methods.length} + `;
+								if (counter == array.length){
+									document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								};
+								break;
+							case 'Payments providers:':
+								if (y.payment_provider_shops.length >= 1){
+									y.payment_provider_shops.forEach(pay=>{
+										pay.is_active?status+=`${pay.payment_provider.title} + `:'';
+									})
+								} else {status+='no'};
+								document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								break;
+							case 'Added products:':
+								y.products.length>0?status='yes':status='no';
+								document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								break;
+							case 'Product images:':
+								if (y.products.length>0){
+									let imgcounter = 0;
+									y.products.forEach(product=>{
+										if (product.image) imgcounter++;
+									});
+									let percentage = Math.trunc((imgcounter/y.products.length)*100);
+									status = `${percentage}% (${imgcounter}/${y.products.length})`;
+								} else status = 'no';
+								document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								break;
+							case 'Added categories:':
+								y.categories.length>0?status='yes':status='no';
+								document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								break;
+							case 'Headlines:':
+								y.headlines.length>0?status='yes':status='no';
+								document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								break;
+							case 'Reviews:':
+								y.reviews.length>0?status='yes':status='no';
+								document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								break;
+							case 'Theme:':
+								if (y.themes[0].en.title && y.themes[0].en.title.length>0){
+									status = y.themes[0].en.title;
+								} else if (y.themes[0].nl.title) status = y.themes[0].nl.title;
+								document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								break;
+							case 'Total revenue:':
+								status = '€ '+y.statistics.financials.stats.total_revenue_incl+' (average order: €'+y.statistics.financials.stats.avg_order_value_incl+')';
+								document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								break;
+							case 'Orders:':
+								status = y.links.count;
+								document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								break;
+							case 'Last login:':
+								y.shop_users.forEach(user => {
+									if(user.is_shop_owner&&user.user.last_login_at>0){
+										status = user.user.last_login_at.match(/((.+)T)/gi);
+									} else status = 'none';
+								});
+								document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								break;
+							case 'SEO_fields:':
+								if (y.products.length>0){
+									let metafields = 0;
+									let enteredmeta = 0;
+									y.products.forEach(product=>{;
+										for (const key in product.metafields) {
+											if (Object.hasOwnProperty.call(product.metafields, key)) {
+												const element = product.metafields[key];
+												metafields++;
+												if (element.length>0) enteredmeta++;	
+											}
+										}
+									});
+									status = `${(enteredmeta/metafields)*100}% (${enteredmeta}/${metafields})`;
+								} else status = 'no';
+								document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								break;
+							case 'Google Analytics/GSC:':
+								if (url.includes('web_statistics')){
+									y.web_statistics.stats_google_analytics.tracking_id&&y.web_statistics.stats_google_analytics.tracking_id.length>1?status+=`${y.web_statistics.stats_google_analytics.tracking_id} // `:status+='nope // ';
+								} else if (url.includes('web_extras')){
+									/**/console.log(y);
+									y.settings.google_search_console.meta_tags.length>0?status+=`${y.settings.google_search_console.meta_tags.length} tags`:status+='nope';
+								}
+								if (counter == array.length){
+									document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								};
+								break;
+							default:
+								document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${status}</td>`);
+								break;
+						};
+					}
+				},
+				x.send();
+			});
+		} else if(typeof array == 'string'){
+			document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${array}</td>`);
+		}
+	}
+// create box - wrapper with close
+	div_wrap = document.createElement('div'),
+	div_wrap.id = 'wrapper',
+	div_wrap.onclick = function(){document.body.removeChild(div_wrap);};
+	div = document.createElement('div'),
+	div.onclick = function(evt){evt.stopPropagation();},
+	div.id = 'types';
+	//document.onkeyup = function(ev){ev=ev||window.event; if(ev.key == 27){document.body.removeChild(div_wrap);}};
+	table = document.createElement('table'),
+	table.id = 'table';
+	// ------------------- append all to body
+	div.appendChild(table),
+	div_wrap.appendChild(div),
+	document.body.appendChild(div_wrap);
+//data paint functions
+//value(name,array,tr_number)
+	value('Last login:',['shop_users.json'],1),
+	value('Connected domain:',SEOshop.react.shop.shop_url.includes('webshopapp')?'no':'yes',3),
+	value('-------------------','',4),
+	value('Orders:',['orders.json?limit=1'],5),
+	value('Total revenue:',['statistics.json'],7),
+	value('-------------------','',8),
+	value('Added products:',['products.json'],9),
+	value('Product images:',['products.json'],11),
+	value('Added categories:',['categories.json'],13),
+	value('Shipment providers:',['shipping_methods.json','shipment_providers/settings/postnl.json',
+	'shipment_providers/settings/bpost.json'],15), 
+	value('Payments providers:',['payment_providers.json'],17),
+	value('-------------------','',18),
+	value('Theme:',['themes.json'],19),
+	value('Headlines:',['headlines.json'],21),
+	//value('pages?');
+	value('Reviews:',['reviews.json'],23),
+	value('Google Analytics/GSC:',['web_statistics.json','settings/web_extras.json'],25);
+	value('SEO_fields:',['products.json'],27);
+}();
