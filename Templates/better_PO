@@ -7,6 +7,7 @@ Begin Custom Options:
 {% set hide_shipping_table = false %} {# Removes shipping table from PO template #}
 {% set hide_shipping_notes = false %} {# Removes shipping notes from PO template #}
 {% set hide_general_notes = false %} {# Removes general notes from PO template #}
+{% set hide_item_cost = true %} {# Removes item prices #}
 {% set show_EAN = false %} {# shows EAN #}
 {% set show_custom_SKU = false %} {# shows SKU #}
 {% set show_manufacturer_SKU = false %} {# shows SKU #}
@@ -279,11 +280,13 @@ Expected: {{Order.arrivalDate|correcttimezone|date ("d/m/y")}}<br />
 {% endif %}
 <th>Description</th>
 <th>Qty</th>
+{% if not hide_item_cost %}
 <th>Unit Cost</th>
 {% if Order.discount > 0 %}
 <th>Amount w/Discount</th>
 {% else %}
 <th>Amount</th>
+{% endif %}
 {% endif %}
 </tr>
 </thead>
@@ -307,36 +310,43 @@ Expected: {{Order.arrivalDate|correcttimezone|date ("d/m/y")}}<br />
 {% endif %}
 <td><p style="float: left;">{{OrderLine.Item.description}}</p>{% if show_item_barcode == true %}<img  height="40" width="200" src="/barcode.php?type=label&number={{ OrderLine.Item.systemSku }}&noframe=1" style="margin: auto 0;display: block;float: right;">{% endif %}</td>
 <td>{{OrderLine.quantity}}</td>
+{% if not hide_item_cost %}
 <td class="money">{{OrderLine.originalPrice|money}}</td>
 <td class="money">{{OrderLine.total|money}}</td>
+{% endif %}
 </tr>
 {% endfor %}
 <tfoot>
 <tr class="minor">
 <th>Subtotal</th>
+{% if not hide_item_cost %}
 {% if Order.MetaData.subtotal > 0 %}
 <th></th>
 {% endif %}
 <td></td>
-
+{% endif %}
 <td></td>
 <td class="money">{{Order.MetaData.subtotal|money}}</td>
 </tr>
 {% if Order.totalDiscount > 0 %}
 <tr class="minor">
 <th>Discount</th>
+{% if not hide_item_cost %}
 <th></th>
 <td></td>
+{% endif %}
 <td></td>
 <td class="money">{{Order.totalDiscount|getinverse|money}}</td>
 </tr>
 {% endif %}
 <tr class="total">
 <th>Total</th>
+{% if not hide_item_cost %}
 {% if Order.MetaData.total > 0 %}
 <th></th>
 {% endif %}
 <td></td>
+{% endif %}
 <td></td>
 <td class="money">{{Order.MetaData.total|money}}</td>
 </tr>
