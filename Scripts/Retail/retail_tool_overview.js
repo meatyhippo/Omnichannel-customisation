@@ -28,6 +28,11 @@
 			link:'Tools/all_matrix_variants.js',
 			name:'Click all variants',
 			description: 'Use in matrix configiguration tab'
+		},
+		{
+			link:'Tools/customerID_to_pagerfield.js',
+			name:'Customer ID to pagerfield',
+			description: 'Replaces the customer pager with customer internal id'
 		}
 	];
 	wrapper=document.createElement('div'),
