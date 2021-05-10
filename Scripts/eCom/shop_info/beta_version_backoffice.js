@@ -80,7 +80,7 @@
 		x.onload = function(){
 			if (x.status >= 200 && x.status < 400){
 				shop_info[Object.keys(x.response)[0]] = x.response;
-			} else location.reload();
+			}
 		},
 		x.send();
 	});
