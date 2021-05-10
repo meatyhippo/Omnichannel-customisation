@@ -1,6 +1,6 @@
-#shop_id_wrapper{
+#wrapper{
     position: fixed!important;
-    z-index: 99999999!important;
+    z-index: 999999999999999!important;
     background-color: rgba(0,0,0,0.6)!important;
     top: 0!important;
     bottom: 0!important;
@@ -9,10 +9,12 @@
     height: 100vh!important;
     display: block;
 }
-#shop_id_wrapper a{
-    cursor: pointer;
+#wrapper a{
+	cursor: pointer;
+	color:deepskyblue;
+    text-decoration: underline;
 }
-#shop_id_box{
+#box{
     padding: 30px!important;
     text-align: center!important;
     position: absolute!important;
@@ -21,17 +23,12 @@
     transform: translate(-50%,-50%)!important;
     background-color: rgba(0,0,0,0.3)!important;
 }
-#shop_id_version{
-    /*position: absolute;
-    bottom: 10px;
-    right: 30px;
-    opacity: 0.7;
-    display: inline-block;*/
+#version{
     text-align: right;
     color: #fff;
     font-size: 12px;
 }
-#shop_id_close{
+#close{
     position: absolute;
     top: 30px;
     right: 30px;
@@ -45,7 +42,7 @@
     background-repeat: no-repeat;
     cursor: pointer;
 }
-#shop_id_table{
+#table{
     font-size: 16px!important;
     color: #fff!important;
     width: 100%!important;
@@ -55,28 +52,28 @@
     margin: 0 0 0 0!important;
     border: 0!important;
 }
-#shop_id_table a{
+#table a{
     color:deepskyblue;
     text-decoration: underline;
 }
-#shop_id_table tbody {
+#table tbody {
 	line-height: 20px!important;
 }
-#shop_id_table tr{
+#table tr{
 	width: 100%!important;
 	background-color: transparent!important;
 }
-#shop_id_table tr td{
+#table tr td{
     width: 50%!important;
     vertical-align: top!important;
     padding: 0 0 0 0!important;
     border: 0px!important;
     text-align:left;
 }
-#shop_id_table tr td:before{
+#table tr td:before{
     background: rgba(0,0,0,0.3)!important;
 }
-#shop_id_box p{
+#box p{
     margin: 0!important;
     border-spacing: 0px 0.3em!important;
     line-height: 20px!important;   
