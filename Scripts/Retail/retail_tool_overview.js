@@ -15,23 +15,23 @@
 			description: 'Runs the retail export tool'
 		},
 		{
-			link:'retail_json_page.js',
+			link:'Tools/retail_json_page.js',
 			name:'Open in JSON',
 			description: 'Opens the current page in JSON'
 		},
 		{
-			link:'search_ecom_order.js',
+			link:'Tools/search_ecom_order.js',
 			name:'Ecom order search',
 			description: 'Copy order id in eCom url to check in reports'
 		},
 		{
-			link:'all_matrix_variants.js',
+			link:'Tools/all_matrix_variants.js',
 			name:'Click all variants',
 			description: 'Use in matrix configiguration tab'
 		}
 	];
 	wrapper=document.createElement('div'),
-	wrapper.id = 'wrapper',
+	wrapper.id = 'tool_wrapper',
 	wrapper.onclick = function(){
 		document.body.removeChild(wrapper),
 		document.querySelectorAll('script[src^="https://cdn.jsdelivr.net/gh/meatyhippo/"]').forEach(link =>{
@@ -42,13 +42,13 @@
 		});
 	},
 	box = document.createElement('div'),
-	box.id = 'box',
+	box.id = 'tool_box',
 	//box.onclick = function(e){
 	//	e.stopPropagation()
 	//},
 	v_box = document.createElement('div'),
 	v_box.id = 'version',
-	v_box.innerHTML='<p>'+version+'</br>what\'s new: theme search, subscription info, RETAIL ID!</p>',
+	v_box.innerHTML='<p>'+version+'</br>what\'s new: The whole tool</p>',
 	close = document.createElement('div'),
 	close.id = 'close',
 	close.onclick=function(){
@@ -64,7 +64,8 @@
 	table.id = 'table',
 	tbody=document.createElement('tbody'),
 	tr = document.createElement('tr');
-	tr.appendChild(document.createTextNode('Welcome to the retail tools collection'));
+	tr.innerHTML = '<td style="transform:translate(50%,0);font-size:2em;">Welcome to the retail tools collection</td>';
+	//tr.innerHTML = '<p style="width:200%;text-align:center;font-size:2em;">Welcome to the retail tools collection</p>';
 	tbody.append(tr);
 	tools.forEach((item,i) => {
 		tr = document.createElement('tr');
@@ -75,7 +76,7 @@
 		td.appendChild(a);
 		tr.appendChild(td);
 		td = document.createElement('td');
-		td.appendChild(document.createTextNode(item.description));
+		td.appendChild(document.createTextNode(' : '+item.description));
 		tr.appendChild(td);
 		tbody.appendChild(tr);
 	})

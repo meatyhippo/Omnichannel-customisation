@@ -1,4 +1,4 @@
-#wrapper{
+#tool_wrapper{
     position: fixed!important;
     z-index: 999999999999999!important;
     background-color: rgba(0,0,0,0.6)!important;
@@ -9,12 +9,12 @@
     height: 100vh!important;
     display: block;
 }
-#wrapper a{
+#tool_wrapper a{
 	cursor: pointer;
 	color:deepskyblue;
     text-decoration: underline;
 }
-#box{
+#tool_box{
     padding: 30px!important;
     text-align: center!important;
     position: absolute!important;
@@ -73,7 +73,7 @@
 #table tr td:before{
     background: rgba(0,0,0,0.3)!important;
 }
-#box p{
+#tool_box p{
     margin: 0!important;
     border-spacing: 0px 0.3em!important;
     line-height: 20px!important;   

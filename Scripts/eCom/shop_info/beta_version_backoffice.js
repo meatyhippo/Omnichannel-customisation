@@ -80,7 +80,7 @@
 		x.onload = function(){
 			if (x.status >= 200 && x.status < 400){
 				shop_info[Object.keys(x.response)[0]] = x.response;
-			} else console.log('Please log in again')
+			} else location.reload();
 		},
 		x.send();
 	});
@@ -334,7 +334,7 @@ setTimeout(() => {
 				tbody.appendChild(row)
 			};
 			div_wrap=document.createElement('div'),
-			div_wrap.id = 'shop_id_wrapper',
+			div_wrap.id = 'tool_wrapper',
 			div_wrap.onclick = function(){
 				document.body.removeChild(div_wrap),
 				document.querySelectorAll('script[src^="https://cdn.jsdelivr.net/gh/meatyhippo/"]').forEach(link =>{
@@ -345,15 +345,15 @@ setTimeout(() => {
 				});
 			},
 			div_box = document.createElement('div'),
-			div_box.id = 'shop_id_box',
+			div_box.id = 'tool_box',
 			div_box.onclick = function(e){
 				e.stopPropagation()
 			},
 			v_box = document.createElement('div'),
-			v_box.id = 'shop_id_version',
+			v_box.id = 'version',
 			v_box.innerHTML='<p>'+version+'</br>what\'s new: theme search, subscription info, RETAIL ID!</p>',
 			close = document.createElement('div'),
-			close.id = 'shop_id_close',
+			close.id = 'close',
 			close.onclick=function(){
 				document.body.removeChild(div_wrap),
 				document.querySelectorAll('script[src^="https://cdn.jsdelivr.net/gh/meatyhippo/"]').forEach(link =>{
@@ -364,7 +364,7 @@ setTimeout(() => {
 				});
 			},
 			table = document.createElement('table'),
-			table.id = 'shop_id_table',
+			table.id = 'table',
 			tbody=document.createElement('tbody'),
 			//function o(e,o,l,n)
 			// e = text in first column

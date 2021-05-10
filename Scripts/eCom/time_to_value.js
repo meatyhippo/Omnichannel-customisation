@@ -1,7 +1,7 @@
 !function(){
 	let css = `
 		#types{padding: 30px!important;position: absolute!important;top: 50%!important;left: 50%!important;transform: translate(-50%,-50%)!important;background-color: rgba(0,0,0,0.3)!important;color:#ffffff;}
-		#wrapper{position: fixed!important;z-index: 99999999!important;background-color: rgba(0,0,0,0.6)!important;top: 0!important;bottom: 0!important;left: 0!important;right: 0!important;height: 100vh!important;display: block;}
+		#tool_wrapper{position: fixed!important;z-index: 99999999!important;background-color: rgba(0,0,0,0.6)!important;top: 0!important;bottom: 0!important;left: 0!important;right: 0!important;height: 100vh!important;display: block;}
 		#table{font-size: 16px!important;border-collapse: separate!important;border-spacing: 0px 0.3em!important;}
 		#table tbody {line-height: 20px!important;}
 		#table tr td {min-width: 180px;}`;
@@ -135,9 +135,9 @@
 			document.getElementById(tr_number).insertAdjacentHTML('beforeend',`<td>${array}</td>`);
 		}
 	}
-// create box - wrapper with close
+// create tool_box - tool_wrapper with close
 	div_wrap = document.createElement('div'),
-	div_wrap.id = 'wrapper',
+	div_wrap.id = 'tool_wrapper',
 	div_wrap.onclick = function(){document.body.removeChild(div_wrap);};
 	div = document.createElement('div'),
 	div.onclick = function(evt){evt.stopPropagation();},

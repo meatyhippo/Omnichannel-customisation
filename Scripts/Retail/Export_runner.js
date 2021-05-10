@@ -24,7 +24,7 @@
             PapaParse.setAttribute('src','https://cdn.jsdelivr.net/gh/mholt/PapaParse/papaparse.min.js'),
             document.head.appendChild(PapaParse);
         }
-    // create box - wrapper with close
+    // create tool_box - tool_wrapper with close
         div_wrap = document.createElement('div'),
         div_wrap.setAttribute('style','position: fixed!important;z-index: 9999999!important;background-color: rgba(0,0,0,0.6)!important;top: 0!important;bottom: 0!important;left: 0!important;right: 0!important;height: 100vh!important;'),
         div_wrap.onclick = function(){document.body.removeChild(div_wrap);};
@@ -159,9 +159,21 @@
                     data_();
                 },
                 tr_items.appendChild(a);
-                break;
+				break;
+			case 'customfields':
+				info_message = "This exports: item custom fields";
+				add_link_(info_message);
+                a.onclick = function(){
+                    report = 'customfields';
+                    APIendpoint = 'Item';
+                    relation = '"CustomFieldValues"';
+                    query_();
+                    data_();
+                },
+                tr_items.appendChild(a);
+				break;
             case 'tags_vendorids':
-				info_message = "This exports: ";
+				info_message = "This exports: tags & vendorid's";
 				add_link_(info_message);
                 a.id = 'UniekMode',
                 a.style.display = 'none',
@@ -174,18 +186,30 @@
                 },
                 tr_items.appendChild(a);
                 break;
-            case 'Customers':
+            case 'Customertags':
 				info_message = "This exports: customers and their tags";
 				add_link_(info_message);
                 a.onclick = function(){
-                    report = 'Customers';
+                    report = 'Customertags';
                     APIendpoint = 'Customer';
                     relation = '"Tags"';
+                    //query += '&archive=1'
+                    data_();
+                };
+                tr_customers.appendChild(a);
+				break;
+			case 'Customerfield':
+				info_message = "This exports: customers and their custom fields";
+				add_link_(info_message);
+                a.onclick = function(){
+                    report = 'Customertags';
+                    APIendpoint = 'Customer';
+                    relation = '"CustomFieldValues"';
                     query += '&archive=1'
                     data_();
                 };
                 tr_customers.appendChild(a);
-                break;
+				break;
             case 'Vendors':
 				info_message = "This exports: vendors and their contact info";
 				add_link_(info_message);
@@ -225,12 +249,14 @@
     //add new here
     n_('ItemTags');
     n_('VendorIDs');
-    n_('ItemImages');
+    //n_('ItemImages');
     n_('Attributes');
     n_('Notes');
     n_('Items on order');
-    n_('Customers');
-    n_('archived&published');
+	n_('Customertags');
+	n_('Customerfield');
+	n_('archived&published');
+	n_('customfields');
     n_('tags_vendorids');
     n_('Vendors');
     n_('OrderNumbers');
@@ -378,7 +404,7 @@
                         })
                         delete line.ItemShops;
                         break;
-                    case 'Customers': // needs work in bigger accounts
+                    case 'Customertags': // needs work in bigger accounts
                         line.birth_date = "";
                         if (line.dob && line.dob > 0) {
                             line.birth_date += line.dob;
@@ -396,7 +422,9 @@
                         }
                         delete line.dob;
                         delete line.Tags;
-                        break;
+						break;
+					case 'Customerfield':
+						break;
                     case 'tags_vendorids': //checked - OK
 						line.Tag = "";
 						if(!line.Tags){
@@ -421,7 +449,40 @@
                             line.VendorNums = line.ItemVendorNums.ItemVendorNum.value;
                         }
                         delete line.ItemVendorNums;
-                        break;
+						break;
+					case 'customfields':
+						delete line.Prices;
+						if(line.CustomFieldValues ){//&& line.CustomFieldValues.CustomFieldValue.length > 0) {
+							console.log(line);
+							line.CustomFieldValues.CustomFieldValue.forEach((field,i)=>{
+								let l;
+								switch (field.type){
+									case 'string':
+										field.value ? l = field.value : l = "";
+										break;
+									case 'single_choice':
+										field.value.name ? l = field.value.name : l = "";
+										break;
+									case 'date':
+										field.value ? l = field.value : l = "";
+										break;
+									case 'multi_choice':
+										field.value.name ? l += field.value.name : l = "";
+										break;
+									case 'float':
+										field.value ? l = field.value : l = "";
+										break;
+									case 'boolean':
+										field.value ? l = field.value : l = "";
+										break;
+									default:
+										break;
+								};
+								line["customfield"+i] = l;
+							})
+						}
+						delete line.CustomFieldValues;
+						break;
                     case 'Vendors': // checken - OK
                         line.primary_vendor_email = "";
                         line.secondary_vendor_email = "";
