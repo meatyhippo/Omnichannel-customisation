@@ -1,5 +1,46 @@
 //gets called from a from github bookmark, shows all the tools
 !function(){
+	(()=>{
+		let modules = `
+		// ------------------- module functions
+		// retail UI notification
+		function retail_UI_notification(){
+			let end_time = Date.now(),
+			seconds = (end_time-start_time)/1000;
+			/**/console.log('Succeeded: '+Object.keys(success_list).length, success_list);
+			/**/console.log('Failed: '+fail_list.length, fail_list);
+			/**/console.log('This action has taken ' + seconds + ' seconds / ' + (seconds/60) + 'minutes');
+			if(continuing){
+				$('#successNotificationMessage').html(\`All done! </br>
+					Action took: ${roundToTwo(seconds)} seconds / ${roundToTwo((seconds/60))} minutes</br>
+					Items failed: ${fail_list.length}</br>
+					Items succeeded: ${Object.keys(success_list).length}\`);
+				$('body').append('<style>#success{top:0;text-align:center}</style>');
+			} else {
+				$('#successNotificationMessage').html(\`Cancelled action! </br>
+					Ran for: ${roundToTwo(seconds)} seconds / ${roundToTwo((seconds/60))} minutes</br>
+					Items failed: ${fail_list.length}</br>
+					Items succeeded: ${Object.keys(success_list).length}\`);
+				$('body').append('<style>#success{top:0;text-align:center}#success::before{background:#a44039;}</style>');
+			}
+		}
+		// round to 2 decimal
+		function roundToTwo(num) {    
+			return +(Math.round(num + "e+2")  + "e-2");
+		}
+		// cancel actions
+		window.setTimeout(() => {
+			$(document).keydown(function(e){
+				if (e.altKey){
+					/**/console.log(e.altKey);
+					continuing = false;
+				}
+			});
+		}, 500); `;
+		let script_ = document.createElement('script');
+		script_.innerHTML = modules;
+		document.body.appendChild(script_);
+	})();
 	function append(link){
 		console.log("starting...");
 		//append script to page
@@ -30,6 +71,11 @@
 			description: 'Use in matrix configiguration tab'
 		},
 		{
+			link:'Tools/delete_all_images.js',
+			name:'Delete all images',
+			description: 'Deletes all item images from retail'
+		},
+		{
 			link:'Tools/customerID_to_pagerfield.js',
 			name:'Customer ID to pagerfield',
 			description: 'Replaces the customer pager with customer internal id'
@@ -48,12 +94,9 @@
 	},
 	box = document.createElement('div'),
 	box.id = 'tool_box',
-	//box.onclick = function(e){
-	//	e.stopPropagation()
-	//},
 	v_box = document.createElement('div'),
 	v_box.id = 'version',
-	v_box.innerHTML='<p>'+version+'</br>what\'s new: The whole tool</p>',
+	v_box.innerHTML='<p>'+version+'</br>what\'s new: pager id\'s tool</p>',
 	close = document.createElement('div'),
 	close.id = 'close',
 	close.onclick=function(){
@@ -70,7 +113,6 @@
 	tbody=document.createElement('tbody'),
 	tr = document.createElement('tr');
 	tr.innerHTML = '<td style="transform:translate(50%,0);font-size:2em;">Welcome to the retail tools collection</td>';
-	//tr.innerHTML = '<p style="width:200%;text-align:center;font-size:2em;">Welcome to the retail tools collection</p>';
 	tbody.append(tr);
 	tools.forEach((item,i) => {
 		tr = document.createElement('tr');
