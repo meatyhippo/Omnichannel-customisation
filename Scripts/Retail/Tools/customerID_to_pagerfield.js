@@ -3,6 +3,7 @@ function pagers(){
 	window.alert('This script will copy customer id\'s into the pagerfield.\nYou can enter a starting id and/or and ending id.\nThere will be a small report after completion. Progression will be logged into the browser console (CMD+shift+J).\n\nPlease stay on this page while running & refresh after completion.')
 	window.success_list = {};
 	window.fail_list = [];
+	window.continuing = true;
 	const	rad_id = document.querySelector('#help_account_id > var').innerHTML,
 			base_url = `${window.origin}/API/Account/${rad_id}/Customer/`,
 			attr = '@attributes';
@@ -10,7 +11,6 @@ function pagers(){
 		end_id = parseInt(window.prompt('Want to end at a customer ID?',''),10)||999999999999,
 		start_time = Date.now(),
 		count = 0,
-		continuing = true,
 		body = {
 			"Contact": {
 				"Phones": {
@@ -67,6 +67,6 @@ function pagers(){
 		}
 	}
 	$(document).ajaxStop(function() {
-		retail_UI_notification();
+		retail_UI_notification(start_time);
 	});
 }pagers();

@@ -4,23 +4,23 @@
 		let modules = `
 		// ------------------- module functions
 		// retail UI notification
-		function retail_UI_notification(){
+		function retail_UI_notification(start_time){
 			let end_time = Date.now(),
 			seconds = (end_time-start_time)/1000;
 			/**/console.log('Succeeded: '+Object.keys(success_list).length, success_list);
 			/**/console.log('Failed: '+fail_list.length, fail_list);
 			/**/console.log('This action has taken ' + seconds + ' seconds / ' + (seconds/60) + 'minutes');
 			if(continuing){
-				$('#successNotificationMessage').html(\`All done! </br>
-					Action took: ${roundToTwo(seconds)} seconds / ${roundToTwo((seconds/60))} minutes</br>
-					Items failed: ${fail_list.length}</br>
-					Items succeeded: ${Object.keys(success_list).length}\`);
+				$('#successNotificationMessage').html('All done! </br>'+
+					'Action took: '+roundToTwo(seconds)+' seconds / '+roundToTwo((seconds/60))+' minutes</br>'+
+					'Items failed: '+fail_list.length+'</br>'+
+					'Items succeeded: '+Object.keys(success_list).length);
 				$('body').append('<style>#success{top:0;text-align:center}</style>');
 			} else {
-				$('#successNotificationMessage').html(\`Cancelled action! </br>
-					Ran for: ${roundToTwo(seconds)} seconds / ${roundToTwo((seconds/60))} minutes</br>
-					Items failed: ${fail_list.length}</br>
-					Items succeeded: ${Object.keys(success_list).length}\`);
+				$('#successNotificationMessage').html('Cancelled action! </br>'+
+					'Ran for: '+roundToTwo(seconds)+' seconds / '+roundToTwo((seconds/60))+' minutes</br>'+
+					'Items failed: '+fail_list.length+'</br>'+
+					'Items succeeded: '+Object.keys(success_list).length);
 				$('body').append('<style>#success{top:0;text-align:center}#success::before{background:#a44039;}</style>');
 			}
 		}

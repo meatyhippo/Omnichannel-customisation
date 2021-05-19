@@ -22,6 +22,9 @@ function delete_images(){
 		}
 		};
 	(function(){
+		$.getJSON(base_url+`.json?limit=1&orderby=imageID`,(data) => {
+			start_id = parseInt(data.Image.imageID,10);
+		})
 		$.getJSON(base_url+`.json?limit=1&orderby=imageID&orderby_desc=1`,(data, stat, jqXHR) => {
 			totalcount = parseInt(data[attr].count,10);
 			end_id = parseInt(data.Image.imageID,10);
@@ -47,4 +50,7 @@ function delete_images(){
 			},'async:false')
 		}
 	}
+	$(document).ajaxStop(function() {
+		retail_UI_notification(start_time||0);
+	});
 }delete_images();
