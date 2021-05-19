@@ -3,9 +3,8 @@ function pagers(){
 	window.alert('This script will copy customer id\'s into the pagerfield.\nYou can enter a starting id and/or and ending id.\nThere will be a small report after completion. Progression will be logged into the browser console (CMD+shift+J).\n\nPlease stay on this page while running & refresh after completion.')
 	window.success_list = {};
 	window.fail_list = [];
-	const	host = window.origin,
-			rad_id = document.querySelector('#help_account_id > var').innerHTML,
-			base_url = `${host}/API/Account/${rad_id}/Customer/`,
+	const	rad_id = document.querySelector('#help_account_id > var').innerHTML,
+			base_url = `${window.origin}/API/Account/${rad_id}/Customer/`,
 			attr = '@attributes';
 	let start_id = parseInt(window.prompt('Want to start at a customer ID?',''),10)||0,
 		end_id = parseInt(window.prompt('Want to end at a customer ID?',''),10)||999999999999,
@@ -38,10 +37,11 @@ function pagers(){
 		};
 	//------------------- start getting total amount of customers
 	(function(){
-		$.getJSON(base_url+`.json?limit=1&customerID=><,${start_id},${end_id}`,(data, textStatus, jqXHR) => {
+		$.getJSON(base_url+`.json?limit=1&customerID=><,${start_id},${end_id}&orderby=customerID&orderby_desc=1`,(data, textStatus, jqXHR) => {
 			totalcount = parseInt(data[attr].count,10);
+			if (end_id == 999999999999) end_id = parseInt(data.Customer.customerID,10);
 		}).done((data, stat, jqXHR)=>{
-			//console.log(totalcount, start_id, end_id, data, jqXHR);
+			console.log(totalcount, start_id, end_id, data, jqXHR);
 			/**/console.log(`got ${totalcount} items, starting at ${start_id}`);
 			loops();
 		});
@@ -57,48 +57,16 @@ function pagers(){
 					data.Customer.forEach((customer,i)=>{
 						count++
 						body.Contact.Phones.ContactPhone.number = customer.customerID;
-						settings.async = customer.customerID % 2==0||customer.customerID % 3==0?true:false;
+						settings.async = (customer.customerID % 2==0||customer.customerID % 3==0)?true:false;
 						settings.data = JSON.stringify(body);
 						$.ajax(`${base_url}${customer.customerID}.json?load_relations=[%22Contact%22]`,settings);
 						if(count%10==0)/**/console.log(`done: ${(count-10)}-${count}/${totalcount}`);
 					});
 				}
-			})
+			},'async:false')
 		}
 	}
-	// ------------------- module functions
-	// UI notification
 	$(document).ajaxStop(function() {
-		let end_time = Date.now(),
-		seconds = (end_time-start_time)/1000;
-		/**/console.log('Items succeeded: '+Object.keys(success_list).length, success_list);
-		/**/console.log('items failed: '+fail_list.length, fail_list);
-		/**/console.log('This action has taken ' + seconds + ' seconds / ' + (seconds/60) + 'minutes');
-		if(continuing){
-			$('#successNotificationMessage').html(`All done! </br>
-				Action took: ${roundToTwo(seconds)} seconds / ${roundToTwo((seconds/60))} minutes</br>
-				Items failed: ${fail_list.length}</br>
-				Items succeeded: ${Object.keys(success_list).length}`);
-			$('body').append('<style>#success{top:0;text-align:center}</style>');
-		} else {
-			$('#successNotificationMessage').html(`Cancelled action! </br>
-				Ran for: ${roundToTwo(seconds)} seconds / ${roundToTwo((seconds/60))} minutes</br>
-				Items failed: ${fail_list.length}</br>
-				Items succeeded: ${Object.keys(success_list).length}`);
-			$('body').append('<style>#success{top:0;text-align:center}#success::before{background:#a44039;}</style>');
-		}
+		retail_UI_notification();
 	});
-	// round to 2 decimal
-	function roundToTwo(num) {    
-		return +(Math.round(num + "e+2")  + "e-2");
-	}
-	// cancel actions
-	window.setTimeout(() => {
-		$(document).keydown(function(e){
-			if (e.altKey){
-				/**/console.log(e.altKey);
-				continuing = false;
-			}
-		});
-	}, 500);
 }pagers();
