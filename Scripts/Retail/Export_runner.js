@@ -20,9 +20,9 @@
         check.type = 'checkbox',
         div.appendChild(check);
         check.insertAdjacentHTML('afterend',
-        '<p style="margin:0;color:lightpink">-------------------</br>What\'s new: </p><ul style="margin:0;color:lightpink;"><li>Big update! Did a whole rework of the tool</br>There\s no more fast/slow mode, only fast! The fool will determine how large the account is and will throttle accordingly.</br>There is an option to auto download or not though.</li><li>There is a small status report when finished</li><li>Tags, VendorID\'s and images have been mostly evaluated and should work without problem</li><li>Images includes the matrix ID, you can use this to find matrices with too many images for omni!</li></ul>'),
+        '<p style="margin:0;color:lightpink">-------------------</br>What\'s new: </p><ul style="margin:0;color:lightpink;"><li>Big update! Did a whole rework of the tool.</br>No more fast/slow mode, only fast! The tool will determine how large the account is and will throttle accordingly.</br>There is an option to automatically download or not though.</li><li>There is a small status report in UI when finished and a progess bar.</li><li>Tags, VendorID\'s and images have been tested and should work without issues now.</li><li>Images includes the matrix ID, you can use this to find matrices with too many images for omni!</li></ul>'),
         check.insertAdjacentHTML('afterend',
-        '<p style="margin:0;color:lightpink;">Don\'t automatically download (will log to console)</p>'),
+        '<p style="margin:0 0 0 10px; color:lightpink; display:inline; ">Don\'t automatically download (will log to console)</p>'),
         div.setAttribute('style','position:fixed;top: 50%!important;left: 50%!important;transform:translate(-50%,-50%)!important;background-color:#999999;display:block;width:fit-content;padding:0.4em;border-radius:5px;');
     // ------------------- progress bar
 		bar = document.createElement('div'),

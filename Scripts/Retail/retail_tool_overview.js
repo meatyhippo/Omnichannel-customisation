@@ -1,48 +1,51 @@
 //gets called from a from github bookmark, shows all the tools
 !function(){
 	(()=>{
-		let modules = `
-		// ------------------- module functions
-		// retail UI notification
-		function retail_UI_notification(start_time){
-			let end_time = Date.now(),
-			seconds = (end_time-start_time)/1000;
-			/**/console.log('Succeeded: '+Object.keys(success_list).length, success_list);
-			/**/console.log('Failed: '+fail_list.length, fail_list);
-			/**/console.log('This action has taken ' + seconds + ' seconds / ' + (seconds/60) + 'minutes');
-			if(continuing){
-				$('#successNotificationMessage').html('All done! </br>'+
-					'Action took: '+roundToTwo(seconds)+' seconds / '+roundToTwo((seconds/60))+' minutes</br>'+
-					'Items failed: '+fail_list.length+'</br>'+
-					'Items succeeded: '+Object.keys(success_list).length+'</br>'+
-					'This page wil auto refresh in 45 secs');
-				$('body').append('<style>#success{top:0;text-align:center}</style>');
-			} else {
-				$('#successNotificationMessage').html('Cancelled action! </br>'+
-					'Ran for: '+roundToTwo(seconds)+' seconds / '+roundToTwo((seconds/60))+' minutes</br>'+
-					'Items failed: '+fail_list.length+'</br>'+
-					'Items succeeded: '+Object.keys(success_list).length+'</br>'+
-					'This page wil auto refresh in 45 secs');
-				$('body').append('<style>#success{top:0;text-align:center}#success::before{background:#a44039;}</style>');
-			}
-		}
-		// round to 2 decimal
-		function roundToTwo(num) {    
-			return +(Math.round(num + "e+2")  + "e-2");
-		}
-		// cancel actions
-		window.setTimeout(() => {
-			$(document).keydown(function(e){
-				if (e.altKey){
-					/**/console.log('alt pressed');
-					continuing = false;
-					/**/console.log(continuing);
+		if (document.getElementById('modules')){console.log('modules loaded');}else{
+			let modules = `
+			// ------------------- module functions
+			// retail UI notification
+			function retail_UI_notification(start_time){
+				let end_time = Date.now(),
+				seconds = (end_time-start_time)/1000;
+				/**/console.log('Succeeded: '+Object.keys(success_list).length, success_list);
+				/**/console.log('Failed: '+fail_list.length, fail_list);
+				/**/console.log('This action has taken ' + seconds + ' seconds / ' + (seconds/60) + 'minutes');
+				if(continuing){
+					$('#successNotificationMessage').html('All done! </br>'+
+						'Action took: '+roundToTwo(seconds)+' seconds / '+roundToTwo((seconds/60))+' minutes</br>'+
+						'Items failed: '+fail_list.length+'</br>'+
+						'Items succeeded: '+Object.keys(success_list).length+'</br>'+
+						'This page wil auto refresh in 45 secs');
+					$('body').append('<style>#success{top:0;text-align:center}</style>');
+				} else {
+					$('#successNotificationMessage').html('Cancelled action! </br>'+
+						'Ran for: '+roundToTwo(seconds)+' seconds / '+roundToTwo((seconds/60))+' minutes</br>'+
+						'Items failed: '+fail_list.length+'</br>'+
+						'Items succeeded: '+Object.keys(success_list).length+'</br>'+
+						'This page wil auto refresh in 45 secs');
+					$('body').append('<style>#success{top:0;text-align:center}#success::before{background:#a44039;}</style>');
 				}
-			});
-		}, 500); `;
-		let script_ = document.createElement('script');
-		script_.innerHTML = modules;
-		document.body.appendChild(script_);
+			}
+			// round to 2 decimal
+			function roundToTwo(num) {    
+				return +(Math.round(num + "e+2")  + "e-2");
+			}
+			// cancel actions
+			window.setTimeout(() => {
+				$(document).keydown(function(e){
+					if (e.altKey){
+						/**/console.log('alt pressed');
+						continuing = false;
+						/**/console.log(continuing);
+					}
+				});
+			}, 500); `;
+			let script_ = document.createElement('script');
+			script_.id = 'modules',
+			script_.innerHTML = modules;
+			document.body.appendChild(script_);
+		}
 	})();
 	function append(link){
 		console.log("starting...");
