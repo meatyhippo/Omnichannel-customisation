@@ -15,14 +15,14 @@
 					'Action took: '+roundToTwo(seconds)+' seconds / '+roundToTwo((seconds/60))+' minutes</br>'+
 					'Items failed: '+fail_list.length+'</br>'+
 					'Items succeeded: '+Object.keys(success_list).length+'</br>'+
-					'This page wil automaticaalt refresh in 45 secs');
+					'This page wil auto refresh in 45 secs');
 				$('body').append('<style>#success{top:0;text-align:center}</style>');
 			} else {
 				$('#successNotificationMessage').html('Cancelled action! </br>'+
 					'Ran for: '+roundToTwo(seconds)+' seconds / '+roundToTwo((seconds/60))+' minutes</br>'+
 					'Items failed: '+fail_list.length+'</br>'+
 					'Items succeeded: '+Object.keys(success_list).length+'</br>'+
-					'This page wil automaticaalt refresh in 45 secs');
+					'This page wil auto refresh in 45 secs');
 				$('body').append('<style>#success{top:0;text-align:center}#success::before{background:#a44039;}</style>');
 			}
 		}
