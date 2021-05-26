@@ -316,15 +316,13 @@
             t[APIendpoint].forEach((line,index) => {
                 switch (report) {
                     case 'ItemTags'://checked - OK
-						line.Tag = "";
+						line.Tag="";
 						if(!line.Tags){
 							line.Tag="";
 						} else if (typeof line.Tags.tag=="string"){
 							line.Tag=line.Tags.tag;
 						} else {
-							line.Tags.tag.forEach((tag,i)=>{
-								line.Tag+=(tag)+(i<this.length-1?',':'');
-							})
+							line.Tag=line.Tags.tag.join(',');
 						}
 						delete line.Tags
                         break;
@@ -508,7 +506,6 @@
                 }
                 if (line.discountable){delete line.discountable;}
                 if (line.tax){delete line.tax;}
-                if (line.itemType){delete line.itemType;}
                 if (line.serialized){delete line.serialized;}
                 if (line.modelYear){delete line.modelYear;}
                 if (line.timeStamp){delete line.timeStamp;}

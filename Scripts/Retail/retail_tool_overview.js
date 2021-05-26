@@ -14,13 +14,15 @@
 				$('#successNotificationMessage').html('All done! </br>'+
 					'Action took: '+roundToTwo(seconds)+' seconds / '+roundToTwo((seconds/60))+' minutes</br>'+
 					'Items failed: '+fail_list.length+'</br>'+
-					'Items succeeded: '+Object.keys(success_list).length);
+					'Items succeeded: '+Object.keys(success_list).length+'</br>'+
+					'This page wil automaticaalt refresh in 45 secs');
 				$('body').append('<style>#success{top:0;text-align:center}</style>');
 			} else {
 				$('#successNotificationMessage').html('Cancelled action! </br>'+
 					'Ran for: '+roundToTwo(seconds)+' seconds / '+roundToTwo((seconds/60))+' minutes</br>'+
 					'Items failed: '+fail_list.length+'</br>'+
-					'Items succeeded: '+Object.keys(success_list).length);
+					'Items succeeded: '+Object.keys(success_list).length+'</br>'+
+					'This page wil automaticaalt refresh in 45 secs');
 				$('body').append('<style>#success{top:0;text-align:center}#success::before{background:#a44039;}</style>');
 			}
 		}
@@ -32,8 +34,9 @@
 		window.setTimeout(() => {
 			$(document).keydown(function(e){
 				if (e.altKey){
-					/**/console.log(e.altKey);
+					/**/console.log('alt pressed');
 					continuing = false;
+					/**/console.log(continuing);
 				}
 			});
 		}, 500); `;
@@ -96,7 +99,7 @@
 	box.id = 'tool_box',
 	v_box = document.createElement('div'),
 	v_box.id = 'version',
-	v_box.innerHTML='<p>'+version+'</br>what\'s new: pager id\'s tool</p>',
+	v_box.innerHTML='<p>'+version+'</br>what\'s new: pager id\'s tool, delete all images (slowly replacing existing support tools)</p>',
 	close = document.createElement('div'),
 	close.id = 'close',
 	close.onclick=function(){

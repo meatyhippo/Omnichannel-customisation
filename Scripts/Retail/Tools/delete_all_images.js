@@ -1,6 +1,6 @@
 function delete_images(){
 	//------------------- start declarions
-	window.alert('WARNING. This will delete all images in the retail account. If you want to cancel, close this tab.');
+	window.alert('WARNING. This will delete all images in the retail account. If you want to cancel, please close this tab.');
 	window.success_list = {};
 	window.fail_list = {};
 	const	rad_id = document.querySelector('#help_account_id > var').innerHTML,
