@@ -51,6 +51,8 @@
 	window.fail_list = [];
 	window.csv = '';
 	let start_time = Date.now(),
+		fullspeed = 'true',
+		pitstop,
 		rad_id = document.querySelector('#help_account_id > var').innerHTML,
 		attr = "@attributes",
 		base_url = `${window.origin}/API/Account/${rad_id}/`,
@@ -59,15 +61,15 @@
 // add new here
     n_('ItemTags','Item','"TagRelations.Tag"',0,'all tags of an item separated by commas',tr_items,1);
     n_('VendorIDs','Item','"ItemVendorNums"',0,'all vendorID\'s of an item separated by commas',tr_items,1);
-    n_('ItemImages','Item','"Images"',0,'all items with their images',tr_items,1);
+    n_('ItemImages','Item','"Images"',0,'all items with their images. Compare matrix id\'s with amount of images to check image limit in omni',tr_items,1);
     n_('Attributes','Item','"ItemAttributes.ItemAttributeSet"',0,'all items with their attribute sets & attributes separated',tr_items,1);
-	n_('Items on order','Item','"ItemShops"',0,'all the items and how much inventory is in a PO per location',tr_items,1);
+	n_('Inventory on order','Item','"ItemShops"',0,'all the items and how much inventory is in a PO per location',tr_items,1);
 	n_('archived & published','Item',0,'&archived=only&publishToEcom=true','all the items that are both archived and still published to eCom',tr_items,1);
 	n_('customfields','Item','"CustomFieldValues"',0,'item custom fields',tr_items,0);
     n_('tags_vendorids','Item','"TagRelations.Tag","ItemVendorNums"',0,'tags & vendorid\'s',tr_items,0);
 	n_('Notes','Item','"Note"',0,'all items with their note',tr_items,1);
 	n_('Customertags','Customer','"Tags"',0,'customers and their tags',tr_customers,1);
-	n_('Customerfield','Customer','"CustomFieldValues"','&archive=1','customers and their custom fields',tr_customers,0);
+	n_('Customerfields','Customer','"CustomFieldValues"','&archive=1','customers and their custom fields',tr_customers,0);
     n_('Vendors','Vendor','"Contact"',0,'vendors and their contact info',tr_reports,1);
     n_('OrderNumbers','Sale',0,'&referenceNumber=>,0','all of the orders that have been synced from eCom to retail',tr_reports,1);
 // function to select export
@@ -78,10 +80,10 @@
 		if(!release)a.id = 'show_this',a.style.display = 'none';
 		a.insertAdjacentHTML('beforeEnd',`<p style="margin: 0; padding: 0.3em; width: 20em; border-radius: 5px; position:absolute; top:-9999999px; left:-9999999px; background: white; z-index:99999999;" class="${b_name.split(' ')[0]}_info">This exports: ${info_message}</p>`);
 		a.onmouseover = function(event){
-			$(`.${b_name.split(' ')[0]}_info`).css({'top':`${event.y - 5}px`,'left':`${event.x + 5}px`})
+			$(this).find('p').css({'top':`${event.y - 5}px`,'left':`${event.x + 5}px`})
 		};
 		a.onmouseout = function(){
-			$(`.${b_name.split(' ')[0]}_info`).css({'top':`-9999999px`,'left':`-9999999px`})
+			$(this).find('p').css({'top':`-9999999px`,'left':`-9999999px`})
 		};
 		a.onclick = function(){
 			((question)=>{
@@ -118,36 +120,74 @@
 // main loop + callbacks to xml & dl
     function counts(b_name, APIendpoint, relation){
 		let url = `${base_url}${APIendpoint}.json?`;
-		let primary_id = APIendpoint.toLowerCase()+'ID';
+		let primary_id = APIendpoint.toLowerCase()+'ID'; // needs looking into
         if(relation) url += `&load_relations=[${relation}]`;
         if(query.length > 0) url += query;
 		$.getJSON(url+'&limit=1',(data, textStatus, jqXHR)=>{
 			start_id = parseInt(Object.values(data[APIendpoint])[0],10);
 			count = parseInt(data[attr].count,10);
 		}).done(()=>{
-			url+=`&${APIendpoint.toLowerCase()+'ID'}=>%3D,${start_id}&offset=${offset}`;
 			for (offset; offset <= count; offset += 100) { // loops until total count
-				(count>20000 && offset%200==0) ? limiting = 'false': limiting = 'true';
+				let uri = `${url}&${APIendpoint.toLowerCase()+'ID'}=>%3D,${start_id}&offset=${offset}`;
+				/**
+				if (count>20000){
+					 pitstop = pitstop ? start_time-pitstop : Date.now();
+					if (((pitstop-start_time)/1000) % 5 == 0) fullspeed = 'false';
+				} else fullspeed = 'true';
+				*/
+				// needs work: async variable based on account size + time 
+
+				(count>20000 && offset%200==0) ? fullspeed = 'false': fullspeed = 'true';
 				if (continuing){ // catch cancel with mac alt key
-					$.getJSON(url,(t, textStatus, jqXHR)=>{
-					},`async:${limiting}`).done((t)=>{ // needs work: async based on account size
+					$.getJSON(uri,(t, textStatus, jqXHR)=>{
+					},`async:${fullspeed}`).done((t)=>{
 						if (b_name === 'OrderNumbers') {
-							unpapa_to_csv(b_name,APIendpoint,t);
+							add_to_csv(b_name,APIendpoint,t);
 						} else {
-							parse_Data_(b_name,APIendpoint,t);
+							parse_Data(b_name,APIendpoint,t);
 						}
 					});
 				}
 			}
 		});
     }
-    function parse_Data_(b_name,APIendpoint,t){
+    function parse_Data(b_name,APIendpoint,t){
 		function join_object(line,rel_object1,rel_object2){ // function to joing {} objects into one string
 			return line[rel_object1][rel_object2].map(key => key.value).join(',');
 		}
+		function customfield_switch(line){
+			let v = n = '';
+			n = (line.name+' '+line.type);
+			switch (line.type){
+				case 'dates'://needs checking, maybe parsing
+					break;
+				case 'single_choice'://needs checking: checked/not
+					v = line.value.value.length>0?line.value.value:'false';
+					break;
+				case 'multi_choice':
+					v += (line.value.name+',');
+					break;
+				default:
+					v = line.value;
+					/*
+					Item:
+						- string
+						- boolean
+						- date
+						- single_choice
+						- multi_choice
+						- float
+					Customer:
+						- integer (float)
+						- text (string)
+						*/
+					break;
+			}
+			return n, v; //n+'|%'+v;
+		}
 		function itemparse(b_name,APIendpoint,line){ // edit json data items add new here
-			switch (b_name) {
-				case 'ItemTags':// Done - Checked
+			switch (b_name){
+				case 'ItemTags':// Done - tested
 					line.Tag = '';
 					if(!line.Tags){
 					} else if (typeof line.Tags.tag=="string"){
@@ -157,7 +197,7 @@
 					}
 					delete line.Tags
 					break;
-				case 'VendorIDs':// Done - Checked
+				case 'VendorIDs':// Done - tested
 					line.vendorID = '';
 					if(!line.ItemVendorNums){
 					} else if (line.ItemVendorNums.ItemVendorNum.length==undefined){
@@ -167,17 +207,17 @@
 					}
 					delete line.ItemVendorNums;
 					break;
-				case 'ItemImages':// Done - needs testing
+				case 'ItemImages':// Done - tested
 					for (i = 0; i <= 12; ++i) {
-						let placeImage='Image'+i;
-						let placeName='Image_name'+i;
+						let placeImage='Image_url_'+i;
+						let placeName='Image_name_'+i;
 						line[placeImage]='';
 						line[placeName]='';
 					};
 					if (!line.Images){
 					} else if (line.Images.Image.length==undefined){
-						line.Image0 = line.Images.Image.baseImageURL + line.Images.Image.publicID + '.png';
-						line.Image_name0 = line.Images.Image.filename;
+						line.Image_url_0 = line.Images.Image.baseImageURL + line.Images.Image.publicID + '.png';
+						line.Image_name_0 = line.Images.Image.filename;
 					} else if (line.Images.Image.length > 1){
 						line.Images.Image.forEach((img,i) => {
 							let newImage = 'Image'+i;
@@ -209,47 +249,70 @@
 					}
 					delete line.ItemAttributes;
 					break;
-				case 'Notes': //Checked - OK
-					line.Notes = "";
-					line.note_public="";
+				case 'Notes': // Done - tested
+					line.Notes = '';
+					line.note_public= '';
 					if (line.Note) {
 						line.Notes = line.Note.note;
 						line.note_public = line.Note.isPublic;
 					}
 					delete line.Note;
 					break;
-				case 'Items on order'://checked - OK
+				case 'Inventory on order': //Done - tested
 					line.ItemShops.ItemShop.forEach((shop)=>{
-						if(shop.shopID == 0){
-							line['total items on order'] = shop.backorder;
+						if(shop.shopID != 0){
+							line['qoh shopid_'+shop.shopID] = shop.qoh;
+							line['on order shopid_'+shop.shopID] = shop.backorder;
 						} else {
-							line['items on order in shop '+shop.shopID] = shop.backorder;
+							line['total qoh shopid_'] = shop.qoh;
+							line['total on order shopid_'] = shop.backorder;
 						}
 					})
 					delete line.ItemShops;
 					break;
-				case 'Customertags': // needs work in bigger accounts
-					line.birth_date = "";
+				case 'Customertags': // Done - needs testing
+					line.birth_date = '';
+					line.customertags = '';
 					if (line.dob && line.dob > 0) {
 						line.birth_date += line.dob;
 					}
-					line.customertags = "";
-					if(line.Tags && line.Tags.Tag.length > 0){
-						let l = "";
-						line.Tags.Tag.forEach((ctag) => {
-							l += ctag.name;
-							l += ','; l.slice(0,l.length - 1);
-						});
-						line.customertags = l.slice(0,l.length - 1);
-					} else if (line.Tags){
+					if(!line.Tags){
+					} else if (typeof line.Tags.tag=="string"){
 						line.customertags = line.Tags.Tag.name;
+					} else {
+						line.customertags = line.Tags.tag.join(','); //maybe line.Tags.tag.name
 					}
 					delete line.dob;
 					delete line.Tags;
 					break;
-				case 'Customerfield':
+				case 'customfields': //needs testing - function with a switch based on the field type. Pas whole lvl based on amount of fields: single field or multiple fields & return string. If none filled in: no object!
+					if (!line.CustomFieldValues){
+					} else if (line.CustomFieldValues && line.CustomFieldValue.length==undefined){ //only for 1 custom field
+						customfield_switch(line.CustomFieldValues.CustomFieldValue);
+						line[n] = v;
+					} else {
+						line.CustomFieldValues.forEach(x => {
+							customfield_switch(x.CustomFieldValue);
+							line[n] = v;	
+						});
+					}
+					delete line.CustomFieldValues;
 					break;
-				case 'tags_vendorids': //checked - OK
+				case 'Customerfields': //needs testing - function with a switch based on the field type. Pas whole lvl based on amount of fields: single field or multiple fields & return string
+					if (!line.CustomFieldValues){
+						window.alert('no custom fields');
+					} else if (line.CustomFieldValues && line.CustomFieldValue.length==undefined){ //only for 1 custom field
+						customfield_switch(line.CustomFieldValues.CustomFieldValue);
+						line[n] = v;
+					} else {
+						line.CustomFieldValues.forEach(x => {
+							customfield_switch(x.CustomFieldValue);
+							line[n] = v;	
+						});
+					}
+					delete line.CustomFieldValues;
+					break;
+				case 'tags_vendorids': // Done - needs testing
 					line.Tag = '';
 					if(!line.Tags){
 					} else if (typeof line.Tags.tag=='string'){
@@ -269,40 +332,7 @@
 					}
 					delete line.ItemVendorNums;
 					break;
-				case 'customfields':
-					delete line.Prices;
-					if(line.CustomFieldValues ){//&& line.CustomFieldValues.CustomFieldValue.length > 0) {
-						console.log(line);
-						line.CustomFieldValues.CustomFieldValue.forEach((field,i)=>{
-							let l;
-							switch (field.type){
-								case 'string':
-									field.value ? l = field.value : l = "";
-									break;
-								case 'single_choice':
-									field.value.name ? l = field.value.name : l = "";
-									break;
-								case 'date':
-									field.value ? l = field.value : l = "";
-									break;
-								case 'multi_choice':
-									field.value.name ? l += field.value.name : l = "";
-									break;
-								case 'float':
-									field.value ? l = field.value : l = "";
-									break;
-								case 'boolean':
-									field.value ? l = field.value : l = "";
-									break;
-								default:
-									break;
-							};
-							line["customfield"+i] = l;
-						})
-					}
-					delete line.CustomFieldValues;
-					break;
-				case 'Vendors': // checken - OK
+				case 'Vendors': // Done - needs testing
 					line.primary_vendor_email = "";
 					line.secondary_vendor_email = "";
 					line.contactfirstname = "";
@@ -325,6 +355,7 @@
 				default:
 					break;
 			}
+			//remove all extra data
 			if (line.discountable){delete line.discountable;}
 			if (line.tax){delete line.tax;}
 			if (line.serialized){delete line.serialized;}
@@ -333,7 +364,7 @@
 			if (line.categoryID){delete line.categoryID;}
 			if (line.taxClassID){delete line.taxClassID;}
 			if (line.departmentID){delete line.departmentID;}
-			if (line.itemMatrixID&&b_name!='ItemImages'){delete line.itemMatrixID;}
+			if (line.itemMatrixID&&b_name!='ItemImages')/* compare itemmatrix id's for too many max images */{delete line.itemMatrixID;}
 			if (line.manufacturerID){delete line.manufacturerID;}
 			if (line.seasonID){delete line.seasonID;}
 			if (line.defaultVendorID){delete line.defaultVendorID;}
@@ -347,13 +378,13 @@
 				t[APIendpoint].forEach((line) => {
 					itemparse(b_name,APIendpoint,line);
 				});
-			} catch (error){ // for if counts ends on 1
+			} catch (error){ // fallback for if counts ends on 1
 				/**/console.log(t[attr],t[APIendpoint]); // only if foreach on item failed
 				fail_list.push(t);
 				line = t[APIendpoint];
 				itemparse(b_name,APIendpoint,line)
 			};
-            unpapa_to_csv(b_name,APIendpoint,t);
+            add_to_csv(b_name,APIendpoint,t);
         } else if (t[APIendpoint] && count == 1){
             window.alert('Only one item found, opening in new page (check browser popup blocker)');
             let url = `${window.origin}/?name=item.views.item&form_name=view&tab=details&id=`+t.Item.itemID;
@@ -362,7 +393,7 @@
         } else { window.alert('Not found'); }
     }
 // papaparse data & add to csv
-    function unpapa_to_csv(b_name,APIendpoint,t,){ 
+    function add_to_csv(b_name,APIendpoint,t,){ 
         csv += Papa.unparse(t[APIendpoint],{
             header: true,
             delimiter: ";",
@@ -386,8 +417,8 @@
 		} else {
 			document.getElementById('progressbar').style.width = ((donecount/(count+1))*100) + '%';
 		}
-	}, 500);
-// when finished
+	}, 200);
+// when finished - export file + log
 	$(document).ajaxStop(function(APIendpoint) {
 		console.log(csv);
 		//window.localStorage.setItem('export_file','csv');
@@ -399,6 +430,6 @@
 		}, 1000);
 		window.setTimeout(() => {
 			location.reload();
-		}, 45 * 1000);
+		}, 60 * 1000);
 	});
 })();
