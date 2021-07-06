@@ -1,6 +1,5 @@
 //gets called from a from github bookmark, shows all the tools
 !function(){
-	let version = 'v.2.6.3';
 	(()=>{
 		if (document.getElementById('modules')){console.log('modules loaded');}else{
 			let modules = `
