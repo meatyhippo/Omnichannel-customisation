@@ -133,6 +133,13 @@ setTimeout(() => {
 					col.appendChild(a);
 					col.appendChild(document.createTextNode(` // ${shop_info.cluster}`));
 					col.appendChild(document.createTextNode(` // ${shop.status.toUpperCase()}`));
+					a = document.createElement("a"),
+					a.classList.add('hide'),
+					a.id = 'show_this',
+					a.appendChild(document.createTextNode(" / Staff")),
+					a.target="_blank";
+					a.href=`https://staff.${location.hostname.split('.')[1]}.com/shops/${shop_info.shop_id}`;
+					col.appendChild(a);
 				break;
 				case 'themes':
 					let theme_links=[
@@ -374,17 +381,19 @@ setTimeout(() => {
 			o(`Shop id // ${shop_info.rad_id>0?'rad_id // ':''}primary user`,shop_info.shop_id,'IDs');
 			o('V1 // Shop cluster // Shop status','V1','cluster');
 			o('Theme buttons',shop_info.theme,'themes');
-			if(shop_info.themes.themes[0].en || shop_info.themes.themes[0].nl) {
-				o('Name // Developer // Price',(shop_info.themes.themes[0].en.title.length>0?shop_info.themes.themes[0].en.title:shop_info.themes.themes[0].nl.title)+' // '+(shop_info.themes.themes[0].designer.length>0?shop_info.themes.themes[0].designer:'custom')+' // '+'€'+(shop_info.themes.themes[0].prices>0?shop_info.themes.themes[0].prices[1].price:'0'),'store/themes?query='+shop_info.themes.themes[0].en.title)
+			if(shop_info.themes.themes[0].en) {
+				o('Name // Developer // Price',(shop_info.themes.themes[0].en.title)+' // '+(shop_info.themes.themes[0].designer.length>0?shop_info.themes.themes[0].designer:'custom')+' // '+'€'+(shop_info.themes.themes[0].prices>0?shop_info.themes.themes[0].prices[1].price:'0'),'store/themes?query='+shop_info.themes.themes[0].en.title);
+			} else if (shop_info.themes.themes[0].nl){
+				o('Name // Developer // Price',(shop_info.themes.themes[0].nl.title)+' // '+(shop_info.themes.themes[0].designer.length>0?shop_info.themes.themes[0].designer:'custom')+' // '+'€'+(shop_info.themes.themes[0].prices>0?shop_info.themes.themes[0].prices[1].price:'0'),'store/themes?query='+shop_info.themes.themes[0].nl.title);
 			};
-			o('Change BO lang.','NL','language')
+			o('Change BO lang.','NL','language');
 			o('JSON','Open page JSON',location.origin+location.pathname+'.json'/*+location.search.replace(/^\?{1}/g,'&')*/,!0);
 			//o('Api/app (js)scripts',Object.keys(shop_info.headlines.shop.scripts).length||'None',Object.keys(shop_info.headlines.shop.scripts).length&&'store/purchases/apps');
-			o('Quick links','show','quickies')
+			o('Quick links','show','quickies');
 			o('Installed apps','show','APPS');
 			o('Time to value (for PS)','Click here','TTV');
 			o('Subscription info','show','SUB');
-			o('Extra tools','show','tools')
+			o('Extra tools','show','tools');
 			console.log(shop_info);
 			table.appendChild(tbody),
 			div_box.appendChild(table),

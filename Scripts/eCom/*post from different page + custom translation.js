@@ -58,3 +58,9 @@ let country = "fr";
 			})
 		}
 	}
+
+//-------------------
+jQuery.post( '/admin/account/edit', '_method=patch&utf8=%25E2%259C%2593&user[language_id]='+BO_langs[lang],function(data){
+	Turbolinks.visit(location);
+	console.log('switching to '+lang);
+})
