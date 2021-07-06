@@ -1,5 +1,6 @@
 //gets called from a from github bookmark, shows all the tools
 !function(){
+	let version = 'v.2.6.3';
 	(()=>{
 		if (document.getElementById('modules')){console.log('modules loaded');}else{
 			let modules = `
@@ -26,6 +27,9 @@
 						'This page wil auto refresh in 45 secs');
 					$('body').append('<style>#success{top:0;text-align:center}#success::before{background:#a44039;}</style>');
 				}
+				window.setTimeout(() => {
+					location.reload();
+				}, 60 * 1000);		
 			}
 			// round to 2 decimal
 			function roundToTwo(num) {    
@@ -85,6 +89,11 @@
 			link:'Tools/customerID_to_pagerfield.js',
 			name:'Customer ID to pagerfield',
 			description: 'Replaces the customer pager with customer internal id'
+		},
+		{
+			link:'Tools/split_matrix.js',
+			name:'Split up Color/Size matrix',
+			description: 'Splits up into multiple color matrices (be in the matrix to split)'
 		}
 	];
 	wrapper=document.createElement('div'),
