@@ -1,12 +1,8 @@
-{#-------------------
-Instructions:
-There is a switch on the top of the template for "EAN_as_barcode"
--------------------
+{#
                             ***Begin Custom Options***
 Set any of the options in this section from 'false' to 'true' in order to enable them in the template
 #}
 
-{% set EAN_as_barcode = false %}      {# changes the system SKU to the EAN code when filled in. #}
 {% set vendor_number = false %}                     {# Display Vendor ID (if available) above Description #}
 {% set show_custom_sku = false %}                   {# Display Custom SKU (if available) above Description #}
 {% set show_manufacturer_sku = false %}             {# Display Manufacturer SKU (if available) above Description #}
@@ -19,14 +15,15 @@ Set any of the options in this section from 'false' to 'true' in order to enable
 {% set hide_description = false %}                  {# Remove the description from displaying on label #}
 {% set hide_barcode = false %}                      {# Remove the barcode from displaying on label #}
 {% set hide_barcode_sku = false %}                  {# Remove the System ID from displaying at the bottom of barcdoes #}
+{% set EAN_as_barcode = true %}                  	{# replace system id barcode with EAN if filled in #}
 
 {# Enter Category IDs (found in Settings > Categories by clicking on the desired Category and looking at the id=number at in the URL for the Category)
     into the appropriate section, separated by commas and enclosed in single quotes #}
 
-{% set normal_label_categories =  [''] %}
-{% set alt_label_categories = [''] %}
-{% set small_label_categories = [''] %}
-{% set jewelry_label_categories = [''] %}
+{% set normal_label_categories =  ['46'] %}
+{% set alt_label_categories = ['45'] %}
+{% set small_label_categories = ['44'] %}
+{% set jewelry_label_categories = ['47'] %}
 
 
 {# Normal Label (2.25x1.25) settings #}
@@ -302,64 +299,59 @@ Set any of the options in this section from 'false' to 'true' in order to enable
                     </p>
                 </div>
             </article>
-{% if hide_barcode == false %}
-    {% if hide_barcode_sku == true %}
-        {% set hide_text = 1 %}<span style="display:none;" id="hide_text">{{hide_text}}</span>
-    {% else %}
-        {% set hide_text = 0 %}<span style="display:none;" id="hide_text">{{hide_text}}</span>
-    {% endif %}
 
-    <footer class="barcode">
-        <div style="display:none;" class="EANS">{{ Label.Item.ean }}</div>
-        <div>
-        {% if EAN_as_barcode == true and Label.Item.ean|strlen > 12 %}
-            <script>
-let	div = document.getElementsByClassName('barcodereplace'),
-    EAN = document.getElementsByClassName('EANS'),
-    hide_text = document.getElementById('hide_text').innerHTML,
-    domain = window.location.host;
+			{% set shop_logo_array = {
+				0:{"name":"Example Shop", "logo_url":"http://logo.url.goes/here.jpg"},
+				1:{"name":"", "logo_url":""},
+				2:{"name":"", "logo_url":""},
+				3:{"name":"", "logo_url":""},
+				4:{"name":"", "logo_url":""},
+				5:{"name":"", "logo_url":""}
+			}%}
 
-function replaceEAN() {
-for (i = 0; i < div.length; ++i) {
-var	EAN2 = Math.floor(EAN[i].innerHTML / 10);
-console.log(div[i]);
-div[i].src = `https://${domain}/barcode.php?type=label&number=${EAN2}&noframe=1&hide_text=0`;
-    };
-setTimeout(
-		() => {
-		  console.log('this is the ean message');
-	  window.print();
-		},
-		1 * 1000
-	);
-}
-document.addEventListener("DOMContentLoaded", replaceEAN);  //calls function when page loaded
-            </script>
-            <img class="ean8" src="/barcode.php?type=label&amp;number={{ Label.Item.ean }}&amp;ean8=1&amp;noframe=1&amp;hide_text={{ hide_text }}">
-            <img class="barcodereplace ean" src="/barcode.php?type=label&amp;number={{ Label.Item.ean }}&amp;noframe=1&amp;hide_text={{ hide_text }}">
-        {% else %}
-            <img class="ean8" src="/barcode.php?type=label&amp;number={{ Label.Item.systemSku }}&amp;ean8=1&amp;noframe=1&amp;hide_text={{ hide_text }}">
-            <img class="ean" src="/barcode.php?type=label&amp;number={{ Label.Item.systemSku }}&amp;noframe=1&amp;hide_text={{ hide_text }}">
-        {% endif %}
-      </div>
-    </footer>
-{% endif %}
+            {% for category in normal_label_categories %}
+                {% if category == Label.Item.categoryID %}
+                    {% set size_specified = true %}
+                {% endif %}
+            {% endfor %}
+            {% for category in alt_label_categories %}
+                {% if category == Label.Item.categoryID %}
+                    {% set size_specified = true %}
+                {% endif %}
+            {% endfor %}
+            {% for category in small_label_categories %}
+                {% if category == Label.Item.categoryID %}
+                    {% set size_specified = true %}
+                {% endif %}
+            {% endfor %}
+            {% for category in jewelry_label_categories %}
+                {% if category == Label.Item.categoryID %}
+                    {% set size_specified = true %}
+                {% endif %}
+            {% endfor %}
+            {% if size_specified == false %}
+                
+            {% endif %}
+
+			{% set barcode_width = Label.MetaData.size |split("x")[1] %}
+            {% if hide_barcode == false %}
+                {% if hide_barcode_sku == true %}
+                    {% set hide_text = 1 %}
+                {% else %}
+                    {% set hide_text = 0 %}
+                {% endif %}
+                <footer class="barcode">
+					{% if EAN_as_barcode == true %}
+						<img class="ean" style="/* width: 120px;height:48.78px;margin-top:-10px; */" src="https://barcode.tec-it.com/barcode.ashx?data={% if Label.Item.ean|strlen > 0 %}{{Label.Item.ean}}&code={% if Label.Item.ean|strlen == 14 %}EAN14{% elseif Label.Item.ean|strlen == 8 %}EAN8{% else %}EAN13{% endif %}{% else %}{{Label.Item.upc}}&code=UPCA{% endif %}&unit=Fit&dpi=203&height=30">
+					{% else %}
+						<img class="ean8" src="/barcode.php?type=label&amp;number={{ Label.Item.systemSku }}&amp;ean8=1&amp;noframe=1&amp;hide_text={{ hide_text }}">
+						<img class="ean" src="/barcode.php?type=label&amp;number={{ Label.Item.systemSku }}&amp;noframe=1&amp;hide_text={{ hide_text }}">
+					{% endif %}
+                </footer>
+            {% endif %}
                     </div>
                 </div>
         {% endfor %}
     {% endfor %}
-{% if EAN_as_barcode == false %}
-    <script>
-    function timer() {
-    setTimeout (
-            () => {
-            console.log('this is the sys id message');
-        window.print();
-            },
-            1 * 1000
-        );}
-    document.addEventListener("DOMContentLoaded", timer);
-    </script>
-{% endif %}
 </div>
 {% endblock content %}
