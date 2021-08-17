@@ -24,7 +24,7 @@ function front_info(){
 					},
 					v_box = document.createElement("div"),
 					v_box.id = "version",
-					v_box.innerHTML='<p>'+version+'</br>what\'s new: Automatically add product & go to chosen checkout</p>',
+					v_box.innerHTML='<p>'+version+'</br>what\'s new: session clear + on thank you page, open the order in BO</p>',
 					close = document.createElement("div"),
 					close.id = "close",
 					close.onclick = function(){
@@ -186,7 +186,7 @@ function front_info(){
 				// e = text in first column
 				// o = result from json in function list below
 				// l = used in the cases in the switch above, also the link in default. put n on true for full link
-				// n = boolean in the default of the switch to have the link append to /admin/
+				// n = boolean in the default of the switch to not have the link append to /admin/
 				// 
 				o("Shop id",t.shop.id,"admin");
 				if (t.shop.settings.retail_id){
@@ -202,8 +202,11 @@ function front_info(){
 				o("Currencies",`${Object.keys(t.shop.currencies).length}: ${Object.keys(t.shop.currencies).join(", ")}`,"settings/internationalization"),
 				o("Api/app (js)scripts",Object.keys(t.shop.scripts).length||"None",Object.keys(t.shop.scripts).length&&"store/purchases/apps"),
 				o("Open","","JSON"),
-				o("Add product & checkout","",['cart','onestep','onepage','default','']);
-				o("Clear session data","Clear session",location.origin+"/session/clear",1)
+				o("Add product & checkout","",['cart','onestep','onepage','default','new']);
+				o("Clear session data","Clear session",location.origin+"/session/clear",1);
+				if (location.pathname.includes('/thankyou/')) {
+					o("Go to order "+t.order.information.number, t.order.information.id, 'orders/'+t.order.information.id)
+				}
 				if (t.gtag) {
 					o("Google Analytics",t.gtag.gtag_id);
 				};
@@ -253,7 +256,5 @@ function front_info(){
 			},
 		cluster.send();
 	}();
-	function go_to_checkout(o){
-		function t(t){var n=location.origin+"/cart/add/"+t,e=new XMLHttpRequest;e.open("POST",n,!0),e.onload=function(){e.status>=200&&e.status<400&&console.log("success: 200")},e.send(),setTimeout(function(){window.location.href="cart"==o?location.origin+"/cart/":location.origin+"/checkout/"+o},1e3)}Array.prototype.random=function(){return this[Math.floor(Math.random()*this.length)]},function(){function o(){e=n.random(),console.log(e);var s=location.origin+"/"+e.url+"?format=json",a=new XMLHttpRequest;a.open("GET",s,!1),a.onload=function(){if(a.status>=200&&a.status<400){let n=JSON.parse(a.responseText).product;n.custom?o():t(e.vid)}},a.send()}let n=[],e="";var s=new XMLHttpRequest;s.open("GET",location.origin+"/collection?format=json",!1),s.onload=function(){if(s.status>=200&&s.status<400){let o=JSON.parse(s.responseText).collection.products;for(const t in o)Object.hasOwnProperty.call(o,t)&&o[t].available&&n.push(o[t])}},s.send(),o()}()
-	}
+	function go_to_checkout(o){function n(n){$.ajax({type:"POST",url:location.origin+"/cart/add/"+n+"/",success:function(n){console.log(n,o),window.location.href="cart"==o?location.origin+"/cart/":"new"==o?location.origin+"/checkouts/":location.origin+"/checkout/"+o}})}Array.prototype.random=function(){return this[Math.floor(Math.random()*this.length)]},function(){function o(){c=t.random(),console.log(c),$.get(location.origin+"/"+c.url+"?format=json",function(t,i,r){let a=t.product;a.custom?o():n(c.vid)},"JSON")}let t=[],c="";$.get(location.origin+"/collection?format=json",function(o,n,c){let i=o.collection.products;for(const o in i)Object.hasOwnProperty.call(i,o)&&i[o].available&&t.push(i[o])},"JSON").done(n=>{o()})}()}
 }front_info();

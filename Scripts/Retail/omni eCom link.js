@@ -30,7 +30,7 @@ let body = {
             },
             {
                 "key": "main_domain",
-                "value": "rubenvan.webshopapp.com"
+                "value": "rubenvan-heeatlightspeedhqcom.webshopapp.com"
             },
             {
                 "key": "dataload_progress_percentage",

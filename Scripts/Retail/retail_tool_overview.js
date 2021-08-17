@@ -90,6 +90,11 @@
 			description: 'Replaces the customer pager with customer internal id'
 		},
 		{
+			link:'Tools/county_to_tag.js',
+			name:'Customer country code added to tags as ISO code(2 letter)',
+			description: 'Add a tag to a customer file with the customer\'s country code'
+		},
+		{
 			link:'Tools/split_matrix.js',
 			name:'Split up Color/Size matrix',
 			description: 'Splits up into multiple color matrices (be in the matrix to split)'

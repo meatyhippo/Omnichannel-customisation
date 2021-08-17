@@ -3,7 +3,7 @@ function delete_images(){
 	window.alert('WARNING. This will delete all images in the retail account. If you want to cancel, please close this tab.');
 	window.success_list = {};
 	window.fail_list = {};
-	const	rad_id = document.querySelector('#help_account_id > var').innerHTML,
+	const	rad_id = window.merchantos.account.id,
 			base_url = `${window.origin}/API/Account/${rad_id}/Image/`,
 			attr = '@attributes';
 	let start_id = 0,

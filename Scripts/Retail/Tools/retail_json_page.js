@@ -1,6 +1,6 @@
 !function(){
 	let domain = window.location.host;
-	let RAD = document.querySelector('#help_account_id > var').innerHTML;
+	let RAD = window.merchantos.account.id;
 	let searchParams = new URLSearchParams(window.location.search);
 	let caps = Array.from(searchParams.get('name').split('.')[0]);
 	let firstletter = caps.shift().toUpperCase();

@@ -10,7 +10,7 @@
     // create tool_box - tool_wrapper with close
         div_wrap = document.createElement('div'),
         div_wrap.id = 'tool_wrapper',
-        div_wrap.onclick = function(){document.body.removeChild(div_wrap);clearInterval(x);};
+        div_wrap.onclick = function(){document.body.removeChild(div_wrap);clearInterval(openbar);};
         div = document.createElement('div'),
 		div.onclick = function(evt){evt.stopPropagation();},
         div.id = 'types';
@@ -27,10 +27,10 @@
     // ------------------- progress bar
 		bar = document.createElement('div'),
 		bar.setAttribute('style','margin:0;height:20px;background-color:lightpink;color:white;'),
-		bar.style.width = '1%',
+		bar.style.width = '0.1%',
 		bar.id = 'progressbar';
 		div.appendChild(bar);
-// ------------------- table with buttons
+	// ------------------- table with buttons
 		table = document.createElement('table'),
 		tr_items = document.createElement('tr'),
 		tr_items.id = "tr_items",
@@ -53,14 +53,14 @@
 	let start_time = Date.now(),
 		fullspeed = 'true',
 		pitstop,
-		rad_id = document.querySelector('#help_account_id > var').innerHTML,
+		rad_id = window.merchantos.account.id,
 		attr = "@attributes",
 		base_url = `${window.origin}/API/Account/${rad_id}/`,
 		donecount = count = start_id = offset = 0,
 		query = ''; //variables for different functions
 // add new here
     n_('ItemTags','Item','"TagRelations.Tag"',0,'all tags of an item separated by commas',tr_items,1);
-    n_('VendorIDs','Item','"ItemVendorNums"',0,'all vendorID\'s of an item separated by commas',tr_items,1);
+    n_('VendorIDs','Item','"ItemVendorNums"',0,'all vendorID\'s of an item separated by commas. Together with vendor costs in the same order.',tr_items,1);
     n_('ItemImages','Item','"Images"',0,'all items with their images. Compare matrix id\'s with amount of images to check image limit in omni',tr_items,1);
     n_('Attributes','Item','"ItemAttributes.ItemAttributeSet"',0,'all items with their attribute sets & attributes separated',tr_items,1);
 	n_('Inventory on order','Item','"ItemShops"',0,'all the items and how much inventory is in a PO per location',tr_items,1);
@@ -139,8 +139,8 @@
 
 				(count>20000 && offset%200==0) ? fullspeed = 'false': fullspeed = 'true';
 				if (continuing){ // catch cancel with mac alt key
-					$.getJSON(uri,(t, textStatus, jqXHR)=>{
-					},`async:${fullspeed}`).done((t)=>{
+					$.getJSON({url:uri,success:(t, textStatus, jqXHR)=>{
+					},async:fullspeed}).done((t)=>{
 						if (b_name === 'OrderNumbers') {
 							add_to_csv(b_name,APIendpoint,t);
 						} else {
@@ -152,8 +152,8 @@
 		});
     }
     function parse_Data(b_name,APIendpoint,t){
-		function join_object(line,rel_object1,rel_object2){ // function to joing {} objects into one string
-			return line[rel_object1][rel_object2].map(key => key.value).join(',');
+		function join_object(line,rel_object1,rel_object2, data){ // function to joing {} objects into one string
+			return line[rel_object1][rel_object2].map(key => key[data]).join(',');
 		}
 		function customfield_switch(line){
 			let v = n = '';
@@ -183,7 +183,7 @@
 						*/
 					break;
 			}
-			return n, v; //n+'|%'+v;
+			return n, v;
 		}
 		function itemparse(b_name,APIendpoint,line){ // edit json data items add new here
 			switch (b_name){
@@ -199,11 +199,14 @@
 					break;
 				case 'VendorIDs':// Done - tested
 					line.vendorID = '';
+					line.vendorcost = '';
 					if(!line.ItemVendorNums){
 					} else if (line.ItemVendorNums.ItemVendorNum.length==undefined){
 						line.vendorID = line.ItemVendorNums.ItemVendorNum.value;
+						line.vendorcost = line.ItemVendorNums.ItemVendorNum.cost;
 					} else {
-						line.vendorID = join_object(line,'ItemVendorNums','ItemVendorNum');
+						line.vendorID = join_object(line,'ItemVendorNums','ItemVendorNum','value');
+						line.vendorcost = join_object(line,'ItemVendorNums','ItemVendorNum','cost');
 					}
 					delete line.ItemVendorNums;
 					break;
@@ -401,6 +404,13 @@
 		/**/console.log('Export name:',b_name,'| Endpoint:',APIendpoint, '| ','Call:',t);
 		console.log(csv.length+` characters in csv | items: ${donecount}/${count} | ` + roundToTwo((donecount/count)*100) + '%');
 	}
+// progress bar
+	let openbar = window.setInterval(()=>{
+		if ((donecount/count) >= 1) {
+		} else {
+			document.getElementById('progressbar').style.width = ((donecount/(count+1))*100) + '%';
+		}
+	}, 200);
 // download button
     function DL_(APIendpoint){
         var today = new Date();
@@ -410,16 +420,9 @@
         file.download = today.toString().replace(/ /g,"_")+' '+APIendpoint+'_export.csv',
         file.click();
     }
-// progress bar
-	let x = window.setInterval(()=>{
-		if ((donecount/count) >= 1) {
-			clearInterval(x);
-		} else {
-			document.getElementById('progressbar').style.width = ((donecount/(count+1))*100) + '%';
-		}
-	}, 200);
 // when finished - export file + log
 	$(document).ajaxStop(function(APIendpoint) {
+		clearInterval(openbar);
 		console.log(csv);
 		//window.localStorage.setItem('export_file','csv');
 		/**/console.log('^done ');
@@ -428,8 +431,5 @@
 			if (document.getElementById('nodownload').checked){}else {DL_(APIendpoint)};
 			(()=>{document.body.removeChild(div_wrap);})();
 		}, 1000);
-		window.setTimeout(() => {
-			location.reload();
-		}, 60 * 1000);
 	});
 })();

@@ -8,7 +8,7 @@ function loops(){
 			}
 		},
 			host = window.origin,
-			rad_id = document.querySelector('#help_account_id > var').innerHTML,
+			rad_id = window.merchantos.account.id,
 			fullurl = `${host}/API/Account/${rad_id}/Item/${xy}.json?load_relations=["ItemAttributes","ItemAttributes.ItemAttributeSet"]`,
 			settings = {
 				method: "PUT",
