@@ -1,7 +1,0 @@
-.note { text-align: center; }
-
-_______________
-replace with
----------------
-
-.note { text-align: center; clear: both; padding-top: 10px;}
