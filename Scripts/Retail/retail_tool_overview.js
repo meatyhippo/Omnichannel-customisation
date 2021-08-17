@@ -91,8 +91,8 @@
 		},
 		{
 			link:'Tools/county_to_tag.js',
-			name:'Customer country code added to tags as ISO code(2 letter)',
-			description: 'Add a tag to a customer file with the customer\'s country code'
+			name:'Customer country code added to tags',
+			description: 'Add a tag to a customer file with the customer\'s country code as ISO code(2 letter)'
 		},
 		{
 			link:'Tools/split_matrix.js',
@@ -115,7 +115,7 @@
 	box.id = 'tool_box',
 	v_box = document.createElement('div'),
 	v_box.id = 'version',
-	v_box.innerHTML='<p>'+version+'</br>what\'s new: pager id\'s tool, delete all images (slowly replacing existing support tools)</p>',
+	v_box.innerHTML='<p>'+version+'</br>what\'s new: split matrix into separat matrices</p>',
 	close = document.createElement('div'),
 	close.id = 'close',
 	close.onclick=function(){
