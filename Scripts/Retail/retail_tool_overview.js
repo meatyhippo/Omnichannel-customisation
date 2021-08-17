@@ -131,7 +131,7 @@
 	table.id = 'table',
 	tbody=document.createElement('tbody'),
 	tr = document.createElement('tr');
-	tr.innerHTML = '<td style="transform:translate(50%,0);font-size:2em;">Welcome to the retail tools collection</td>';
+	tr.innerHTML = '<td style="transform:translate(50%,0);font-size:2em;">Welcome to retail tools</td>';
 	tbody.append(tr);
 	tools.forEach((item,i) => {
 		tr = document.createElement('tr');
