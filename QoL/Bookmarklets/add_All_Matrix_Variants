@@ -1,1 +1,0 @@
-javascript:function cLick(){var t=document.querySelectorAll(".custom_function.gui-def-button");for(i=0;i<t.length;++i)t[i].click()}cLick();

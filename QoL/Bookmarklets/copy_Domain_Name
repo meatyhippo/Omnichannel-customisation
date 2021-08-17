@@ -1,4 +1,0 @@
-Copy the Javascript line below in the url field of a bookmark
--------------------
-
-javascript:let re = /(\w+)\./,url = location.hostname,domain = url.replace(re, "$`");!function(a){var b=document.createElement("textarea"),c=document.getSelection();b.textContent=a,document.body.appendChild(b),c.removeAllRanges(),b.select(),document.execCommand("copy"),c.removeAllRanges(),document.body.removeChild(b)}(domain);window.alert("copied " + domain + " to clipboard!");
