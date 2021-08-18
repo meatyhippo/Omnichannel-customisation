@@ -98,6 +98,11 @@
 			link:'Tools/split_matrix.js',
 			name:'Split up Color/Size matrix',
 			description: 'Splits up into multiple color matrices (be in the matrix to split)'
+		},
+		{
+			link:'Tools/retrieve_payment_ids.js',
+			name:'Retrieve payment ID\'s',
+			description: 'Get the payment ID\'s from sale id\'s'
 		}
 	];
 	wrapper=document.createElement('div'),

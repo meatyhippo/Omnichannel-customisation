@@ -120,7 +120,6 @@
 // main loop + callbacks to xml & dl
     function counts(b_name, APIendpoint, relation){
 		let url = `${base_url}${APIendpoint}.json?`;
-		let primary_id = APIendpoint.toLowerCase()+'ID'; // needs looking into
         if(relation) url += `&load_relations=[${relation}]`;
         if(query.length > 0) url += query;
 		$.getJSON(url+'&limit=1',(data, textStatus, jqXHR)=>{
@@ -129,14 +128,13 @@
 		}).done(()=>{
 			for (offset; offset <= count; offset += 100) { // loops until total count
 				let uri = `${url}&${APIendpoint.toLowerCase()+'ID'}=>%3D,${start_id}&offset=${offset}`;
+				//TODO #1 look into rate limitting based on account size + time
 				/**
 				if (count>20000){
 					 pitstop = pitstop ? start_time-pitstop : Date.now();
 					if (((pitstop-start_time)/1000) % 5 == 0) fullspeed = 'false';
 				} else fullspeed = 'true';
 				*/
-				// needs work: async variable based on account size + time 
-
 				(count>20000 && offset%200==0) ? fullspeed = 'false': fullspeed = 'true';
 				if (continuing){ // catch cancel with mac alt key
 					$.getJSON({url:uri,success:(t, textStatus, jqXHR)=>{
@@ -231,7 +229,7 @@
 					}
 					delete line.Images;
 					break;
-				case 'Attributes':// needs work on the replace
+				case 'Attributes':// TODO #2 fix replacing last attribute
 					delete line.Prices;
 					line.Attribute1 = "";
 					line.Attribute2 = "";
@@ -288,7 +286,7 @@
 					delete line.dob;
 					delete line.Tags;
 					break;
-				case 'customfields': //needs testing - function with a switch based on the field type. Pas whole lvl based on amount of fields: single field or multiple fields & return string. If none filled in: no object!
+				case 'customfields': //TODO #4 needs testing - function with a switch based on the field type. Pas whole lvl based on amount of fields: single field or multiple fields & return string. If none filled in: no object!
 					if (!line.CustomFieldValues){
 					} else if (line.CustomFieldValues && line.CustomFieldValue.length==undefined){ //only for 1 custom field
 						customfield_switch(line.CustomFieldValues.CustomFieldValue);
@@ -301,7 +299,7 @@
 					}
 					delete line.CustomFieldValues;
 					break;
-				case 'Customerfields': //needs testing - function with a switch based on the field type. Pas whole lvl based on amount of fields: single field or multiple fields & return string
+				case 'Customerfields': //TODO #5 same as 4
 					if (!line.CustomFieldValues){
 						window.alert('no custom fields');
 					} else if (line.CustomFieldValues && line.CustomFieldValue.length==undefined){ //only for 1 custom field
@@ -315,7 +313,7 @@
 					}
 					delete line.CustomFieldValues;
 					break;
-				case 'tags_vendorids': // Done - needs testing
+				case 'tags_vendorids': // Done - TODO #6 testing
 					line.Tag = '';
 					if(!line.Tags){
 					} else if (typeof line.Tags.tag=='string'){
@@ -335,7 +333,7 @@
 					}
 					delete line.ItemVendorNums;
 					break;
-				case 'Vendors': // Done - needs testing
+				case 'Vendors': // Done - TODO #7 testing
 					line.primary_vendor_email = "";
 					line.secondary_vendor_email = "";
 					line.contactfirstname = "";

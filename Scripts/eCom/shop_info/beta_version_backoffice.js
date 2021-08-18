@@ -65,7 +65,9 @@
 			'?with_context=1'
 		],
 		tools:[
-			'/Scripts/eCom/eCom_cat_product_export.js'
+			'/Scripts/eCom/eCom_cat_product_export.js',
+			'/Scripts/eCom/product_full_category_path.js',
+			'/Scripts/eCom/Customer_data_export.js'
 		]
 	};
 	for (const key in shop_info.clusterlist) {
