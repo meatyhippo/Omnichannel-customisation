@@ -122,7 +122,7 @@ function front_info(){
 	// n = boolean in the default of the switch to not have the link append to /admin/
 	// 
 	o("Current shop: "+document.querySelectorAll('#topbar > div.inbox > a')[0].title,document.querySelectorAll('#topbar > div.inbox > a')[0].innerText,"admin");
-	if (){
+	if (document.querySelectorAll('#topbar > div.inbox > a')[0].title){
 		o("Retail id",t.shop.settings.retail_id,`https://shop.merchantos.com/?name=system.views.account&form_name=view&id=${t.shop.settings.retail_id}&tab=details`,1);
 	};
 	o("Shop status",t.shop.status),
