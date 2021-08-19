@@ -10,6 +10,7 @@
 // @match        https://*.shoplightspeed.com/admin/*
 // ==/UserScript==
 (function() {
+	//TODO #10 rewrite with clipboard API & add to shop info
 	'use strict';
     settingscopier();
     function settingscopier(){

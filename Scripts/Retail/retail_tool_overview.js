@@ -102,7 +102,7 @@
 		{
 			link:'Tools/retrieve_payment_ids.js',
 			name:'Retrieve payment ID\'s',
-			description: 'Get the payment ID\'s from sale id\'s'
+			description: 'Get the archived payment ID\'s from sale id\'s ()'//TODO #8 add izettle jira
 		}
 	];
 	wrapper=document.createElement('div'),

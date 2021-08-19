@@ -65,6 +65,7 @@
     n_('Attributes','Item','"ItemAttributes.ItemAttributeSet"',0,'all items with their attribute sets & attributes separated',tr_items,1);
 	n_('Inventory on order','Item','"ItemShops"',0,'all the items and how much inventory is in a PO per location',tr_items,1);
 	n_('archived & published','Item',0,'&archived=only&publishToEcom=true','all the items that are both archived and still published to eCom',tr_items,1);
+	//BUG #9 no longer pulls right items
 	n_('customfields','Item','"CustomFieldValues"',0,'item custom fields',tr_items,0);
     n_('tags_vendorids','Item','"TagRelations.Tag","ItemVendorNums"',0,'tags & vendorid\'s',tr_items,0);
 	n_('Notes','Item','"Note"',0,'all items with their note',tr_items,1);

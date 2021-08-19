@@ -15,6 +15,10 @@ function tools(){
 				appendproduct('V2_backoffice','/Scripts/eCom/shop_info/beta_version_backoffice.js');
 			} else if(location.pathname.includes('/backoffice/')){
 				appendproduct('V1_backoffice','/Scripts/eCom/shop_info/V1_backoffice.js');
+			} else if (l.includes('vendhq.com')){
+				appendproduct('Vend','/Scripts/eCom/shop_info/VEND.js');//TODO #11 include Vend
+			} else if (l.includes('my.shopsettings.com')){
+				appendproduct('Ecwid','/Scripts/eCom/shop_info/ECWID.js');//TODO #12 include ecwid
 			} else {
 				appendproduct('frontoffice','/Scripts/eCom/shop_info/beta_version_front.js');
 			}
