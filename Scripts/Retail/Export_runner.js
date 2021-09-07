@@ -84,34 +84,6 @@
 		n_('OrderNumbers','Sale',0,'&referenceNumber=>,0','all of the orders that have been synced from eCom to retail',tr_reports,1);
 
 	})();
-	// function for nice logging
-	function fancy_log(messages,style) {
-		let background = "background: #555; padding: 2px; margin:2px; border-radius:2px;";
-		let log = '';
-		style.forEach((styl,i) => {
-			style[i] = style[i] || background+"color:white;";
-			switch (style[i]) {
-				case "success":
-					style[i] = background+"color:#bada55;";
-					break;
-				case "info":
-					style[i] = "color:DodgerBlue;";
-					break;
-				case "error":
-					style[i] = background+"color:Red;";
-					break;
-				case "warning":
-					style[i] = background+"color:Orange;";
-					break;
-				case "blue":
-					style[i] = background+"color:darkblue;"
-				default:
-					style[i] = style[i];
-			}
-			if(messages[i])log+=messages[i];
-		})
-		console.log(log, style[0], style[1]?style[1]:'', style[2]?style[2]:'', style[3]?style[3]:'');
-	}
 // function used by buttons above to select export
 	function n_(b_name, APIendpoint, relation, question, info_message, tr_category, release){
 		a = document.createElement("button"),
@@ -164,7 +136,7 @@
 			start_id = parseInt(Object.values(data[APIendpoint])[0],10);
 			count = parseInt(data[attr].count,10);
 		}).done(()=>{
-			console.groupCollapsed('%cClick me to open logging info','color:Dodgerblue;background: #fff; padding: 2px; margin:2px; border-radius:2px;')
+			console.groupCollapsed('%cClick me to open logging info','color:Dodgerblue;background: #fff; padding: 2px; margin:2px; border-radius:2px;');
 			for (offset; offset <= count; offset += 100) { // loops until total count
 				let uri = `${url}&${APIendpoint.toLowerCase()+'ID'}=>%3D,${start_id}&offset=${offset}`;
 				// TODO #15 maybe create cookie to prevent multiple quick exports
@@ -472,8 +444,7 @@
 		console.groupEnd();
 		clearInterval(openbar);
 		console.log(csv);
-		//window.localStorage.setItem('export_file','csv');
-		/**/fancy_log(['%c^done'],['success']);
+		/**/fancy_log(['%c^DONE'],['success']);
 		retail_UI_notification(start_time);
 		setTimeout(() => {
 			if (!document.getElementById('nodownload').checked){DL_(APIendpoint)};

@@ -1,16 +1,47 @@
 //gets called from a from github bookmark, shows all the tools
 !function(){
+	let version = "v2.7.2";
 	(()=>{
-		if (document.getElementById('modules')){console.log('modules loaded');}else{
+		if (document.getElementById('modules')){console.log('modules already loaded');}else{
 			let modules = `
 			// ------------------- module functions
+			// function for nice logging
+			function fancy_log(messages,style) {
+				let background = "background: #555; padding: 2px; margin:2px; border-radius:2px;";
+				let log = '';
+				style.forEach((styl,i) => {
+					style[i] = style[i] || background+"color:white;";
+					switch (style[i]) {
+						case "success":
+							style[i] = background+"color:#bada55;";
+							break;
+						case "info":
+							style[i] = "color:DodgerBlue;";
+							break;
+						case "error":
+							style[i] = background+"color:Red;";
+							break;
+						case "warning":
+							style[i] = background+"color:Orange;";
+							break;
+						case "blue":
+							style[i] = background+"color:darkblue;"
+						default:
+							style[i] = style[i];
+					}
+					if(messages[i])log+=messages[i];
+				})
+				console.log(log, style[0], style[1]?style[1]:'', style[2]?style[2]:'', style[3]?style[3]:'');
+			}
 			// retail UI notification
 			function retail_UI_notification(start_time){
 				let end_time = Date.now(),
 				seconds = (end_time-start_time)/1000;
-				/**/console.log('Succeeded: '+Object.keys(success_list).length, success_list);
-				/**/console.log('Failed: '+fail_list.length, fail_list);
-				/**/console.log('This action has taken ' + seconds + ' seconds / ' + (seconds/60) + 'minutes');
+				console.groupCollapsed('%cClick me to open status report','color:#bada55;background: #555; padding: 2px; margin:2px; border-radius:2px;');
+				/**/fancy_log(['%cSucceeded: '+Object.keys(success_list).length, '%o'],['info',success_list]);
+				if(fail_list.length>0)fancy_log(['%cFailed: '+fail_list.length, '%o'],['error', fail_list]);
+				/**/fancy_log(['%cThis action has taken '+ seconds + ' seconds / ' + (seconds/60) + 'minutes'],['info']);
+				console.groupEnd();
 				if(continuing){
 					$('#successNotificationMessage').html('All done! </br>'+
 						'Action took: '+roundToTwo(seconds)+' seconds / '+roundToTwo((seconds/60))+' minutes</br>'+
@@ -48,7 +79,7 @@
 			script_.id = 'modules',
 			script_.innerHTML = modules;
 			document.body.appendChild(script_);
-		}
+			console.log('modules loaded');}
 	})();
 	function append(link){
 		console.log("starting...");
