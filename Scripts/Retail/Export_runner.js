@@ -112,10 +112,6 @@
 		})
 		console.log(log, style[0], style[1]?style[1]:'', style[2]?style[2]:'', style[3]?style[3]:'');
 	}
-	// round to 2 decimal
-	function roundToTwo(num) {
-		return +(Math.round(num + "e+2")  + "e-2");
-	}
 // function used by buttons above to select export
 	function n_(b_name, APIendpoint, relation, question, info_message, tr_category, release){
 		a = document.createElement("button"),
