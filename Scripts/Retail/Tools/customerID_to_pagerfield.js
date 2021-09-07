@@ -6,7 +6,7 @@ function pagers(){
 	bar.id = 'progressbar';
 	document.body.prepend(bar);
 	//------------------- start declarions
-	window.alert('This script will copy customer id\'s into the pagerfield.\nYou can enter a starting id and/or and ending id.\nThere will be a small report after completion. Progression will be logged into the browser console (CMD+shift+J).\n\nPlease stay on this page while running & refresh after completion.')
+	window.alert('This script will copy customer id\'s into the pagerfield.\nYou can enter a starting id and/or and ending id.\nThere will be a small report after completion. Progression will be logged into the browser console (CMD+shift+J).\n\nPlease stay on this page while running & refresh after completion.');
 	window.success_list = {};
 	window.fail_list = [];
 	window.continuing = true;

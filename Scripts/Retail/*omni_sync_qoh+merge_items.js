@@ -62,3 +62,14 @@ for (let index = 0; index <= 1454; index+=100) {
 	},
 	"JSON");
 }
+
+// ------------------- delete menu button
+let list = [20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40];
+list.forEach((id) => {
+	$.get(`https://us.merchantos.com/ajax_forms.php?ajax=1&no_cache=1629881607630&form_name=listing.dofunction&ajax_listing={"draw_all":false,"draw_tab_only":false,"name":"menu.listings.menu_buttons","is_child_list":"1","saved_search":{"menu_id":"1","menu_type":"sale"},"sort":null,"sort_dir":"ASC","count":6,"page":1,"page_count":1,"tab":"single","display_search":true,"display_advanced":false,"page_size":15,"max_size":100,"page_controls":true,"title":"Buttons","deleted_rows":null,"row_num":5,"rec_num":6}&fnc=delete_record&key_values={"menu_id":"1","menu_type":"sale"}&row={"menu_button_id":${id},"can_edit":0,"is_submenu":1,"is_category_submenu":0,"title":"zehg,n","get_type_name":${id},"submenu_uid":0,"menu_id":0,"category_id":0,"button_type":"submenu","html_color":"","sort_order":301}&selected_records=[]&pannel_id=menu_listings_menu_buttons_view`,
+	function (data, textStatus, jqXHR) {
+/**/console.log(data);
+	},
+	"JSON"
+);
+})
