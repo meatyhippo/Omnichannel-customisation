@@ -1,6 +1,7 @@
 (()=>{
+	let app = document.querySelectorAll('#titlebar h1')[0].innerText.replace('App ','',).replaceAll('"','');
 	let pages = document.querySelectorAll('.pages select[name] option');
-	let x = "";
+	let csv = "";
 	if (pages.length>0){
 		for(let i = 0; i < pages.length; i++){
 			let url = location.origin+location.pathname+location.search.split("&")[0]+'&td='+pages[i].value;
@@ -17,20 +18,44 @@
 							u+=str.innerText;
 							u+='\t';
 						})
-						x += u;
-						x += '\r\n';
-						console.log(x);
+						csv += u;
+						csv += '\r\n';
+						console.log(csv);
 					});
 				}
 			},
 			e.send();
 		}
+		// when finished - export file + log
+		$(document).ajaxStop(function() {
+			console.log('DONE');
+			//fancy_log(['%c^DONE'],['success']);
+			setTimeout(() => {
+				/**/console.log('downloading');
+				DL_();
+			}, 1000);
+			$(document).off("ajaxStop"); // remove ajaxstop to avoid double download
+		});
 	} else {
 		document.querySelectorAll('form[method="post"] div.row').forEach((item) => {
 			let u = item.innerText.replace(/\n/gm,'\t');
-			x += u;
-			x += '\r\n';
+			csv += u;
+			csv += '\r\n';
 		})
-		/**/console.log(x);
+		/**/console.log(csv);
+		console.log('DONE');
+		//fancy_log(['%c^DONE'],['success']);
+		setTimeout(() => {
+			/**/console.log('downloading');
+			DL_();
+		}, 1000);
 	}
+	function DL_(){
+        var today = new Date();
+        var blob = new Blob([csv]);
+        var file = document.createElement('a');
+        file.href = window.URL.createObjectURL(blob, {type: "text/plain"}),
+        file.download = app+'_'+today.toString().replace(/ /g,"_")+'_export.csv',
+        file.click();
+    }
 })();

@@ -10,6 +10,7 @@
 	function row(nr,colnr,title,link,selector){
 		switch(location.pathname){
 			case '/backoffice/admin-shops/edit':
+				/**/console.log();
 				let infotable = $('#shop_user_info table tbody');
 				let tr = infotable.find('tr')[nr];
 				label = $(tr).find('.label-holder')[colnr]; label.innerHTML = '<strong>'+title+'</strong>';
@@ -28,6 +29,11 @@
 				}
 				break;
 			case '/backoffice/admin-partners/statistics/view_item':
+				$.getScript(`https://cdn.jsdelivr.net/gh/meatyhippo/Omnichannel-customisation@${version}/Scripts/eCom/export_app_users.js`, function (script, textStatus, jqXHR) {
+					/**/console.info('Loading app user download script');
+				});
+				break;
+			case '/':
 				break;
 			default:
 				break;
