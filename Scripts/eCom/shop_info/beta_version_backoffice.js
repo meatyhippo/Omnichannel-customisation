@@ -87,7 +87,7 @@
 		x.send();
 	});
 	function appendScript_(tool){
-		let script = document.createElement('script');script.src = `https://cdn.jsdelivr.net/gh/meatyhippo/Omnichannel-customisation@v2.2${tool}`;document.body.appendChild(script);document.body.removeChild(div_wrap);
+		let script = document.createElement('script');script.src = `https://cdn.jsdelivr.net/gh/meatyhippo/Omnichannel-customisation@${version}${tool}`;document.body.appendChild(script);document.body.removeChild(div_wrap);
 	};
 //call rest of render after loading variables
 setTimeout(() => {

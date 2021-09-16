@@ -1,4 +1,4 @@
-// ------------------- working qoh sync
+// ------------------- qoh sync
 (()=>{
 	let list = [];
 	let count = list.length;
@@ -22,9 +22,7 @@
 		$.get(settings);
 	})
 })();
-
-
-// ------------------- working merge items
+// ------------------- merge items
 (()=>{
 	let merge_into = 1454;
 	//let list = [];
@@ -72,4 +70,18 @@ list.forEach((id) => {
 	},
 	"JSON"
 );
+})
+// ------------------- add tag to matrix
+let list = [],
+	data = {"Tags":{"tag": "Shopify"}};
+list.forEach(matrixID=>{
+	$.ajax({
+		type: "PUT",
+		url: `https://us.merchantos.com/API/Account/162977/ItemMatrix/${matrixID}.json?load_relations=[%22TagRelations.Tag%22]`,
+		data: JSON.stringify(data),
+		dataType: "JSON",
+		success: function (response) {
+			/**/console.log("Matrix:", matrixID, response.ItemMatrix);
+		}
+	});
 })

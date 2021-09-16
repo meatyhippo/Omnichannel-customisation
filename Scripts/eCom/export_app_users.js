@@ -4,15 +4,15 @@
 	let csv = "";
 	if (pages.length>0){
 		for(let i = 0; i < pages.length; i++){
-			let url = location.origin+location.pathname+location.search.split("&")[0]+'&td='+pages[i].value;
-			/**/console.log(i,url);
-			let e = new XMLHttpRequest();
-			e.open("GET", url, true),
-			e.responseType = "document",
-			e.onload = function(){
-				if ( e.status >= 200 && e.status < 400 ){
-					/**/console.log('call', e);
-					e.response.forms[0].querySelectorAll('div.row').forEach((line) => {
+			let uri = location.origin+location.pathname+location.search.split("&")[0]+'&td='+pages[i].value;
+			/**/console.log(i,uri);
+			$.ajax({
+				type: "GET",
+				url: uri,
+				dataType: "html",
+				success: function (response) {
+					/**/console.log(response);
+					response.querySelectorAll('div.row').forEach((line) => {
 						let u = "";
 						line.querySelectorAll('div').forEach((str) => {
 							u+=str.innerText;
@@ -20,20 +20,39 @@
 						})
 						csv += u;
 						csv += '\r\n';
-						console.log(csv);
 					});
+					console.log(csv);
 				}
-			},
-			e.send();
-		}
+			});
+
+			//let e = new XMLHttpRequest();
+			//e.open("GET", uri, true),
+			//e.responseType = "document",
+			//e.onload = function(){
+			//	if ( e.status >= 200 && e.status < 400 ){
+			//		/**/console.log('call', e);
+			//		e.response.forms[0].querySelectorAll('div.row').forEach((line) => {
+			//			let u = "";
+			//			line.querySelectorAll('div').forEach((str) => {
+			//				u+=str.innerText;
+			//				u+='\t';
+			//			})
+			//			csv += u;
+			//			csv += '\r\n';
+			//		});
+			//	}
+			//},
+			//e.send();
+			//console.log(csv);
+		};
+
 		// when finished - export file + log
-		$(document).ajaxStop(function() {
+		$(document).ajaxStop(function(){
 			console.log('DONE');
-			//fancy_log(['%c^DONE'],['success']);
 			setTimeout(() => {
 				/**/console.log('downloading');
-				DL_();
-			}, 1000);
+				//DL_();
+			}, 5000);
 			$(document).off("ajaxStop"); // remove ajaxstop to avoid double download
 		});
 	} else {

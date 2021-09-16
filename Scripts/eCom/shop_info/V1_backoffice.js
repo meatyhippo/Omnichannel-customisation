@@ -1,11 +1,14 @@
 //V1_backoffice
+function _resize_table_1(){ //hijack the v1 function to prevent errors
+	return;
+};
 (()=>{
 	if (window.Jquery){console.log('Jq Ready');}else{
 		let Jq = document.createElement('script');
 		Jq.setAttribute('src','https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'),
 		Jq.id='jq',
 		document.head.appendChild(Jq);
-		window.setTimeout((()=>{main();}),500)
+		window.setTimeout((()=>{main();}),500);
 	}
 	function row(nr,colnr,title,link,selector){
 		switch(location.pathname){
@@ -29,9 +32,7 @@
 				}
 				break;
 			case '/backoffice/admin-partners/statistics/view_item':
-				$.getScript(`https://cdn.jsdelivr.net/gh/meatyhippo/Omnichannel-customisation@${version}/Scripts/eCom/export_app_users.js`, function (script, textStatus, jqXHR) {
-					/**/console.info('Loading app user download script');
-				});
+				//$.getScript(`https://cdn.jsdelivr.net/gh/meatyhippo/Omnichannel-customisation@${version}/Scripts/eCom/export_app_users.js`,(script, textStatus)=>{/**/console.info(textStatus, 'Loading app user download script')});
 				break;
 			case '/':
 				break;
@@ -60,5 +61,3 @@
 		row(9,0,'omni customer: ','')/*9,1*/;
 	}
 })();
-
-

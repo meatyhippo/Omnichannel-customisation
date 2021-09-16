@@ -387,7 +387,6 @@
 			if (line.categoryID){delete line.categoryID;}
 			if (line.taxClassID){delete line.taxClassID;}
 			if (line.departmentID){delete line.departmentID;}
-			if (line.itemMatrixID&&b_name!='ItemImages')/* compare itemmatrix id's for too many max images */{delete line.itemMatrixID;}
 			if (line.manufacturerID){delete line.manufacturerID;}
 			if (line.seasonID){delete line.seasonID;}
 			if (line.Prices) {line.Prices.ItemPrice.forEach( (price) => {line[price.useType] = price.amount;});delete line.Prices;}
@@ -435,7 +434,7 @@
         var today = new Date();
         var blob = new Blob([csv]);
         var file = document.createElement('a');
-        file.href = window.URL.createObjectURL(blob, {type: "text/plain"}),
+        file.href = window.URL.createObjectURL(blob, {encoding:"UTF-8",type:"text/plain;charset=UTF-8"}),
         file.download = today.toString().replace(/ /g,"_")+' '+APIendpoint+'_export.csv',
         file.click();
     }
