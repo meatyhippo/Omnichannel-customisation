@@ -7,12 +7,7 @@
 		csv = ''; //variables for different functions
 
 	//add papaparse to page
-	if (window.Papa){console.log('Ready');}else{
-		let PapaParse = document.createElement('script');
-		PapaParse.setAttribute('src','https://cdn.jsdelivr.net/gh/mholt/PapaParse/papaparse.min.js'),
-		document.head.appendChild(PapaParse);
-	}
-	get_products('page=1');
+	$.getScript(`https://cdn.jsdelivr.net/gh/mholt/PapaParse/papaparse.min.js`,(script, textStatus)=>{/**/console.info(textStatus, 'loaded Papa');get_products('page=1');});
 	function get_products(pagenr){
 		if(pagenr != null){
 			$.ajax({
