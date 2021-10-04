@@ -1,4 +1,4 @@
-function tools(){
+javascript:function tools(){
     let e = new XMLHttpRequest();
 	e.open("GET", "https://api.github.com/repos/meatyhippo/Omnichannel-customisation/releases", true),
 	e.responseType = 'json',
