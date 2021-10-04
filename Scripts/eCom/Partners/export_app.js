@@ -52,7 +52,7 @@
         var blob = new Blob([csv]);
         var file = document.createElement('a');
         file.href = window.URL.createObjectURL(blob, {type: "text/plain"}),
-        file.download = app+'|'+today.getDate+'/'+today.getMonth+'/'+today.getFullYear+'.csv',
+        file.download = app+'|'+today.getDate()+'/'+today.getMonth()+'/'+today.getFullYear()+'.csv',
         file.click();
     }
 })();
