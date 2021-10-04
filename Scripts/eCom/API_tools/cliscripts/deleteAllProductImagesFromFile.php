@@ -4,7 +4,7 @@ include "../classes/header.php";
 
 
 $ProductCount          = 0;
-$ApiLimit               = 250;
+$ApiLimit               = 600;
 $ApiRequestsCount       = 1;
 
 $C = new CLIColors();

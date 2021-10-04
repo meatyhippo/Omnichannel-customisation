@@ -1,9 +1,10 @@
 (()=>{
 	let app = document.querySelectorAll('#titlebar h1')[0].innerText.replace('App ','',).replaceAll('"','');
 	let pages = document.querySelectorAll('.pages select[name] option');
-	let csv = "";
+	window.csv = "";
 	if (pages.length>0){
 		for(let i = 0; i < pages.length; i++){
+			$(body).append(`<div id="page_${i}"></div>`);
 			let uri = location.origin+location.pathname+location.search.split("&")[0]+'&td='+pages[i].value;
 			/**/console.log(i,uri);
 			$.ajax({
@@ -11,46 +12,24 @@
 				url: uri,
 				dataType: "html",
 				success: function (response) {
-					/**/console.log(response);
-					response.querySelectorAll('div.row').forEach((line) => {
-						let u = "";
-						line.querySelectorAll('div').forEach((str) => {
-							u+=str.innerText;
-							u+='\t';
+					$(response).find('div.row').each((n,line) => {
+						let l = "";
+						line.querySelectorAll('div').forEach((cell) => {
+							l+=cell.innerText;
+							l+='\t';
 						})
-						csv += u;
+						csv += l;
 						csv += '\r\n';
 					});
-					console.log(csv);
 				}
 			});
-
-			//let e = new XMLHttpRequest();
-			//e.open("GET", uri, true),
-			//e.responseType = "document",
-			//e.onload = function(){
-			//	if ( e.status >= 200 && e.status < 400 ){
-			//		/**/console.log('call', e);
-			//		e.response.forms[0].querySelectorAll('div.row').forEach((line) => {
-			//			let u = "";
-			//			line.querySelectorAll('div').forEach((str) => {
-			//				u+=str.innerText;
-			//				u+='\t';
-			//			})
-			//			csv += u;
-			//			csv += '\r\n';
-			//		});
-			//	}
-			//},
-			//e.send();
-			//console.log(csv);
 		};
-
 		// when finished - export file + log
 		$(document).ajaxStop(function(){
 			console.log('DONE');
 			setTimeout(() => {
 				/**/console.log('downloading');
+				/**/console.log(csv);
 				//DL_();
 			}, 5000);
 			$(document).off("ajaxStop"); // remove ajaxstop to avoid double download
@@ -64,7 +43,7 @@
 		/**/console.log(csv);
 		console.log('DONE');
 		//fancy_log(['%c^DONE'],['success']);
-		setTimeout(() => {
+		window.setTimeout(() => {
 			/**/console.log('downloading');
 			DL_();
 		}, 1000);

@@ -5,14 +5,21 @@ javascript:!function(){
     let page_limit = 50;
     let csv, pagenr, maxPage; //variables for different functions
     csv = "";
-
     //add papaparse to page
-    if (document.getElementById('Parser')){console.log('Ready');}else{
-        let PapaParse = document.createElement('script');
-        PapaParse.id = 'Parser',
-        PapaParse.setAttribute('src','https://cdn.jsdelivr.net/gh/mholt/PapaParse/papaparse.min.js'),
-        document.head.appendChild(PapaParse);
-    }
+	if (document.getElementById('Parser')){console.log('Ready to parse',Papa)}else{
+		let PapaParse = document.createElement('script');
+		PapaParse.id = 'Parser',
+		PapaParse.setAttribute('src','https://cdn.jsdelivr.net/gh/mholt/PapaParse/papaparse.min.js'),
+		document.head.appendChild(PapaParse);
+		let checkPapa = window.setInterval(()=>{
+			if (window.Papa!=undefined) {
+				clearInterval(checkPapa);
+				console.log('Ready to parse',Papa);
+				get_maxPage();
+			}
+		}, 200);
+		//document.getElementById('Parser').addEventListener("loadend", (e)=>{/**/console.log(e);/**/});
+	}
     function get_maxPage(){
         let url = `https://${domain}/admin/categories/${cat_id}/products.json?limit=${page_limit}`;
         let uri = encodeURI(url);
@@ -101,5 +108,4 @@ javascript:!function(){
         file.download = today.toString().replace(/ /g,"_")+'_export.csv',
         file.click();
     }
-    get_maxPage();
 }();

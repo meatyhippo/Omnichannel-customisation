@@ -1,13 +1,13 @@
 (()=>{
 	//define variables
 	let baseurl = location.origin+'/admin',
-		page_limit = 50,
+		page_limit = 150,
 		totalcount,
 		count = 0,
 		csv = ''; //variables for different functions
-
 	//add papaparse to page
-	$.getScript(`https://cdn.jsdelivr.net/gh/mholt/PapaParse/papaparse.min.js`,(script, textStatus)=>{/**/console.info(textStatus, 'loaded Papa');get_products('page=1');});
+	//with jQ
+	$.getScript(`https://cdn.jsdelivr.net/gh/mholt/PapaParse/papaparse.min.js`,(script, textStatus)=>{/**/console.info(textStatus, 'loaded Papa')}).done(()=>{get_products('page=1')});
 	function get_products(pagenr){
 		if(pagenr != null){
 			$.ajax({
@@ -16,8 +16,8 @@
 				url:`${baseurl}/products.json?limit=${page_limit}&${pagenr}`,
 				async:false,
 				success:(data, textStatus, jqXHR)=>{
-					nextpage = data.links.next.replace('.json?','')||null;
-					totalcount = (data.links.pages*page_limit);
+					if (data.links.next!=null)nextpage = data.links.next.replace('.json?','');else nextpage = null;
+					totalcount = (data.links.count);
 					products = data.products;
 					/**/console.log(products);
 					products.forEach((product,i) => {
@@ -88,7 +88,6 @@
 						});
 						console.log(csv.length+' characters in csv');
 						console.log(csv);
-						//setTimeout(DL_, 2 * 1000);
 					}
 					get_products(nextpage);
 				}
@@ -100,9 +99,15 @@
 		var today = new Date();
 		var blob = new Blob([csv]);
 		var file = document.createElement('a');
-		file.href = window.URL.createObjectURL(blob, {type: "text/plain"}),
-		file.download = today.toString().replace(/ /g,"_")+'_export.csv',
-		file.click();
+        file.href = window.URL.createObjectURL(blob, {encoding:"UTF-8",type:"text/plain;charset=UTF-8"}),
+        file.download = today.toString().replace(/ /g,"_")+' '+APIendpoint+'_export.csv',
+        file.click();
 	}
-	//get_maxPage();
+// when finished - export file + log
+	$(document).ajaxStop(function(APIendpoint) {
+		console.log(csv);
+		/**/console.log('^DONE, downloading');
+		setTimeout(DL_(), 1000);
+		$(document).off("ajaxStop"); // remove ajaxstop to avoid double downloads
+	});
 })();

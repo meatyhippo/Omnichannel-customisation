@@ -25,7 +25,7 @@ function loops(){
 							settings = {
 								method: "PUT",
 								url: host+'/API/Account/'+rad_id+'/Item/'+item.itemID+'.json',
-								async:false,
+								async: false,
 								data: '{"itemType": "default"}',
 								success: ()=>{/**/console.log('Fine');},
 								error: (jqXHR)=>{

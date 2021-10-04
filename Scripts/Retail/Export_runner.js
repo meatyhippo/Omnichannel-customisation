@@ -13,7 +13,6 @@
 					fancy_log(['%cReady to parse','%o'],['success',Papa])
 				}
 			}, 200);
-			//document.getElementById('Parser').addEventListener("loadend", (e)=>{/**/console.log(e);/**/});
         }
     // create tool_box - tool_wrapper with close
         div_wrap = document.createElement('div'),
@@ -61,10 +60,10 @@
 	let start_time = Date.now(),
 		fullspeed = true,
 		pitstop,
-		rad_id = window.merchantos.account.id
+		rad_id = window.merchantos.account.id,
 		attr = "@attributes",
 		base_url = `${window.origin}/API/Account/${rad_id}/`,
-		donecount = count = start_id = offset = timeout = 0,
+		donecount = count = start_id = offset = 0,
 		query = ''; //variables for different functions
 // add new buttons here
 	(()=>{
@@ -226,20 +225,20 @@
 					delete line.ItemVendorNums;
 					break;
 				case 'ItemImages':// Done - tested
-					for (i = 0; i <= 12; ++i) {
-						let placeImage='Image_url_'+i;
-						let placeName='Image_name_'+i;
+					for (i = 0; i <= 14; ++i) {
+						let placeImage='image_url_'+i;
+						let placeName='image_name_'+i;
 						line[placeImage]='';
 						line[placeName]='';
 					};
 					if (!line.Images){
 					} else if (line.Images.Image.length==undefined){
-						line.Image_url_0 = line.Images.Image.baseImageURL + line.Images.Image.publicID + '.png';
-						line.Image_name_0 = line.Images.Image.filename;
+						line.image_url_0 = line.Images.Image.baseImageURL + line.Images.Image.publicID + '.png';
+						line.image_name_0 = line.Images.Image.filename;
 					} else if (line.Images.Image.length > 1){
 						line.Images.Image.forEach((img,i) => {
-							let newImage = 'Image'+i;
-							let newName = 'Image_name'+i;
+							let newImage = 'image_url_'+i;
+							let newName = 'image_name_'+i;
 							line[newImage] = img.baseImageURL+img.publicID+'.png';
 							line[newName] = img.filename;
 						});
@@ -290,16 +289,29 @@
 					break;
 				case 'Customertags': // Done - needs testing
 					line.birth_date = '';
-					line.customertags = '';
+					line.Tag = '';
 					if (line.dob && line.dob > 0) {
 						line.birth_date += line.dob;
 					}
-					if(!line.Tags){
-					} else if (typeof line.Tags.tag=="string"){
-						line.customertags = line.Tags.Tag.name;
-					} else {
-						line.customertags = line.Tags.tag.join(','); //maybe line.Tags.tag.name
+					if(line.Tags && line.Tags.Tag){
+						if (typeof line.Tags.Tag.length==undefined){
+							line.Tag=line.Tags.Tag.name;
+						}
+						else {
+							try {
+								line.Tag = join_object(line,'Tags','Tag','name');
+							} catch (error) {
+								/**/console.error(error, line);
+							}
+						}
 					}
+					delete line.Tags
+					//if(!line.Tags){
+					//} else if (typeof line.Tags.tag=="string"){
+					//	line.customertags = line.Tags.Tag.name;
+					//} else {
+					//	line.customertags = line.Tags.tag.join(','); //maybe line.Tags.//tag.name
+					//}
 					delete line.dob;
 					delete line.Tags;
 					break;

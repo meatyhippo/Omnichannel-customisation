@@ -2,25 +2,37 @@ function tools(){
     let e = new XMLHttpRequest();
 	e.open("GET", "https://api.github.com/repos/meatyhippo/Omnichannel-customisation/releases", true),
 	e.responseType = 'json',
-    e.onload = function(){
+    e.onload = ()=>{
         if ( e.status >= 200 && e.status < 400 ){
             window.version = e.response[0].tag_name;
             console.log("LS omnichannel tools version - "+version);
-			let l = location.host;
+			let l = location.hostname;
             if((l.includes('lightspeedapp.com')||l.includes('merchantos.com'))){
+				// RETAIL, NO FUNCTION WHILE IN RAD
 				l.includes('shop.')?/**/window.alert('Please log into a customer account, don\'t stay in RAD.'):appendproduct('retail','/Scripts/Retail/retail_tool_overview.js');
 			} else if(l.includes('staff.')){
+				// STAFF BO ECOM
 				appendproduct('staff','/Scripts/eCom/shop_info/staff_backoffice.js');
-			} else if(location.pathname.includes('/admin/')){
+			} else if(window.SEOshop){
+				// ECOM V2 BO
 				appendproduct('V2_backoffice','/Scripts/eCom/shop_info/beta_version_backoffice.js');
-			} else if(location.pathname.includes('/backoffice/')){
-				appendproduct('V1_backoffice','/Scripts/eCom/shop_info/V1_backoffice.js');
+			} else if(l=='seoshop.webshopapp.com'||l=='store.shoplightspeed.com'){
+				if (location.pathname.includes('/backoffice')){
+					// ECOM V1 BO
+					appendproduct('V1_backoffice','/Scripts/eCom/shop_info/V1_backoffice.js');
+				} else if(location.pathname.includes('/partners')){
+					// ECOM V1 PARTNER DASH
+					appendproduct('partners_backoffice','/Scripts/eCom/shop_info/partneroffice.js');
+				}
 			} else if (l.includes('vendhq.com')){
-				appendproduct('Vend','/Scripts/eCom/shop_info/VEND.js');//TODO #11 include Vend
+				// VEND BO
+				appendproduct('Vend','/Scripts/eCom/shop_info/VEND.js');
 			} else if (l.includes('my.shopsettings.com')){
-				appendproduct('Ecwid','/Scripts/eCom/shop_info/ECWID.js');//TODO #12 include ecwid
+				// ECWID BO
+				appendproduct('Ecwid','/Scripts/eCom/shop_info/ECWID.js');
 			} else {
-				appendproduct('frontoffice','/Scripts/eCom/shop_info/beta_version_front.js');
+				// ECOM STOREFRONT
+				appendproduct('eCom frontoffice','/Scripts/eCom/shop_info/beta_version_front.js');
 			}
         }},
     e.send();//get latest version from GH

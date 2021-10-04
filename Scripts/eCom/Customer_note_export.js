@@ -3,11 +3,20 @@
     let domain = location.host;
     let csv, pagenr, maxPage; //variables for different functions
     csv = "";
-	let PapaParse = document.createElement('script');
-        PapaParse.id = 'Parser',
-        PapaParse.setAttribute('src','https://cdn.jsdelivr.net/gh/mholt/PapaParse/papaparse.min.js'),
-        document.head.appendChild(PapaParse);
-		
+	if (document.getElementById('Parser')){console.log('Ready to parse',Papa)}else{
+		let PapaParse = document.createElement('script');
+		PapaParse.id = 'Parser',
+		PapaParse.setAttribute('src','https://cdn.jsdelivr.net/gh/mholt/PapaParse/papaparse.min.js'),
+		document.head.appendChild(PapaParse);
+		let checkPapa = window.setInterval(()=>{
+			if (window.Papa!=undefined) {
+				clearInterval(checkPapa);
+				console.log('Ready to parse',Papa);
+				get_maxPage();
+			}
+		}, 200);
+		//document.getElementById('Parser').addEventListener("loadend", (e)=>{/**/console.log(e);/**/});
+	}
     function get_maxPage(){
 		$.ajax({
 			type: "GET",
@@ -123,5 +132,4 @@
         file.download = today.toString().replace(/ /g,"_")+'_export.csv',
         file.click();
     }
-    get_maxPage();
 }();
