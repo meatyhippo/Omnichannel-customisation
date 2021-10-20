@@ -81,7 +81,6 @@
 		n_('Customerfields','Customer','"CustomFieldValues"','&archive=1','customers and their custom fields',tr_customers,0);
 		n_('Vendors','Vendor','"Contact"','&archive=1','vendors and their contact info',tr_reports,1);
 		n_('OrderNumbers','Sale',0,'&referenceNumber=>,0','all of the orders that have been synced from eCom to retail',tr_reports,1);
-
 	})();
 // function used by buttons above to select export
 	function n_(b_name, APIendpoint, relation, question, info_message, tr_category, release){
@@ -288,16 +287,11 @@
 					delete line.ItemShops;
 					break;
 				case 'Customertags': // Done - needs testing
-					line.birth_date = '';
 					line.Tag = '';
-					if (line.dob && line.dob > 0) {
-						line.birth_date += line.dob;
-					}
 					if(line.Tags && line.Tags.Tag){
-						if (typeof line.Tags.Tag.length==undefined){
+						if (!line.Tags.Tag.length){//typeof line.Tags.Tag.length==undefined){
 							line.Tag=line.Tags.Tag.name;
-						}
-						else {
+						} else {
 							try {
 								line.Tag = join_object(line,'Tags','Tag','name');
 							} catch (error) {
@@ -306,14 +300,6 @@
 						}
 					}
 					delete line.Tags
-					//if(!line.Tags){
-					//} else if (typeof line.Tags.tag=="string"){
-					//	line.customertags = line.Tags.Tag.name;
-					//} else {
-					//	line.customertags = line.Tags.tag.join(','); //maybe line.Tags.//tag.name
-					//}
-					delete line.dob;
-					delete line.Tags;
 					break;
 				case 'customfields': //TODO #4 needs testing - function with a switch based on the field type. Pas whole lvl based on amount of fields: single field or multiple fields & return string. If none filled in: no object!
 					if (!line.CustomFieldValues){
@@ -390,7 +376,7 @@
 					break;
 			}
 			//remove all extra data
-			if (line.defaultVendorID){line.vendor = line.defaultVendorID;}else line.vendor='';
+			if (line.dob){delete line.dob;}
 			if (line.discountable){delete line.discountable;}
 			if (line.tax){delete line.tax;}
 			if (line.serialized){delete line.serialized;}
@@ -455,6 +441,7 @@
 		console.groupEnd();
 		clearInterval(openbar);
 		console.log(csv);
+		window.localStorage.setItem('export',csv);
 		/**/fancy_log(['%c^DONE'],['success']);
 		retail_UI_notification(start_time);
 		setTimeout(() => {

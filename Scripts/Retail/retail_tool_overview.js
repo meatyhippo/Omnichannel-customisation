@@ -120,7 +120,7 @@
 			description: 'Replaces the customer pager with customer internal id'
 		},
 		{
-			link:'Tools/county_to_tag.js',
+			link:'Tools/country_to_tag.js',
 			name:'Customer country code added to tags',
 			description: 'Add a tag to a customer file with the customer\'s country code as ISO code(2 letter)'
 		},

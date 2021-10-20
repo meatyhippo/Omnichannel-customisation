@@ -42,12 +42,11 @@
 		shopowner:'',
 	};
 	let url_calls = [
-		//shop.shop_url+'?format=json',
+		location.origin+location.pathname+'.json',
 		shop.admin_url+'shop_users.json',
 		shop.admin_url+'themes.json',
 		shop.admin_url+'themes/'+shop.current_theme_id+'.json',
 		shop.admin_url+'store/purchases/apps.json',
-
 	];
 	let quickLinks = [
 		'/orders;'+'/customers',
@@ -76,21 +75,19 @@
 		}
 	};
 	url_calls.forEach((url,index) => {
-		let x = new XMLHttpRequest();
-		x.open('GET', url, true),
-		x.responseType='json',
-		x.onload = function(){
-			if (x.status >= 200 && x.status < 400){
-				shop_info[Object.keys(x.response)[0]] = x.response;
+		$.getJSON(url,
+			function (x, textStatus, jqXHR) {
+				shop_info[Object.keys(x)[0]] = x;
 			}
-		},
-		x.send();
+		);
 	});
 	function appendScript_(tool){
 		let script = document.createElement('script');script.src = `https://cdn.jsdelivr.net/gh/meatyhippo/Omnichannel-customisation@${version}${tool}`;document.body.appendChild(script);document.body.removeChild(div_wrap);
 	};
 //call rest of render after loading variables
-setTimeout(() => {
+	$(document).ajaxStop(()=>{
+		/**/console.log('loading done');
+		$(document).off('ajaxStop'); // remove ajaxstop to avoid double download
 		function o(e,o,l,n){
 			if(row = document.createElement('tr'),col = document.createElement('td'),col.appendChild(document.createTextNode(`${e}:`)),row.appendChild(col),l)
 			switch(l){					
@@ -253,20 +250,20 @@ setTimeout(() => {
 					a.onclick = function(){
 						$('#TTV').toggleClass('hide');
 						$(this).toggleClass('arrow_down');
-							!function(){
+							(()=>{
 								//append overview to page
 								let script = document.createElement('script');
 								script.setAttribute('async',''),
 								script.src = `https://cdn.jsdelivr.net/gh/meatyhippo/Omnichannel-customisation@${version}/Scripts/eCom/time_to_value.js`;
 								document.body.appendChild(script);
-				document.body.removeChild(div_wrap),
-				document.querySelectorAll('script[src^="https://cdn.jsdelivr.net/gh/meatyhippo/"]').forEach(link =>{
-					document.body.removeChild(link);
-				});
-				document.querySelectorAll('link[href^="https://cdn.jsdelivr.net/gh/meatyhippo/"]').forEach(link =>{
-					document.head.removeChild(link);
-				});
-							}();
+								document.body.removeChild(div_wrap),
+								document.querySelectorAll('script[src^="https://cdn.jsdelivr.net/gh/meatyhippo/"]').forEach(link =>{
+									document.body.removeChild(link);
+								});
+								document.querySelectorAll('link[href^="https://cdn.jsdelivr.net/gh/meatyhippo/"]').forEach(link =>{
+									document.head.removeChild(link);
+								});
+							})();
 					},
 					col.appendChild(a);
 				break;
@@ -390,7 +387,9 @@ setTimeout(() => {
 			};
 			o('Change BO lang.','NL','language');
 			o('JSON','Open page JSON',location.origin+location.pathname+'.json'/*+location.search.replace(/^\?{1}/g,'&')*/,!0);
-			//o('Api/app (js)scripts',Object.keys(shop_info.headlines.shop.scripts).length||'None',Object.keys(shop_info.headlines.shop.scripts).length&&'store/purchases/apps');
+			if(location.pathname.match(/\/orders\/\d+/gm) && shop_info.order.order.payment_state =='not_paid'){
+				o('Pay link','Generate Pay link',shop_info.domain+'payment/pay/'+shop_info.order.order.id,1)
+			}
 			o('Quick links','show','quickies');
 			o('Installed apps','show','APPS');
 			o('Time to value (for PS)','Click here','TTV');
@@ -403,5 +402,5 @@ setTimeout(() => {
 			div_box.appendChild(close),
 			div_wrap.appendChild(div_box),
 			document.body.appendChild(div_wrap)
-		}, 1000);
-	}();
+		});
+}();
