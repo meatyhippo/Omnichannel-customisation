@@ -59,7 +59,7 @@ function front_info(){
 							a = document.createElement("a"),
 							a.appendChild(document.createTextNode("V1")),
 							a.target="_blank";
-							if (clust >= 1000){
+							if (clust.id >= 1000){
 								a.href=`https://store.shoplightspeed.com/backoffice/core/setshop.do?id=${o}`;
 							} else {
 								a.href=`https://seoshop.webshopapp.com/backoffice/core/setshop.do?id=${o}`;
@@ -71,7 +71,7 @@ function front_info(){
 							a.id = 'show_this',
 							a.appendChild(document.createTextNode(" / Staff")),
 							a.target="_blank";
-							if (clust >= 1000){
+							if (clust.id >= 1000){
 								a.href=`https://staff.shoplightspeed.com/shops/${o}`;
 							} else {
 								a.href=`https://staff.webshopapp.com/shops/${o}`;
@@ -192,7 +192,7 @@ function front_info(){
 				if (t.shop.settings.retail_id){
 					o("Retail id",t.shop.settings.retail_id,`https://shop.merchantos.com/?name=system.views.account&form_name=view&id=${t.shop.settings.retail_id}&tab=details`,1);
 				};
-				o("Shop Cluster",clust),
+				o("Shop Cluster",clust.reseller),
 				o("Theme editor",t.shop.settings.template_editor,"themes"),
 				o("Theme page",t.template,t.shop.settings.template_editor?`themes/${t.shop.theme_id}/templates?key=${t.template}`:""),
 				o("BO page",Object.keys(t)[0],"Page");
@@ -222,38 +222,35 @@ function front_info(){
 	}
 	// cluster function that runs above
 	!function(){
-		let clust;
-			var cluster = new XMLHttpRequest();
-			cluster.open("GET", location.origin + "/whois.json", true),
-			cluster.onload = function(){
-				if (cluster.status >= 200 && cluster.status < 400){
-					var reseller = JSON.parse(cluster.responseText);
-					console.log(reseller);
-					console.log('^Cluster info\n-------------------');
-					clusterlist = {
-						1:'Netherlands (eu1)',
-						14:'German (eu1)',
-						15:'Spanish (eu1)',
-						19:'Russian (eu1)',
-						23:'Norwegian (eu1)',
-						28:'UK (eu1)',
-						38:'US (eu1)',
-						40:'CAN (eu1)',
-						42:'ROW (eu1)',
-						44:'REMEA (eu1)',
-						1000:'Lightspeed USA (us1)',
-						1001:'Lightspeed Canada (us1)',
-						1002:'Lightspeed Rest of World (us1)',
-						1003:'Lightspeed Australia (us1)',
-					}
-					for (const key in clusterlist) {
-						if (key == reseller.resellerId) {
-							clust = clusterlist[key];
-						}
-					};
-				}
-				shop_json(clust); //only run the rest of the shop info after the cluster is loaded
-			},
+		let clust={};
+		var cluster = new XMLHttpRequest();
+		cluster.open("GET", location.origin + "/whois.json", true),
+		cluster.onload = function(){
+			if (cluster.status >= 200 && cluster.status < 400){
+				var reseller = JSON.parse(cluster.responseText);
+				console.log(reseller);
+				console.log('^Cluster info\n-------------------');
+				clusterlist = [
+					{'code':1,'name':'Netherlands (eu1)'},
+					{'code':14,'name':'German (eu1)'},
+					{'code':15,'name':'Spanish (eu1)'},
+					{'code':19,'name':'Russian (eu1)'},
+					{'code':23,'name':'Norwegian (eu1)'},
+					{'code':28,'name':'UK (eu1)'},
+					{'code':38,'name':'US (eu1)'},
+					{'code':40,'name':'CAN (eu1)'},
+					{'code':42,'name':'ROW (eu1)'},
+					{'code':44,'name':'REMEA (eu1)'},
+					{'code':1000,'name':'Lightspeed USA (us1)'},
+					{'code':1001,'name':'Lightspeed Canada (us1)'},
+					{'code':1002,'name':'Lightspeed Rest of World (us1)'},
+					{'code':1003,'name':'Lightspeed Australia (us1)'}
+				]
+				clust['id']=clusterlist.find(cl=>{return cl.code=reseller.resellerId})['code'];
+				clust['reseller']=clusterlist.find(cl=>{return cl.code=reseller.resellerId})['name'];
+			}
+			shop_json(clust); //only run the rest of the shop info after the cluster is loaded
+		},
 		cluster.send();
 	}();
 	function go_to_checkout(o){function n(n){$.ajax({type:"POST",url:location.origin+"/cart/add/"+n+"/",success:function(n){console.log(n,o),window.location.href="cart"==o?location.origin+"/cart/":"new"==o?location.origin+"/checkouts/":location.origin+"/checkout/"+o}})}Array.prototype.random=function(){return this[Math.floor(Math.random()*this.length)]},function(){function o(){c=t.random(),console.log(c),$.get(location.origin+"/"+c.url+"?format=json",function(t,i,r){let a=t.product;a.custom?o():n(c.vid)},"JSON")}let t=[],c="";$.get(location.origin+"/collection?format=json",function(o,n,c){let i=o.collection.products;for(const o in i)Object.hasOwnProperty.call(i,o)&&i[o].available&&t.push(i[o])},"JSON").done(n=>{o()})}()}
