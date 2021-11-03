@@ -417,8 +417,8 @@
             header: true,
             delimiter: ";",
         }); //TODO #14 facy log below
-		/**/fancy_log([`%cExport name: ${b_name}`, `%c|Endpoint: ${APIendpoint}`, '%c|Call', '%o'], ['','','', t])
-		/**/fancy_log([`%c${csv.length} characters in csv`, `%c|items: ${donecount}/${count} `, '%o'],['blue','blue',roundToTwo((donecount/count)*100)])
+		/**/fancy_log([`%cExport name: ${b_name}`, `%cEndpoint: ${APIendpoint}`, '%cCall', '%o'], ['','','', t])
+		/**/fancy_log([`%c${csv.length} characters in csv`, `%citems: ${donecount}/${count} `, '%o'],['blue','blue',roundToTwo((donecount/count)*100)])
 	}
 // progress bar
 	let openbar = window.setInterval(()=>{

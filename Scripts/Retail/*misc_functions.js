@@ -132,3 +132,53 @@
 	}
 	get_100(0);
 })();
+// ------------------- move all sales from one location to another
+(()=>{
+	window.success_list = [];
+	window.fail_list = [];
+	let rad_id = window.merchantos.account.id,
+		attr = "@attributes",
+		base_url = `${window.origin}/API/Account/${rad_id}/`,
+		donecount = count = 0,
+		value = {
+			"registerID": "5",
+			"shopID": "1"
+		};
+	function get_100(offset){
+		$.ajax({
+			type: "GET",
+			async: "false",
+			url: `${base_url}Sale.json?offset=${offset}&shopID=2`,
+			dataType: "JSON",
+			success: (data, textStatus, jqXHR)=>{
+				/**/console.log('100 items:',data, textStatus, jqXHR);
+				count = parseInt(data[attr].count,10);
+				if (!data.Sale || data.Sale.length==undefined){
+				} else {
+					data.Sale.forEach(Sale => {
+						move_location(Sale);
+					});
+				}
+				if (offset < count){
+					offset+=100;
+					get_100(offset);
+				}
+			}
+		});
+	}
+	function move_location(Sale){
+		$.ajax({
+			type: "PUT",
+			async: "false",
+			url: `${base_url}Sale/${Sale.saleID}.json`,
+			data: JSON.stringify(value),
+			dataType: "JSON",
+			success: function (response) {
+				/**/console.log(response);
+			}
+		});
+		/**/console.log(donecount+'/'+count);
+		donecount++;
+	}
+	get_100(0);
+})();
