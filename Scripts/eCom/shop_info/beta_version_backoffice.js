@@ -102,7 +102,7 @@
 						a = document.createElement('a'),
 						a.appendChild(document.createTextNode(shop_info.rad_id)),
 						a.target='_blank';
-						a.href=`https://shop.merchantos.com/?name=system.views.account&form_name=view&id=${shop_info.rad_id}&tab=details`
+						a.href=`https://radcloud.merchantos.com/?name=system.views.account&form_name=view&id=${shop_info.rad_id}&tab=details`
 						col.appendChild(a);
 					}
 					//user

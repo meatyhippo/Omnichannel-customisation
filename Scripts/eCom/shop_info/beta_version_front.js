@@ -1,14 +1,14 @@
 //beta_frontoffice
 function front_info(){
 	function shop_json(clust) {
-		var e = new XMLHttpRequest;
-		e.open("GET",location.origin+location.pathname+"?format=json",true),
+		let e = new XMLHttpRequest, url='';
+		location.pathname.includes('checkouts')?url=location.origin+"?format=json":url=location.origin+location.pathname+"?format=json";
+		e.open("GET",url,true),
 		e.onload = function(){
 			if(e.status>=200&&e.status<400){
-				var t = JSON.parse(e.responseText);
+				let t = JSON.parse(e.responseText);
 				(()=>{				
-					console.log(t),
-					console.log('^Shop json info\n-------------------');
+					console.log('%o\n^ Shop json info\n-------------------',t),
 					div_wrap=document.createElement("div"),
 					div_wrap.id = "tool_wrapper",
 					div_wrap.onclick = function(){
@@ -24,7 +24,7 @@ function front_info(){
 					},
 					v_box = document.createElement("div"),
 					v_box.id = "version",
-					v_box.innerHTML='<p>'+version+'</br>what\'s new: session clear + on thank you page, open the order in BO</p>',
+					v_box.innerHTML='<p>'+version+'</br>what\'s new: in progress: showing the theme names in the storefront</p>',
 					close = document.createElement("div"),
 					close.id = "close",
 					close.onclick = function(){
@@ -77,6 +77,36 @@ function front_info(){
 								a.href=`https://staff.webshopapp.com/shops/${o}`;
 							};
 							col.appendChild(a);
+							break;
+						case 'LStheme':
+							col = document.createElement("td");
+							if (typeof(o)=="string"){
+								col.appendChild(document.createTextNode(o));
+							} else {
+								/**/console.log(o);
+								// 1 theme name + docs
+								a = document.createElement("a"),
+								a.appendChild(document.createTextNode(o.name)),
+								a.target="_blank",
+								a.href='https://themes.lightspeedhq.com/en/themes/?mode=grid&sort=newest&max=30&min=0&search='+o.name+'&limit=100',
+								col.appendChild(a),
+								// 2 developer
+								col.appendChild(document.createTextNode(" / ")),
+								col.appendChild(document.createTextNode('Developed by ')),
+								a = document.createElement("a"),
+								a.appendChild(document.createTextNode(o.developer)),
+								a.target="_blank",
+								a.href='https://themes.lightspeedhq.com/en/themes/?mode=grid&sort=newest&max=30&min=0&search='+o.developer+'&limit=100',
+								col.appendChild(a);
+								// 3 docs
+								col.appendChild(document.createTextNode(" / ")),
+								a = document.createElement("a"),
+								a.appendChild(document.createTextNode('Docs')),
+								a.target="_blank",
+								a.href=o.docs,
+								col.appendChild(a);
+								// 4 extra
+							}
 							break;
 						case "themes":
 							col = document.createElement("td"),
@@ -190,8 +220,9 @@ function front_info(){
 				// 
 				o("Shop id",t.shop.id,"admin");
 				if (t.shop.settings.retail_id){
-					o("Retail id",t.shop.settings.retail_id,`https://shop.merchantos.com/?name=system.views.account&form_name=view&id=${t.shop.settings.retail_id}&tab=details`,1);
+					o("Retail id",t.shop.settings.retail_id,`https://radcloud.merchantos.com/?name=system.views.account&form_name=view&id=${t.shop.settings.retail_id}&tab=details`,1);
 				};
+				o('THEME',window.LS_theme?window.LS_theme:'custom theme','LStheme')
 				o("Shop Cluster",clust.reseller),
 				o("Theme editor",t.shop.settings.template_editor,"themes"),
 				o("Theme page",t.template,t.shop.settings.template_editor?`themes/${t.shop.theme_id}/templates?key=${t.template}`:""),
@@ -204,6 +235,7 @@ function front_info(){
 				o("Open","","JSON"),
 				o("Add product & checkout","",['cart','onestep','onepage','default','new']);
 				o("Clear session data","Clear session",location.origin+"/session/clear",1);
+				if (location.pathname.includes('checkouts')) o('Open checkout in BO',location.pathname.match(/\d+/gm)[0],'checkouts/'+location.pathname.match(/\d+/gm)[0]+'/',0);
 				if (location.pathname.includes('/thankyou/')) {
 					o("Go to order "+t.order.information.number, t.order.information.id, 'orders/'+t.order.information.id)
 				}
@@ -216,20 +248,36 @@ function front_info(){
 				if (t.shop.settings.stats.omni_loyalty){
 					o("Loyalty id",t.shop.settings.stats.omni_loyalty.loyalty_id);
 				};
-			} else {alert("Shop id could not be retrieved! Try the homepage")}
+			} else {
+				try{
+					let t;
+					let url = location.origin+"/manifest.json";
+					let e = new XMLHttpRequest();
+						e.open("GET", url, true),
+						e.onload = function(){
+						if ( e.status >= 200 && e.status < 400 ){
+								t = JSON.parse( e.responseText );
+							}
+						},
+						e.send();
+					setTimeout(function(){console.log(t);},1000);
+				} catch(e){
+					/**/console.log(e);
+					alert("Shop id could not be retrieved! Try the homepage")
+				}
+			}
 		},
 		e.send();
 	}
 	// cluster function that runs above
 	!function(){
 		let clust={};
-		var cluster = new XMLHttpRequest();
+		let cluster = new XMLHttpRequest();
 		cluster.open("GET", location.origin + "/whois.json", true),
 		cluster.onload = function(){
 			if (cluster.status >= 200 && cluster.status < 400){
-				var reseller = JSON.parse(cluster.responseText);
-				console.log(reseller);
-				console.log('^Cluster info\n-------------------');
+				let reseller = JSON.parse(cluster.responseText);
+				console.log('%o\n^ Cluster info\n-------------------',reseller);
 				clusterlist = [
 					{'code':1,'name':'Netherlands (eu1)'},
 					{'code':14,'name':'German (eu1)'},

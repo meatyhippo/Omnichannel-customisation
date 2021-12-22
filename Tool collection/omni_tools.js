@@ -8,7 +8,7 @@ javascript:function tools(){
 			let l = location.hostname;
             if((l.includes('lightspeedapp.com')||l.includes('merchantos.com'))){
 				// RETAIL, NO FUNCTION WHILE IN RAD
-				l.includes('shop.')?/**/window.alert('Please log into a customer account, don\'t stay in RAD.'):appendproduct('retail','/Scripts/Retail/retail_tool_overview.js');
+				l.includes('radcloud.')?/**/window.alert('Please log into a customer account, don\'t stay in RAD.'):appendproduct('retail','/Scripts/Retail/retail_tool_overview.js');
 			} else if(l.includes('staff.')){
 				// STAFF BO ECOM
 				appendproduct('staff','/Scripts/eCom/shop_info/staff_backoffice.js');
@@ -28,7 +28,7 @@ javascript:function tools(){
 				appendproduct('Vend','/Scripts/eCom/shop_info/VEND.js');
 			} else if (l.includes('my.shopsettings.com')){
 				// ECWID BO
-				appendproduct('Ecwid','/Scripts/eCom/shop_info/ECWID.js');
+				appendproduct('Ecwid','/Scripts/Ecwid/ECWID_BO.js');
 			} else {
 				// ECOM STOREFRONT
 				appendproduct('eCom frontoffice','/Scripts/eCom/shop_info/beta_version_front.js');

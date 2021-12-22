@@ -441,7 +441,6 @@
 		console.groupEnd();
 		clearInterval(openbar);
 		console.log(csv);
-		window.localStorage.setItem('export',csv);
 		/**/fancy_log(['%c^DONE'],['success']);
 		retail_UI_notification(start_time);
 		setTimeout(() => {

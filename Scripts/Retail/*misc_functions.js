@@ -182,3 +182,32 @@
 	}
 	get_100(0);
 })();
+// ------------------- void all from list
+(()=>{
+	let reason_for_void = '';
+	let list = [];
+
+
+	let count = list.length;
+	window.success_list = [];
+	window.fail_list = [];
+	let host = location.host;
+	console.groupCollapsed('%cClick me to open logging info','color:Dodgerblue;background: #fff; padding: 2px; margin:2px; border-radius:2px;');
+	list.forEach((sale) => {
+		count--;
+		let settings = {
+			url: `https://${host}/ajax_forms.php?ajax=1&form_name=view.dofunction&ajax_view={"count":277,"rec_num":1,"request":false,"tab":"void","name":"transaction.views.transaction","record_id":${sale}}&fnc=void_sale_fnc&key_values={"view_id":"","primary_id":"${sale}","add_customer_search":"","void_reason":"${reason_for_void}"}&pannel_id=view`,
+			async: false,
+			success: function (data, textStatus, jqXHR) {
+				/**/console.log(sale, textStatus,`${count} items left to merge`, jqXHR);
+				success_list.push(sale);
+			},
+			fail: function (data, textStatus, jqXHR) {
+				/**/console.log(sale, textStatus, jqXHR);
+				fail_list.push(sale);
+			},
+		}
+		$.get(settings);
+	})
+	console.groupEnd();
+})();
