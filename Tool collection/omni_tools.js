@@ -26,7 +26,7 @@ javascript:function tools(){
 			} else if (l.includes('vendhq.com')){
 				// VEND BO
 				appendproduct('Vend','/Scripts/eCom/shop_info/VEND.js');
-			} else if (l.includes('my.shopsettings.com')){
+			} else if (l.includes('my.shopsettings.com')||l.includes('my.ecwid.com')){
 				// ECWID BO
 				appendproduct('Ecwid','/Scripts/Ecwid/ECWID_BO.js');
 			} else {
