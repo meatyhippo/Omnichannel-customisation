@@ -1,5 +1,5 @@
 //beta_backoffice
-!function(){
+(()=>{
 	//declaring global variables
 	let shop = window.SEOshop.react.shop;
 	window.shop_info = {
@@ -20,7 +20,7 @@
             'Last provisioning (aka. billing push);'+shop.subscription.provisioned_at
 		],
 		clusterlist:{
-			1:'Netherlands',
+			1:'Netherlands  SEOshop',
 			14:'German',
 			15:'Spanish',
 			19:'Russian',
@@ -69,11 +69,7 @@
 			'/Scripts/eCom/Customer_data_export.js'
 		]
 	};
-	for (const key in shop_info.clusterlist) {
-		if (key == shop.reseller_id) {
-			shop_info.cluster = shop_info.clusterlist[key];
-		}
-	};
+	shop_info.cluster = shop_info.clusterlist[shop.reseller_id];
 	url_calls.forEach((url,index) => {
 		$.getJSON(url,
 			function (x, textStatus, jqXHR) {
@@ -135,7 +131,7 @@
 					a = document.createElement("a"),
 					a.classList.add('hide'),
 					a.id = 'show_this',
-					a.appendChild(document.createTextNode(" / Staff")),
+					a.appendChild(document.createTextNode(" // Staff")),
 					a.target="_blank";
 					a.href=`https://staff.${location.hostname.split('.')[1]}.com/shops/${shop_info.shop_id}`;
 					col.appendChild(a);
@@ -403,4 +399,4 @@
 			div_wrap.appendChild(div_box),
 			document.body.appendChild(div_wrap)
 		});
-}();
+})();
