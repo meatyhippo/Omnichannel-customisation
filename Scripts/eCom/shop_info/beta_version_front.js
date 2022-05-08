@@ -1,14 +1,14 @@
 //beta_frontoffice
 function front_info(){
 	// fetch cluster info
-	let resellerData;
 	const resellerPromise = fetch(location.origin + "/whois.json");
 	resellerPromise.then(response=>{
-		resellerData = response.json();
+		let resellerData = response.json();
 		resellerData.then(json=>{
 			cluster = json.clusterId,
 			reseller = json.resellerId;
 			console.log('%o\n^ Cluster info\n-------------------',json);
+			$('#reseller').text(clusterlist[json.clusterId][json.resellerId]);
 		})
 	});
 	let clusterlist = {
@@ -214,11 +214,10 @@ function front_info(){
 								col.appendChild(a);
 								break;
 							case "reseller":
+								//TODO #20 columns switched up
 								col2 = document.createElement("td");
 								row.appendChild(col2);
-								resellerData.then(json=>{
-									/**/col2.appendChild(document.createTextNode(clusterlist[json.clusterId][json.resellerId]));
-								});
+								col2.id = 'reseller';
 								break;
 							default:
 								col = document.createElement("td");
