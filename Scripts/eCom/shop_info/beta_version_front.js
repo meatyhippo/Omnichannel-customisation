@@ -8,7 +8,13 @@ function front_info(){
 			cluster = json.clusterId,
 			reseller = json.resellerId;
 			console.log('%o\n^ Cluster info\n-------------------',json);
-			$('#reseller').text(clusterlist[json.clusterId][json.resellerId]);
+			if ($('#reseller').length && $('#reseller').length >0){
+				$('#reseller').text(clusterlist[json.clusterId][json.resellerId]);
+			} else {
+				setTimeout(() => {
+					$('#reseller').text(clusterlist[json.clusterId][json.resellerId]);
+				}, 1000);
+			}
 		})
 	});
 	let clusterlist = {
@@ -214,10 +220,8 @@ function front_info(){
 								col.appendChild(a);
 								break;
 							case "reseller":
-								//TODO #20 columns switched up
-								col2 = document.createElement("td");
-								row.appendChild(col2);
-								col2.id = 'reseller';
+								col = document.createElement("td");
+								col.id = 'reseller';
 								break;
 							default:
 								col = document.createElement("td");
