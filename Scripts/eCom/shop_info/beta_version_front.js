@@ -200,7 +200,7 @@ function front_info(){
 								a = document.createElement("a"),
 								a.appendChild(document.createTextNode('JSON page')),
 								a.target="_blank",
-								a.href = location.origin+location.pathname+"?format=j son"+location.search.replace(/^\?{1}/g,"&"),
+								a.href = location.origin+location.pathname+"?format=json"+location.search.replace(/^\?{1}/g,"&"),
 								col.appendChild(a);
 								// 2
 								if (location.pathname.match('.html')){
