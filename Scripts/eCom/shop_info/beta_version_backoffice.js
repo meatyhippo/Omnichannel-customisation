@@ -2,6 +2,8 @@
 (()=>{
 	//declaring global variables
 	let shop = window.SEOshop.react.shop;
+	let redirect = location.pathname.replace('/admin/','').replaceAll('/','%2F');
+	let redirect_url = `https://services.${location.hostname.split('.')[1]}.com/auth/login?redirect=${redirect}`;
 	window.shop_info = {
 		sub_info:[
 			'End date;'+shop.subscription.end_date,
@@ -353,7 +355,7 @@
 			},
 			v_box = document.createElement('div'),
 			v_box.id = 'version',
-			v_box.innerHTML='<p>'+version+'</br>what\'s new: theme search, subscription info, RETAIL ID!</p>',
+			v_box.innerHTML='<p>'+version+'</br>what\'s new: when in unpaid order, generate pay link. Generate services link to any page</p>',
 			close = document.createElement('div'),
 			close.id = 'close',
 			close.onclick=function(){
@@ -383,6 +385,7 @@
 			};
 			o('Change BO lang.','NL','language');
 			o('JSON','Open page JSON',location.origin+location.pathname+'.json'/*+location.search.replace(/^\?{1}/g,'&')*/,!0);
+			o('Services URL to this page',redirect_url,redirect_url,1);
 			if(location.pathname.match(/\/orders\/\d+/gm) && shop_info.order.order.payment_state =='not_paid'){
 				o('Pay link','Generate Pay link',shop_info.domain+'payment/pay/'+shop_info.order.order.id,1)
 			}
