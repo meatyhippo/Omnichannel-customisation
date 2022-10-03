@@ -19,10 +19,10 @@ let fail_list = {},
 	keydirection = 21,
 	keys = [
 		"01af8360f9251290f3719dba2d8c652d",
-		"ecb343c784b95f98bda39dec85818d3d"
+		"7263cc4e0f53b75a09b8b59721abae4e"
 	],
 	secrets = [
-		"7263cc4e0f53b75a09b8b59721abae4e",
+		"ecb343c784b95f98bda39dec85818d3d",
 		"0770ffb5e252a0305dcf1f7ad13a6f35"
 	];
 
