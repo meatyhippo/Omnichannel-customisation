@@ -66,9 +66,9 @@
 			'?with_context=1'
 		],
 		tools:[
-			'/Scripts/eCom/eCom_cat_product_export.js',
-			'/Scripts/eCom/product_full_category_path.js',
-			'/Scripts/eCom/Customer_data_export.js'
+			'/Scripts/eCom/V2/eCom_cat_product_export.js',
+			'/Scripts/eCom/V2/product_full_category_path.js',
+			'/Scripts/eCom/V2/Customer_note_export.js'
 		]
 	};
 	shop_info.cluster = shop_info.clusterlist[shop.reseller_id];
@@ -140,11 +140,11 @@
 				break;
 				case 'themes':
 					let theme_links=[
-						'search;'+'/Scripts/eCom/theme_search.js;'+'1',
+						'search;'+'/Scripts/eCom/v2/theme_search.js;'+'1',
 						'settings;'+`${location.origin}/admin/theme/preview;`+'0',
 						o?'editor;'+`${location.origin}/admin/${l}/${shop.current_theme_id}`+';0':'',
 						'custom css;'+`${location.origin}/admin/themes/${shop.current_theme_id}/editor/css`+';0',
-						o?'twig search;'+'/Scripts/eCom/twig_search.js;'+'1':'',
+						o?'twig search;'+'/Scripts/eCom/V2/twig_search.js;'+'1':'',
 					]
 					col = document.createElement('td');
 					theme_links.forEach((link,i) => {
