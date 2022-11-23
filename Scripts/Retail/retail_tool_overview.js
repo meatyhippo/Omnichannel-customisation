@@ -108,11 +108,6 @@
 				description: 'Copy order id in eCom url to check in reports'
 			},
 			{
-				link:'Tools/all_matrix_variants.js',
-				name:'Click all variants',
-				description: 'Use in matrix configiguration tab'
-			},
-			{
 				link:'Tools/delete_all_images.js',
 				name:'Delete all images',
 				description: 'Deletes all item images from retail'
@@ -138,6 +133,11 @@
 				description: 'Get the archived payment ID\'s from sale id\'s (LSR-2220)'//TODO #8 add izettle jira
 			}
 		];
+//		{
+//			link:'Tools/all_matrix_variants.js',
+//			name:'Click all variants',
+//			description: 'Use in matrix configiguration tab'
+//		},
 		wrapper=document.createElement('div'),
 		wrapper.id = 'tool_wrapper',
 		wrapper.onclick = function(){

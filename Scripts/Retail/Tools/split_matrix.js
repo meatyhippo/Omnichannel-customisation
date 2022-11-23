@@ -5,7 +5,7 @@
 // ------------------- declaring variables
 	window.success_list = {};
 	window.fail_list = [];
-	let to_do_list = [1123,1124],
+	let to_do_list = [],
 		//start_time = Date.now(),
 		//fullspeed = 'true',
 		//pitstop,
