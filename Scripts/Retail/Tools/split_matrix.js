@@ -15,9 +15,12 @@
 		currentpage,
 		donecount = count = start_id = offset = newmatrixid = 0;
 	location.search.split('&').forEach((l) => {
-		if(l.match('id=')) currentpage = l.replace('id=','');
-		if(to_do_list.length==0) to_do_list.push(currentpage);
+		if(l.match('id=')) {
+			currentpage = l.replace('id=','');
+			if(to_do_list.length==0) to_do_list.push(currentpage);
+	}
 	});
+	console.log(to_do_list, currentpage);
 	window.alert('You are about to split up this (list of) matrices. ARE YOU SURE? this action is not reversible. Before continuing, make sure the price levels do not have any weird characters in them, otherwise the creation of new matrices will fail.')
 // ------------------- get matrix data (later get all and loop)
 	to_do_list.forEach((item,i) => {
