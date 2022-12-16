@@ -1,22 +1,20 @@
 //beta_frontoffice
 function front_info(){
+	function showmycluster(json, o){
+		cluster = json.clusterId,
+		reseller = json.resellerId;
+		console.log('%o\n^ Cluster info\n-------------------',json);
+		$('#reseller').text(clusterlist[json.clusterId][json.resellerId]);
+		if (cluster == "eu1"){
+			$('#v1')[0].href=`https://seoshop.webshopapp.com/backoffice/core/setshop.do?id=${o}`;
+			$('a#show_this.hide')[0].href=`https://staff.webshopapp.com/shops/${o}`;
+		} else {
+			$('#v1')[0].a.href=`https://store.shoplightspeed.com/backoffice/core/setshop.do?id=${o}`;
+			$('a#show_this.hide')[0].href=`https://staff.shoplightspeed.com/shops/${o}`;
+		};
+	}
 	// fetch cluster info
-	const resellerPromise = fetch(location.origin + "/whois.json");
-	resellerPromise.then(response=>{
-		let resellerData = response.json();
-		resellerData.then(json=>{
-			cluster = json.clusterId,
-			reseller = json.resellerId;
-			console.log('%o\n^ Cluster info\n-------------------',json);
-			if ($('#reseller').length && $('#reseller').length >0){
-				$('#reseller').text(clusterlist[json.clusterId][json.resellerId]);
-			} else {
-				setTimeout(() => {
-					$('#reseller').text(clusterlist[json.clusterId][json.resellerId]);
-				}, 1000);
-			}
-		})
-	});
+	
 	let clusterlist = {
 		"eu1": {1:'Netherlands',14:'German',15:'Spanish',19:'Russian',23:'Norwegian',28:'UK',38:'US',40:'CAN',42:'ROW',44:'REMEA'},"us1": {1: 'SEOshop',1000:'Lightspeed USA',1001:'Lightspeed Canada',1002:'Lightspeed Rest of World',1003:'Lightspeed Australia'}
 	},
@@ -25,8 +23,9 @@ function front_info(){
 	},
 	url='',cluster,reseller;
 	location.pathname.includes('checkouts')?url=location.origin+"?format=json":url=location.origin+location.pathname+"?format=json";
-	const shopPromise = fetch(url);
-	shopPromise.then(res=>{
+	const resellerData = fetch(location.origin + "/whois.json");
+	const shopdata = fetch(url);
+	shopdata.then(res=>{
 		if(res.status>=200&&res.status<400){
 			shopData = res.json().then(t=>{
 				(()=>{
@@ -66,6 +65,17 @@ function front_info(){
 					div_wrap.appendChild(div_box),
 					document.body.appendChild(div_wrap)
 				})();
+				resellerData.then(r=>{
+					r.json().then(json=>{
+						if ($('#reseller').length && $('#reseller').length >0){
+							showmycluster(json, t.shop.id);
+						} else {
+							setTimeout(() => {
+								showmycluster(json, t.shop.id);
+							}, 1000);
+						}
+					});
+				});
 				function o(e,o,l,n){
 					row = document.createElement("tr"),col = document.createElement("td"),col.appendChild(document.createTextNode(`${e}:`)),row.appendChild(col);
 					if(l){
@@ -84,11 +94,7 @@ function front_info(){
 								a = document.createElement("a"),
 								a.appendChild(document.createTextNode("V1")),
 								a.target="_blank";
-								if (cluster == "eu1"){
-									a.href=`https://seoshop.webshopapp.com/backoffice/core/setshop.do?id=${o}`;
-								} else {
-									a.href=`https://store.shoplightspeed.com/backoffice/core/setshop.do?id=${o}`;
-								};
+								a.id="v1";
 								col.appendChild(a),
 								// 3
 								a = document.createElement("a"),
@@ -96,11 +102,6 @@ function front_info(){
 								a.id = 'show_this',
 								a.appendChild(document.createTextNode(" / Staff")),
 								a.target="_blank";
-								if (cluster == "eu1"){
-									a.href=`https://staff.webshopapp.com/shops/${o}`;
-								} else {
-									a.href=`https://staff.shoplightspeed.com/shops/${o}`;
-								};
 								col.appendChild(a);
 								break;
 							case 'LStheme':
