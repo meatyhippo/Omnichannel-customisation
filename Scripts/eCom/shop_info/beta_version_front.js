@@ -9,7 +9,7 @@ function front_info(){
 			$('#v1')[0].href=`https://seoshop.webshopapp.com/backoffice/core/setshop.do?id=${o}`;
 			$('a#show_this.hide')[0].href=`https://staff.webshopapp.com/shops/${o}`;
 		} else {
-			$('#v1')[0].a.href=`https://store.shoplightspeed.com/backoffice/core/setshop.do?id=${o}`;
+			$('#v1')[0].href=`https://store.shoplightspeed.com/backoffice/core/setshop.do?id=${o}`;
 			$('a#show_this.hide')[0].href=`https://staff.shoplightspeed.com/shops/${o}`;
 		};
 	}
