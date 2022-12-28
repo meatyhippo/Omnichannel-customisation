@@ -30,7 +30,8 @@
         `<p style="margin:0;color:white">-------------------</br>What\'s new: </p>
 		<ul style="margin:0;color:white;">
 		<li>No more need to remove the extra columns that are added.</li>
-		<li>Now hyper fast! It does 40K items, then sleeps for 5 seconds and repeat.</li>
+		<li>Now extra fast! It does 50K items, then sleeps for 5 seconds and repeat.</li>
+		<li>Hold alt to cancel.</li>
 		</ul>`),
         check.insertAdjacentHTML('afterend',
         '<p style="margin:0 0 0 10px; color:white; display:inline; ">Don\'t automatically download (will log to console)</p>'),
@@ -64,8 +65,6 @@
 	window.csv = '';
 	const sleep = async (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 	let start_time = Date.now(),
-		//fullspeed = true,
-		//pitstop,
 		rad_id = window.merchantos.account.id,
 		attr = "@attributes",
 		base_url = `${window.origin}/API/Account/${rad_id}/`,
@@ -166,7 +165,7 @@
     }
 // parsing the data 100 per page
     function parse_Data(b_name,APIendpoint,t){
-		function join_object(line,rel_object1,rel_object2, data){ // function to joing {} objects into one string
+		function join_object(line,rel_object1,rel_object2, data){ // function to join {} objects into one string
 			return line[rel_object1][rel_object2].map(key => key[data]).join(',');
 		}
 		function customfield_switch(line){

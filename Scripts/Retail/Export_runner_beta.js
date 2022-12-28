@@ -147,7 +147,8 @@
 				let uri = `${url}&${APIendpoint.toLowerCase()+'ID'}=>%3D,${start_id}&offset=${offset}`;
 				let ms = 0;
 				if (continuing){ // catch cancel with mac alt key
-					let x = fetch(uri)
+					let quotient = 0;
+					let x = fetch(uri);
 					promise_list.push(x);
 					x.then((res)=>{
 						res.json().then((t)=>{
@@ -157,7 +158,12 @@
 								parse_Data(b_name,APIendpoint,t);
 							}
 						});
+						let divident = res.headers.get('x-ls-api-bucket-level').split('/')[0],
+							devisor = res.headers.get('x-ls-api-bucket-level').split('/')[1],
+						quotient = divident/devisor;
+						if (quotient>=0.70) console.log('limit', quotient, divident)
 					});
+					//console.log('high',quotient, offset);
 					if (offset%50000==0 && offset!=0) await Promise.all(promise_list), ms = 1000*5, console.log('sleeping', ms, 'offset', offset), await sleep(ms);
 				} else return retail_UI_notification(start_time);
 			}
