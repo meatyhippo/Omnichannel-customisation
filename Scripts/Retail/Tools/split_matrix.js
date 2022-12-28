@@ -27,7 +27,7 @@
 		/**/console.log('init '+item,i,'matrices done out of',to_do_list.length);
 		$.ajax({
 			type: 'GET',
-			url: base_url+'ItemMatrix.json?load_relations=["ItemAttributeSet","Items"]&itemAttributeSetID=1&itemMatrixID='+item,
+			url: base_url+'ItemMatrix.json?load_relations=["ItemAttributeSet","Items"]&itemMatrixID='+item,
 			dataType: 'JSON',
 			async: false,
 			success: (old, textStatus, jqXHR) => {

@@ -56,12 +56,12 @@
 							'Ran for: '+roundToTwo(seconds)+' seconds / '+roundToTwo((seconds/60))+' minutes</br>'+
 							'Items failed: '+fail_list.length+'</br>'+
 							'Items succeeded: '+Object.keys(success_list).length+'</br>'+
-							'This page wil auto refresh in 45 secs');
+							'This page wil auto refresh in 120 secs');
 						$('body').append('<style>#success{top:0;text-align:center}#success::before{background:#a44039;}</style>');
 					}
 					window.setTimeout(() => {
 						location.reload();
-					}, 60 * 1000);		
+					}, 120 * 1000);		
 				}
 				// round to 2 decimal
 				function roundToTwo(num) {    
@@ -73,7 +73,7 @@
 						if (e.altKey){
 							/**/console.log('alt pressed');
 							continuing = false;
-							/**/console.log(continuing);
+							//console.log(continuing);
 						}
 					});
 				}, 500); `;
