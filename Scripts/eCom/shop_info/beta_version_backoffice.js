@@ -140,7 +140,7 @@
 				break;
 				case 'themes':
 					let theme_links=[
-						'search;'+'/Scripts/eCom/v2/theme_search.js;'+'1',
+						'search;'+'/Scripts/eCom/V2/theme_search.js;'+'1',
 						'settings;'+`${location.origin}/admin/theme/preview;`+'0',
 						o?'editor;'+`${location.origin}/admin/${l}/${shop.current_theme_id}`+';0':'',
 						'custom css;'+`${location.origin}/admin/themes/${shop.current_theme_id}/editor/css`+';0',
