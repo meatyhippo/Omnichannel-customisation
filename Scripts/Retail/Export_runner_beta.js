@@ -30,7 +30,8 @@
         `<p style="margin:0;color:white">-------------------</br>What\'s new: </p>
 		<ul style="margin:0;color:white;">
 		<li>No more need to remove the extra columns that are added.</li>
-		<li>Now hyper fast! It does 40K items, then sleeps for 5 seconds and repeat.</li>
+		<li>Now extra fast! It does 50K items, then sleeps for 5 seconds and repeat.</li>
+		<li>Hold alt to cancel.</li>
 		</ul>`),
         check.insertAdjacentHTML('afterend',
         '<p style="margin:0 0 0 10px; color:white; display:inline; ">Don\'t automatically download (will log to console)</p>'),
@@ -64,12 +65,10 @@
 	window.csv = '';
 	const sleep = async (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 	let start_time = Date.now(),
-		//fullspeed = true,
-		//pitstop,
 		rad_id = window.merchantos.account.id,
 		attr = "@attributes",
 		base_url = `${window.origin}/API/Account/${rad_id}/`,
-		donecount = count = start_id = offset = csvadded = 0,
+		donecount = count = start_id = pagenr = csvadded = 0,
 		query = ''; //variables for different functions
 // add new buttons here
 	(()=>{
@@ -138,33 +137,32 @@
 		let url = `${base_url}${APIendpoint}.json?`;
         if(relation) url += `&load_relations=[${relation}]`;
         if(query.length > 0) url += query;
-		$.getJSON(url+'&limit=1',(data, textStatus, jqXHR)=>{
-			start_id = parseInt(Object.values(data[APIendpoint])[0],10);
-			count = parseInt(data[attr].count,10);
-		}).done(async()=>{
+		$.when($.getJSON(url+'&limit=1&orderby=itemID&orderby_desc=0'), $.getJSON(url+'&limit=1&orderby=itemID&orderby_desc=1')
+		).done(async(data1, data2)=>{
+			let start_id = parseInt(data1[0][APIendpoint].itemID),
+				end_id = parseInt(data2[0][APIendpoint].itemID);
+			count = parseInt(data1[0][attr].count,10);
 			console.groupCollapsed('%cClick me to open logging info','color:Dodgerblue;background: #fff; padding: 2px; margin:2px; border-radius:2px;');
-			for (offset; offset <= count; offset += 100) { // loops until total count
-				let uri = `${url}&${APIendpoint.toLowerCase()+'ID'}=>%3D,${start_id}&offset=${offset}`;
-				let ms = 0;
+			// starting at start id, loops until end id is reached
+			for (start_id; start_id <= end_id; start_id += 100){
+				pagenr++;
+				let uri = `${url}&${APIendpoint.toLowerCase()+'ID'}=><,${start_id},${start_id+99}`;
 				if (continuing){ // catch cancel with mac alt key
-					let quotient = 0;
 					let x = fetch(uri);
 					promise_list.push(x);
 					x.then((res)=>{
 						res.json().then((t)=>{
-							if (b_name === 'OrderNumbers') {
-								add_to_csv(b_name,APIendpoint,t);
-							} else {
-								parse_Data(b_name,APIendpoint,t);
+							if(t[APIendpoint]){
+								if (b_name === 'OrderNumbers') {
+									add_to_csv(b_name,APIendpoint,t);
+								} else {
+									parse_Data(b_name,APIendpoint,t);
+								}
 							}
 						});
-						let divident = res.headers.get('x-ls-api-bucket-level').split('/')[0],
-							devisor = res.headers.get('x-ls-api-bucket-level').split('/')[1],
-						quotient = divident/devisor;
-						if (quotient>=0.70) console.log('limit', quotient, divident)
 					});
-					//console.log('high',quotient, offset);
-					if (offset%50000==0 && offset!=0) await Promise.all(promise_list), ms = 1000*5, console.log('sleeping', ms, 'offset', offset), await sleep(ms);
+					console.log(donecount)
+					if (pagenr%250==0 && pagenr!=0) await Promise.all(promise_list), console.log('sleeping', 1000*5, 'page nr', pagenr), await sleep(1000*5);
 				} else return retail_UI_notification(start_time);
 			}
 			fx(APIendpoint);
@@ -172,7 +170,7 @@
     }
 // parsing the data 100 per page
     function parse_Data(b_name,APIendpoint,t){
-		function join_object(line,rel_object1,rel_object2, data){ // function to joing {} objects into one string
+		function join_object(line,rel_object1,rel_object2, data){ // function to join {} objects into one string
 			return line[rel_object1][rel_object2].map(key => key[data]).join(',');
 		}
 		function customfield_switch(line){
@@ -438,7 +436,7 @@
 	}
 // progress bar
 	let openbar = window.setInterval(()=>{
-		if ((donecount/count) >= 1 && (offset%30000)+100==0 && offset!=0) {
+		if ((donecount/count) >= 1 && pagenr%250==0 && pagenr!=0) {
 			document.getElementById('progressbar').innerHTML = 'sleeping 5sec'
 		} else {
 			document.getElementById('progressbar').style.width = ((donecount/(count+1))*100) + '%';
